@@ -6,10 +6,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/hankei6km/tsend.git"
+    "url": "git://github.com/hankei6km/guratan.git"
   },
   "bugs": {
-    "url": "https://github.com/hankei6km/tsend/issues"
+    "url": "https://github.com/hankei6km/guratan/issues"
   },
   "keywords": [
     "google",
