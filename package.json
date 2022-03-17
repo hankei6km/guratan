@@ -1,6 +1,6 @@
 {
   "name": "guratan",
-  "version": "0.2.0-pre.0",
+  "version": "0.2.0",
   "description": "Tiny send tool for Google Drive",
   "author": "hankei6km <hankei6km@gmail.com> (https://github.com/hankei6km)",
   "license": "MIT",
