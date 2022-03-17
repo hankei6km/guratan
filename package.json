@@ -1,5 +1,5 @@
 {
-  "name": "tsend",
+  "name": "guratan",
   "version": "0.1.1",
   "description": "Tiny send tool for Google Drive",
   "author": "hankei6km <hankei6km@gmail.com> (https://github.com/hankei6km)",
@@ -23,7 +23,7 @@
     "dist"
   ],
   "bin": {
-    "tsend": "dist/main.js"
+    "guratan": "dist/main.js"
   },
   "scripts": {
     "start": "npm run build && node dist/main.js",
