@@ -1,53 +1,86 @@
 import { PassThrough } from 'stream'
 import { jest } from '@jest/globals'
-import cli from '../src/cli.js'
+
+jest.unstable_mockModule('../src/tsend.js', async () => {
+  const mockDriveClient = jest.fn()
+  const mockSendFile = jest.fn<any, any[]>()
+  const reset = () => {
+    mockDriveClient.mockReset().mockReturnValue('test-drive')
+    mockSendFile.mockReset().mockResolvedValue('test-id')
+  }
+
+  reset()
+  return {
+    driveClient: mockDriveClient,
+    sendFile: mockSendFile,
+    _reset: reset,
+    _getMocks: () => ({
+      mockDriveClient,
+      mockSendFile
+    })
+  }
+})
+
+const mockTsend = await import('../src/tsend.js')
+const { mockSendFile } = (mockTsend as any)._getMocks()
+const { cli } = await import('../src/cli.js')
+
+afterEach(() => {
+  ;(mockTsend as any)._reset()
+})
 
 describe('cli()', () => {
-  it('should return stdout with exitcode=0', async () => {
+  it('should return 0', async () => {
     const stdout = new PassThrough()
     const stderr = new PassThrough()
-    const outData = jest.fn()
-    stdout.on('data', outData)
-    const errData = jest.fn()
-    stderr.on('data', errData)
+    let outData = ''
+    stdout.on('data', (d) => (outData = outData + d))
+    let errData = ''
+    stderr.on('data', (d) => (errData = errData + d))
     expect(
       await cli({
-        filenames: ['test/assets/test1.txt', 'test/assets/test2.txt'],
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        srcFileName: 'src-file-name',
+        printId: false,
         stdout,
         stderr
       })
     ).toEqual(0)
-    expect(outData.mock.calls.length).toEqual(2)
-    expect((outData.mock.calls[0][0] as Buffer).toString('utf8')).toEqual(
-      'test/assets/test1.txt: 15 chars\n'
+    expect(mockSendFile).toBeCalledWith(
+      'test-drive',
+      'parent-id',
+      'dest-file-name',
+      'src-file-name'
     )
-    expect((outData.mock.calls[1][0] as Buffer).toString('utf8')).toEqual(
-      'test/assets/test2.txt: 17 chars\n'
-    )
-    expect(errData.mock.calls.length).toEqual(0)
+    expect(outData).toEqual('')
+    expect(errData).toEqual('')
   })
-  it('should return stderr with exitcode=1', async () => {
+
+  it('should print id', async () => {
     const stdout = new PassThrough()
     const stderr = new PassThrough()
-    const outData = jest.fn()
-    stdout.on('data', outData)
-    const errData = jest.fn()
-    stderr.on('data', errData)
+    let outData = ''
+    stdout.on('data', (d) => (outData = outData + d))
+    let errData = ''
+    stderr.on('data', (d) => (errData = errData + d))
     expect(
       await cli({
-        filenames: ['test/assets/test1.txt', 'test/assets/fail.txt'],
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        srcFileName: 'src-file-name',
+        printId: true,
         stdout,
         stderr
       })
-    ).toEqual(1)
-    expect(outData.mock.calls.length).toEqual(1)
-    expect((outData.mock.calls[0][0] as Buffer).toString('utf8')).toEqual(
-      'test/assets/test1.txt: 15 chars\n'
+    ).toEqual(0)
+    expect(mockSendFile).toBeCalledWith(
+      'test-drive',
+      'parent-id',
+      'dest-file-name',
+      'src-file-name'
     )
-    expect(errData.mock.calls.length).toEqual(2)
-    expect((errData.mock.calls[0][0] as Buffer).toString('utf8')).toEqual(
-      "Error: ENOENT: no such file or directory, open 'test/assets/fail.txt'"
-    )
-    expect((errData.mock.calls[1][0] as Buffer).toString('utf8')).toEqual('\n')
+    expect(outData).toEqual('test-id')
+    expect(errData).toEqual('')
   })
 })

@@ -34,6 +34,7 @@
     "csb:test": "npm test -- --runInBand --watchAll"
   },
   "dependencies": {
+    "@googleapis/drive": "^2.3.0",
     "yargs": "^17.3.1"
   },
   "devDependencies": {
