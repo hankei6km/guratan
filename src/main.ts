@@ -3,9 +3,9 @@ import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { cli } from './cli.js'
 
-const envVarsPrefix = process.env['TSEND_ENV_VARS_PREFIX'] || 'TSEND'
+const envVarsPrefix = process.env['GURATAN_ENV_VARS_PREFIX'] || 'GURATAN'
 const argv = await yargs(hideBin(process.argv))
-  .scriptName('tsend')
+  .scriptName('guratan')
   .env(envVarsPrefix)
   .command(
     '$0 send [OPTIONS]',
