@@ -1,18 +1,32 @@
 import { Writable } from 'stream'
-import countChars from './count.js'
+import { driveClient, sendFile } from './tsend.js'
 
 type Opts = {
-  filenames: string[]
+  parentId: string
+  destFileName: string
+  srcFileName: string
+  printId: boolean
   stdout: Writable
   stderr: Writable
 }
-const cli = async ({ filenames, stdout, stderr }: Opts): Promise<number> => {
+
+export const cli = async ({
+  parentId,
+  destFileName,
+  srcFileName,
+  printId,
+  stdout,
+  stderr
+}: Opts): Promise<number> => {
   try {
-    const len = filenames.length
-    for (let i = 0; i < len; i++) {
-      const filename = filenames[i]
-      const count = await countChars(filename)
-      stdout.write(`${filename}: ${count} chars\n`)
+    const id = await sendFile(
+      driveClient(),
+      parentId,
+      destFileName,
+      srcFileName
+    )
+    if (printId) {
+      stdout.write(id)
     }
   } catch (err: any) {
     stderr.write(err.toString())
@@ -21,5 +35,3 @@ const cli = async ({ filenames, stdout, stderr }: Opts): Promise<number> => {
   }
   return 0
 }
-
-export default cli
