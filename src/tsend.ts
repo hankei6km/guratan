@@ -32,19 +32,19 @@ export class UpdateFileError extends Error {
  */
 export type SendFileOpts = {
   /**
-   * @param parentId  - The IDs of the parent folders which contain the file.
+   * @type The IDs of the parent folders which contain the file.
    */
   parentId: string
   /**
-   * @param destFileName - The name of the file in remote
+   * @type The name of the file in remote
    */
   destFileName: string
   /**
-   * @param srcFileName - The name(path) of the file in local filesystem
+   @type The name(path) of the file in local filesystem
    */
   srcFileName: string
   /**
-   * @param destMimeType - The MIME type of the file.
+   * @type The MIME type of the file.
    */
   destMimeType: string
 }
