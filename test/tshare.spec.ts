@@ -26,6 +26,7 @@ describe('createPermisson()', () => {
         emailAddress: 'test-mail',
         domain: 'test-domain',
         view: 'test-view',
+        moveToNewOwnersRoot: true,
         transferOwnership: true,
         allowFileDiscovery: true,
         sendNotificationEmail: false,
@@ -43,6 +44,7 @@ describe('createPermisson()', () => {
       },
       fileId: 'test-file-id',
       fields: 'id',
+      moveToNewOwnersRoot: true,
       transferOwnership: true,
       sendNotificationEmail: false
     })
@@ -78,6 +80,7 @@ describe('createPermisson()', () => {
         domain: '',
         view: '',
         allowFileDiscovery: false,
+        moveToNewOwnersRoot: false,
         transferOwnership: false,
         sendNotificationEmail: true,
         emailMessage: ''
@@ -90,6 +93,7 @@ describe('createPermisson()', () => {
       },
       fileId: 'test-file-id',
       fields: 'id',
+      moveToNewOwnersRoot: false,
       transferOwnership: false,
       sendNotificationEmail: true
     })
@@ -126,6 +130,7 @@ describe('createPermisson()', () => {
         domain: '',
         view: '',
         allowFileDiscovery: false,
+        moveToNewOwnersRoot: false,
         transferOwnership: false,
         sendNotificationEmail: true,
         emailMessage: 'test-message'
@@ -138,6 +143,7 @@ describe('createPermisson()', () => {
       },
       fileId: 'test-file-id',
       fields: 'id',
+      moveToNewOwnersRoot: false,
       transferOwnership: false,
       sendNotificationEmail: true,
       emailMessage: 'test-message'
@@ -160,6 +166,7 @@ describe('createPermisson()', () => {
       domain: '',
       view: '',
       allowFileDiscovery: false,
+      moveToNewOwnersRoot: false,
       transferOwnership: false,
       sendNotificationEmail: true,
       emailMessage: ''
@@ -188,6 +195,7 @@ describe('createPermisson()', () => {
       domain: '',
       view: '',
       allowFileDiscovery: false,
+      moveToNewOwnersRoot: false,
       transferOwnership: false,
       sendNotificationEmail: true,
       emailMessage: ''
@@ -212,6 +220,7 @@ describe('createPermisson()', () => {
       domain: '',
       view: '',
       allowFileDiscovery: false,
+      moveToNewOwnersRoot: false,
       transferOwnership: false,
       sendNotificationEmail: true,
       emailMessage: ''

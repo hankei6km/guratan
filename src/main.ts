@@ -70,6 +70,12 @@ const argv = await yargs(hideBin(process.argv))
         default: '',
         description: 'The domain to which this permission refers.	'
       },
+      'move-to-new-owners-root': {
+        type: 'boolean',
+        default: false,
+        description:
+          'This parameter will only take effect if the item is not in a shared drive and the request is attempting to transfer the ownership of the item.'
+      },
       'allow-file-discovery': {
         type: 'boolean',
         default: false,
@@ -135,6 +141,7 @@ switch (`${argv._[0]}`) {
         domain: argv['domain'],
         view: argv['view'],
         allowFileDiscovery: argv['allow-file-discovery'],
+        moveToNewOwnersRoot: argv['move-to-new-owners-root'],
         transferOwnership: argv['transfer-ownership'],
         sendNotificationEmail: argv['send-notification-email'],
         printId: argv['print-id'] || false,
