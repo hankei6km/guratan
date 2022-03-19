@@ -54,7 +54,8 @@ describe('cli()', () => {
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
-        destMimeType: 'mime-type',
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type',
         printId: false,
         stdout,
         stderr
@@ -64,7 +65,8 @@ describe('cli()', () => {
       parentId: 'parent-id',
       destFileName: 'dest-file-name',
       srcFileName: 'src-file-name',
-      destMimeType: 'mime-type'
+      destMimeType: 'dest-mime-type',
+      srcMimeType: 'src-mime-type'
     })
     expect(outData).toEqual('')
     expect(errData).toEqual('')
@@ -83,6 +85,7 @@ describe('cli()', () => {
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
         destMimeType: 'mime-type',
+        srcMimeType: 'src-mime-type',
         printId: true,
         stdout,
         stderr
@@ -92,7 +95,8 @@ describe('cli()', () => {
       parentId: 'parent-id',
       destFileName: 'dest-file-name',
       srcFileName: 'src-file-name',
-      destMimeType: 'mime-type'
+      destMimeType: 'mime-type',
+      srcMimeType: 'src-mime-type'
     })
     expect(outData).toEqual('test-id')
     expect(errData).toEqual('')
