@@ -60,13 +60,12 @@ describe('cli()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockSendFile).toBeCalledWith(
-      'test-drive',
-      'parent-id',
-      'dest-file-name',
-      'src-file-name',
-      'mime-type'
-    )
+    expect(mockSendFile).toBeCalledWith('test-drive', {
+      parentId: 'parent-id',
+      destFileName: 'dest-file-name',
+      srcFileName: 'src-file-name',
+      destMimeType: 'mime-type'
+    })
     expect(outData).toEqual('')
     expect(errData).toEqual('')
   })
@@ -89,13 +88,12 @@ describe('cli()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockSendFile).toBeCalledWith(
-      'test-drive',
-      'parent-id',
-      'dest-file-name',
-      'src-file-name',
-      'mime-type'
-    )
+    expect(mockSendFile).toBeCalledWith('test-drive', {
+      parentId: 'parent-id',
+      destFileName: 'dest-file-name',
+      srcFileName: 'src-file-name',
+      destMimeType: 'mime-type'
+    })
     expect(outData).toEqual('test-id')
     expect(errData).toEqual('')
   })
