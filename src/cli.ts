@@ -12,6 +12,7 @@ type OptsSend = Opts & {
   destFileName: string
   srcFileName: string
   destMimeType: string
+  srcMimeType: string
   printId: boolean
 }
 type OptsShare = Opts & {
@@ -34,6 +35,7 @@ export const cliSend = async ({
   destFileName,
   srcFileName,
   destMimeType,
+  srcMimeType,
   printId,
   stdout,
   stderr
@@ -43,7 +45,8 @@ export const cliSend = async ({
       parentId,
       destFileName,
       srcFileName,
-      destMimeType
+      destMimeType,
+      srcMimeType
     })
     if (printId) {
       stdout.write(id)

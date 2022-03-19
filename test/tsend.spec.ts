@@ -125,18 +125,20 @@ describe('uploadFile()', () => {
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
-        destMimeType: 'mime-type'
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type'
       })
     ).toEqual('test-id')
     expect(mockCreateReadStream).toBeCalledWith('src-file-name')
     expect(create).toBeCalledWith({
       fields: 'id',
       media: {
+        mimeType: 'src-mime-type',
         body: 'mock-create-read-streadm'
       },
       requestBody: {
         name: 'dest-file-name',
-        mimeType: 'mime-type',
+        mimeType: 'dest-mime-type',
         parents: ['parent-id']
       }
     })
@@ -157,7 +159,8 @@ describe('uploadFile()', () => {
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
-        destMimeType: ''
+        destMimeType: '',
+        srcMimeType: ''
       })
     ).toEqual('test-id')
     expect(mockCreateReadStream).toBeCalledWith('src-file-name')
@@ -185,7 +188,8 @@ describe('uploadFile()', () => {
       parentId: 'parent-id',
       destFileName: 'dest-file-name',
       srcFileName: 'src-file-name',
-      destMimeType: 'mime-type'
+      destMimeType: 'dest-mime-type',
+      srcMimeType: 'src-mime-type'
     })
     await expect(res).rejects.toThrowError('err')
     await expect(res).rejects.toBeInstanceOf(UploadFileError)
@@ -207,7 +211,8 @@ describe('updateFile()', () => {
       await updateFile(drive, {
         fileId: 'file-id',
         srcFileName: 'src-file-name',
-        destMimeType: 'mime-type'
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type'
       })
     ).toEqual('test-id')
     expect(mockCreateReadStream).toBeCalledWith('src-file-name')
@@ -215,10 +220,11 @@ describe('updateFile()', () => {
       fileId: 'file-id',
       fields: 'id',
       media: {
+        mimeType: 'src-mime-type',
         body: 'mock-create-read-streadm'
       },
       requestBody: {
-        mimeType: 'mime-type'
+        mimeType: 'dest-mime-type'
       }
     })
   })
@@ -237,7 +243,8 @@ describe('updateFile()', () => {
       await updateFile(drive, {
         fileId: 'file-id',
         srcFileName: 'src-file-name',
-        destMimeType: ''
+        destMimeType: '',
+        srcMimeType: ''
       })
     ).toEqual('test-id')
     expect(mockCreateReadStream).toBeCalledWith('src-file-name')
@@ -262,7 +269,8 @@ describe('updateFile()', () => {
     const res = updateFile(drive, {
       fileId: 'file-id',
       srcFileName: 'src-file-name',
-      destMimeType: 'mime-type'
+      destMimeType: 'dest-mime-type',
+      srcMimeType: 'src-mime-type'
     })
     await expect(res).rejects.toThrowError('err')
     await expect(res).rejects.toBeInstanceOf(UpdateFileError)
@@ -292,7 +300,8 @@ describe('sendFile()', () => {
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
-        destMimeType: 'mime-type'
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type'
       })
     ).toEqual('create-test-id')
     expect(list).toBeCalledWith({
@@ -303,11 +312,12 @@ describe('sendFile()', () => {
     expect(create).toBeCalledWith({
       fields: 'id',
       media: {
+        mimeType: 'src-mime-type',
         body: 'mock-create-read-streadm'
       },
       requestBody: {
         name: 'dest-file-name',
-        mimeType: 'mime-type',
+        mimeType: 'dest-mime-type',
         parents: ['parent-id']
       }
     })
@@ -336,7 +346,8 @@ describe('sendFile()', () => {
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
-        destMimeType: 'mime-type'
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type'
       })
     ).toEqual('update-test-id')
     expect(list).toBeCalledWith({
@@ -349,10 +360,11 @@ describe('sendFile()', () => {
       fileId: 'test-id',
       fields: 'id',
       media: {
+        mimeType: 'src-mime-type',
         body: 'mock-create-read-streadm'
       },
       requestBody: {
-        mimeType: 'mime-type'
+        mimeType: 'dest-mime-type'
       }
     })
   })

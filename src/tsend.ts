@@ -47,6 +47,10 @@ export type SendFileOpts = {
    * @type The MIME type of the file.
    */
   destMimeType: string
+  /**
+   * @type Media mime-type.
+   */
+  srcMimeType: string
 }
 
 /**
@@ -95,11 +99,12 @@ export async function uploadFile(
   drive: drive_v3.Drive,
   opts: Pick<
     SendFileOpts,
-    'parentId' | 'destFileName' | 'srcFileName' | 'destMimeType'
+    'parentId' | 'destFileName' | 'srcFileName' | 'destMimeType' | 'srcMimeType'
   >
 ): Promise<string> {
   try {
-    const { parentId, destFileName, srcFileName, destMimeType } = opts
+    const { parentId, destFileName, srcFileName, destMimeType, srcMimeType } =
+      opts
     const params: drive_v3.Params$Resource$Files$Create = {
       requestBody: {
         name: path.basename(destFileName),
@@ -112,6 +117,9 @@ export async function uploadFile(
     }
     if (destMimeType) {
       params.requestBody!.mimeType = destMimeType
+    }
+    if (srcMimeType) {
+      params.media!.mimeType = srcMimeType
     }
     const res = await drive.files.create(params)
     return res.data.id || ''
@@ -128,10 +136,13 @@ export async function uploadFile(
  */
 export async function updateFile(
   drive: drive_v3.Drive,
-  opts: { fileId: string } & Pick<SendFileOpts, 'srcFileName' | 'destMimeType'>
+  opts: { fileId: string } & Pick<
+    SendFileOpts,
+    'srcFileName' | 'destMimeType' | 'srcMimeType'
+  >
 ): Promise<string> {
   try {
-    const { fileId, srcFileName, destMimeType } = opts
+    const { fileId, srcFileName, destMimeType, srcMimeType } = opts
     const params: drive_v3.Params$Resource$Files$Update = {
       fileId,
       requestBody: {},
@@ -142,6 +153,9 @@ export async function updateFile(
     }
     if (destMimeType) {
       params.requestBody!.mimeType = destMimeType
+    }
+    if (srcMimeType) {
+      params.media!.mimeType = srcMimeType
     }
     const res = await drive.files.update(params)
     return res.data.id || ''
@@ -160,15 +174,17 @@ export async function sendFile(
   drive: drive_v3.Drive,
   opts: SendFileOpts
 ): Promise<string> {
-  const { parentId, destFileName, srcFileName, destMimeType } = opts
+  const { parentId, destFileName, srcFileName, destMimeType, srcMimeType } =
+    opts
   const fileId = await getFileId(drive, parentId, destFileName)
   if (fileId === '') {
     return uploadFile(drive, {
       parentId,
       destFileName,
       srcFileName,
-      destMimeType
+      destMimeType,
+      srcMimeType
     })
   }
-  return updateFile(drive, { fileId, srcFileName, destMimeType })
+  return updateFile(drive, { fileId, srcFileName, destMimeType, srcMimeType })
 }
