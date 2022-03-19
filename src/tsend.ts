@@ -172,16 +172,3 @@ export async function sendFile(
   }
   return updateFile(drive, { fileId, srcFileName, destMimeType })
 }
-
-// try {
-//   const parentId = process.env['PARENT_ID'] || ''
-//   const destFileName = process.env['DEST_FILE_NAME'] || ''
-//   const srcFileName = process.env['SRC_FILE_NAME'] || ''
-//   const drive = driveClient()
-//   const id = await getFileId(drive, parentId, destFileName)
-//   console.log(id)
-//   console.log(await updateFile(drive, id, srcFileName))
-// } catch (err) {
-//   console.error('--err--')
-//   console.error(err)
-// }
