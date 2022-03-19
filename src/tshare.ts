@@ -1,0 +1,135 @@
+import { drive_v3 } from '@googleapis/drive'
+
+export class CreatePermissonError extends Error {
+  constructor(message: string) {
+    //https://stackoverflow.com/questions/41102060/typescript-extending-error-class
+    super(message)
+    Object.setPrototypeOf(this, CreatePermissonError.prototype)
+  }
+}
+
+export class UpdatePermissonError extends Error {
+  constructor(message: string) {
+    //https://stackoverflow.com/questions/41102060/typescript-extending-error-class
+    super(message)
+    Object.setPrototypeOf(this, UpdatePermissonError.prototype)
+  }
+}
+
+/**
+ * Options for createPermisson().
+ */
+export type CreatePermissonOpts = {
+  /**
+   * @type The ID of the file or shared drive.
+   */
+  fileId: string
+  /**
+   * @type The type of the grantee.
+   */
+  type: string
+  /**
+   * The role granted by this permission
+   */
+  role: string
+  /**
+   * @type The email address of the user or group to which this permission refers.
+   */
+  emailAddress: string
+  /**
+   * @type The domain to which this permission refers.
+   */
+  domain: string
+  /**
+   * @type Whether the permission allows the file to be discovered through search.
+   */
+  allowFileDiscovery: boolean
+  /**
+   * @type Indicates the view for this permission. Only populated for permissions that belong to a view. published is the only supported value.
+   */
+  view: string
+  /**
+   * @type Whether the permission allows the file to be discovered through search. This is only applicable for permissions of type domain or anyone.
+   */
+  sendNotificationEmail: boolean
+  /**
+   * @type A plain text custom message to include in the notification email.
+   */
+  emailMessage: string
+}
+
+/**
+ * Create permission
+ * @param drive - drive instance.
+ * @param opts
+ * @returns id of file in Google Drive
+ */
+export async function createPermisson(
+  drive: drive_v3.Drive,
+  opts: CreatePermissonOpts
+): Promise<string> {
+  let created = false
+  try {
+    const {
+      fileId,
+      type,
+      role,
+      emailAddress,
+      domain,
+      view,
+      allowFileDiscovery,
+      sendNotificationEmail,
+      emailMessage
+    } = opts
+
+    const createParams: drive_v3.Params$Resource$Permissions$Create = {
+      requestBody: {
+        type,
+        role
+      },
+      fileId,
+      sendNotificationEmail,
+      fields: 'id'
+    }
+    if (emailAddress) {
+      createParams.requestBody!.emailAddress = emailAddress
+    }
+    if (domain) {
+      createParams.requestBody!.domain = domain
+    }
+    if (view) {
+      createParams.requestBody!.view = view
+    }
+    if (allowFileDiscovery) {
+      createParams.requestBody!.allowFileDiscovery = allowFileDiscovery
+    }
+    if (sendNotificationEmail && emailMessage) {
+      createParams.emailMessage = emailMessage
+    }
+    const resCreate = await drive.permissions.create(createParams)
+    created = true
+    const id = resCreate.data.id || ''
+    if (id === '') {
+      throw new CreatePermissonError(
+        'drive.permissions.create() return blank id '
+      )
+    }
+    const resUpdate = await drive.permissions.update({
+      permissionId: id,
+      requestBody: {
+        role
+      },
+      fileId,
+      fields: 'id'
+    })
+    return id
+  } catch (err: any) {
+    if (err.errors) {
+      if (!created) {
+        throw new CreatePermissonError(JSON.stringify(err.errors))
+      }
+      throw new UpdatePermissonError(JSON.stringify(err.errors))
+    }
+    throw err
+  }
+}
