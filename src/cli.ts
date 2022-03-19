@@ -1,5 +1,6 @@
 import { Writable } from 'stream'
-import { driveClient, sendFile } from './tsend.js'
+import { driveClient } from './tdrive.js'
+import { sendFile } from './tsend.js'
 
 type Opts = {
   parentId: string
