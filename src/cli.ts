@@ -11,6 +11,7 @@ type OptsSend = Opts & {
   parentId: string
   destFileName: string
   srcFileName: string
+  destMimeType: string
   printId: boolean
 }
 type OptsShare = Opts & {
@@ -32,6 +33,7 @@ export const cliSend = async ({
   parentId,
   destFileName,
   srcFileName,
+  destMimeType,
   printId,
   stdout,
   stderr
@@ -41,7 +43,8 @@ export const cliSend = async ({
       driveClient(),
       parentId,
       destFileName,
-      srcFileName
+      srcFileName,
+      destMimeType
     )
     if (printId) {
       stdout.write(id)
