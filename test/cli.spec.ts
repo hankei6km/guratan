@@ -35,7 +35,7 @@ jest.unstable_mockModule('../src/tsend.js', async () => {
 
 const mockTsend = await import('../src/tsend.js')
 const { mockSendFile } = (mockTsend as any)._getMocks()
-const { cli } = await import('../src/cli.js')
+const { cliSend } = await import('../src/cli.js')
 
 afterEach(() => {
   ;(mockTsend as any)._reset()
@@ -50,7 +50,7 @@ describe('cli()', () => {
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
     expect(
-      await cli({
+      await cliSend({
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
@@ -77,7 +77,7 @@ describe('cli()', () => {
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
     expect(
-      await cli({
+      await cliSend({
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
