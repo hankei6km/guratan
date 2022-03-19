@@ -48,14 +48,7 @@ describe('createPermisson()', () => {
       transferOwnership: true,
       sendNotificationEmail: false
     })
-    expect(update).toBeCalledWith({
-      permissionId: 'test-id',
-      requestBody: {
-        role: 'test-role'
-      },
-      fileId: 'test-file-id',
-      fields: 'id'
-    })
+    expect(update).toBeCalledTimes(0) // transferOwnership が指定されているので.
   })
   it('should return id of permission(default values)', async () => {
     const create = jest
