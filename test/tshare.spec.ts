@@ -42,8 +42,7 @@ describe('createPermisson()', () => {
       },
       fileId: 'test-file-id',
       fields: 'id',
-      sendNotificationEmail: false,
-      emailMessage: 'test-message'
+      sendNotificationEmail: false
     })
     expect(update).toBeCalledWith({
       permissionId: 'test-id',
@@ -88,8 +87,7 @@ describe('createPermisson()', () => {
       },
       fileId: 'test-file-id',
       fields: 'id',
-      sendNotificationEmail: true,
-      emailMessage: ''
+      sendNotificationEmail: true
     })
     expect(update).toBeCalledWith({
       permissionId: 'test-id',
@@ -98,6 +96,45 @@ describe('createPermisson()', () => {
       },
       fileId: 'test-file-id',
       fields: 'id'
+    })
+  })
+
+  it('should return id of permission(email message)', async () => {
+    const create = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'test-id' } })
+    const update = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'test-id' } })
+    const drive: any = {
+      permissions: {
+        create,
+        update
+      }
+    }
+
+    expect(
+      await createPermisson(drive, {
+        fileId: 'test-file-id',
+        type: 'test-type',
+        role: 'test-role',
+        emailAddress: '',
+        domain: '',
+        view: '',
+        allowFileDiscovery: false,
+        sendNotificationEmail: true,
+        emailMessage: 'test-message'
+      })
+    ).toEqual('test-id')
+    expect(create).toBeCalledWith({
+      requestBody: {
+        type: 'test-type',
+        role: 'test-role'
+      },
+      fileId: 'test-file-id',
+      fields: 'id',
+      sendNotificationEmail: true,
+      emailMessage: 'test-message'
     })
   })
 
