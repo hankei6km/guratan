@@ -12,23 +12,23 @@ const argv = await yargs(hideBin(process.argv))
       'parent-id': {
         type: 'string',
         required: true,
-        description: 'id of folder in Google Deive'
+        description: 'The IDs of the parent folders which contain the file.'
       },
       'dest-file-name': {
         type: 'string',
         required: true,
-        description: 'file name in Google Drive'
+        description: 'The name of the file in remote'
       },
       'src-file-name': {
         type: 'string',
         required: true,
-        description: 'file name in local filesystem'
+        description: 'The name(path) of the file in local filesystem'
       },
       'print-id': {
         type: 'boolean',
         required: false,
         default: false,
-        description: 'print id of file that is sended into Google Drive'
+        description: 'Print the id of the file that is sended into remote'
       }
     })
   })
