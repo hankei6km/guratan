@@ -126,14 +126,16 @@ export async function createPermisson(
         'drive.permissions.create() return blank id '
       )
     }
-    const resUpdate = await drive.permissions.update({
-      permissionId: id,
-      requestBody: {
-        role
-      },
-      fileId,
-      fields: 'id'
-    })
+    if (!transferOwnership) {
+      const resUpdate = await drive.permissions.update({
+        permissionId: id,
+        requestBody: {
+          role
+        },
+        fileId,
+        fields: 'id'
+      })
+    }
     return id
   } catch (err: any) {
     if (err.errors) {
