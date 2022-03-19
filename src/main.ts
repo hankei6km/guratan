@@ -11,14 +11,17 @@ const argv = await yargs(hideBin(process.argv))
     return yargs.options({
       'parent-id': {
         type: 'string',
+        required: true,
         description: 'id of folder in Google Deive'
       },
       'dest-file-name': {
         type: 'string',
+        required: true,
         description: 'file name in Google Drive'
       },
       'src-file-name': {
         type: 'string',
+        required: true,
         description: 'file name in local filesystem'
       },
       'print-id': {
