@@ -49,6 +49,10 @@ export type CreatePermissonOpts = {
    */
   view: string
   /**
+   * @type Whether to transfer ownership to the specified user and downgrade the current owner to a writer.
+   */
+  transferOwnership: boolean
+  /**
    * @type Whether the permission allows the file to be discovered through search. This is only applicable for permissions of type domain or anyone.
    */
   sendNotificationEmail: boolean
@@ -78,6 +82,7 @@ export async function createPermisson(
       domain,
       view,
       allowFileDiscovery,
+      transferOwnership,
       sendNotificationEmail,
       emailMessage
     } = opts
@@ -88,6 +93,7 @@ export async function createPermisson(
         role
       },
       fileId,
+      transferOwnership,
       sendNotificationEmail,
       fields: 'id'
     }

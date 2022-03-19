@@ -82,6 +82,12 @@ const argv = await yargs(hideBin(process.argv))
         description:
           'Whether the permission allows the file to be discovered through search. This is only applicable for permissions of type domain or anyone.'
       },
+      'transfer-ownership': {
+        type: 'boolean',
+        default: false,
+        description:
+          'Whether to transfer ownership to the specified user and downgrade the current owner to a writer.'
+      },
       'send-notification-email': {
         type: 'boolean',
         default: true,
@@ -129,6 +135,7 @@ switch (`${argv._[0]}`) {
         domain: argv['domain'],
         view: argv['view'],
         allowFileDiscovery: argv['allow-file-discovery'],
+        transferOwnership: argv['transfer-ownership'],
         sendNotificationEmail: argv['send-notification-email'],
         printId: argv['print-id'] || false,
         emailMessage: argv['email-message'],
