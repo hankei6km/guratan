@@ -24,6 +24,12 @@ const argv = await yargs(hideBin(process.argv))
         required: true,
         description: 'The name(path) of the file in local filesystem'
       },
+      'dest-mime-type': {
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'The MIME type of the file.'
+      },
       'print-id': {
         type: 'boolean',
         required: false,
@@ -125,6 +131,7 @@ switch (`${argv._[0]}`) {
         parentId: argv['parent-id'] || '',
         destFileName: argv['dest-file-name'] || '',
         srcFileName: argv['src-file-name'] || '',
+        destMimeType: argv['dest-mime-type'] || '',
         printId: argv['print-id'] || false,
         stdout: process.stdout,
         stderr: process.stderr

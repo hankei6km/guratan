@@ -121,7 +121,46 @@ describe('uploadFile()', () => {
     }
 
     expect(
-      await uploadFile(drive, 'parent-id', 'dest-file-name', 'src-file-name')
+      await uploadFile(
+        drive,
+        'parent-id',
+        'dest-file-name',
+        'src-file-name',
+        'mime-type'
+      )
+    ).toEqual('test-id')
+    expect(mockCreateReadStream).toBeCalledWith('src-file-name')
+    expect(create).toBeCalledWith({
+      fields: 'id',
+      media: {
+        body: 'mock-create-read-streadm'
+      },
+      requestBody: {
+        name: 'dest-file-name',
+        mimeType: 'mime-type',
+        parents: ['parent-id']
+      }
+    })
+  })
+
+  it('should return id of file(mimeType is blank)', async () => {
+    const create = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'test-id' } })
+    const drive: any = {
+      files: {
+        create
+      }
+    }
+
+    expect(
+      await uploadFile(
+        drive,
+        'parent-id',
+        'dest-file-name',
+        'src-file-name',
+        ''
+      )
     ).toEqual('test-id')
     expect(mockCreateReadStream).toBeCalledWith('src-file-name')
     expect(create).toBeCalledWith({
@@ -148,7 +187,8 @@ describe('uploadFile()', () => {
       drive,
       'parent-id',
       'dest-file-name',
-      'src-file-name'
+      'src-file-name',
+      'mime-type'
     )
     await expect(res).rejects.toThrowError('err')
     await expect(res).rejects.toBeInstanceOf(UploadFileError)
@@ -166,7 +206,33 @@ describe('updateFile()', () => {
       }
     }
 
-    expect(await updateFile(drive, 'file-id', 'src-file-name')).toEqual(
+    expect(
+      await updateFile(drive, 'file-id', 'src-file-name', 'mime-type')
+    ).toEqual('test-id')
+    expect(mockCreateReadStream).toBeCalledWith('src-file-name')
+    expect(update).toBeCalledWith({
+      fileId: 'file-id',
+      fields: 'id',
+      media: {
+        body: 'mock-create-read-streadm'
+      },
+      requestBody: {
+        mimeType: 'mime-type'
+      }
+    })
+  })
+
+  it('should return id of file(mimeType is blank)', async () => {
+    const update = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'test-id' } })
+    const drive: any = {
+      files: {
+        update
+      }
+    }
+
+    expect(await updateFile(drive, 'file-id', 'src-file-name', '')).toEqual(
       'test-id'
     )
     expect(mockCreateReadStream).toBeCalledWith('src-file-name')
@@ -188,7 +254,7 @@ describe('updateFile()', () => {
       }
     }
 
-    const res = updateFile(drive, 'file-id', 'src-file-name')
+    const res = updateFile(drive, 'file-id', 'src-file-name', 'mime-type')
     await expect(res).rejects.toThrowError('err')
     await expect(res).rejects.toBeInstanceOf(UpdateFileError)
   })
@@ -213,7 +279,13 @@ describe('sendFile()', () => {
       }
     }
     expect(
-      await sendFile(drive, 'parent-id', 'dest-file-name', 'src-file-name')
+      await sendFile(
+        drive,
+        'parent-id',
+        'dest-file-name',
+        'src-file-name',
+        'mime-type'
+      )
     ).toEqual('create-test-id')
     expect(list).toBeCalledWith({
       fields: 'files(id, name)',
@@ -227,6 +299,7 @@ describe('sendFile()', () => {
       },
       requestBody: {
         name: 'dest-file-name',
+        mimeType: 'mime-type',
         parents: ['parent-id']
       }
     })
@@ -251,7 +324,13 @@ describe('sendFile()', () => {
       }
     }
     expect(
-      await sendFile(drive, 'parent-id', 'dest-file-name', 'src-file-name')
+      await sendFile(
+        drive,
+        'parent-id',
+        'dest-file-name',
+        'src-file-name',
+        'mime-type'
+      )
     ).toEqual('update-test-id')
     expect(list).toBeCalledWith({
       fields: 'files(id, name)',
@@ -265,7 +344,9 @@ describe('sendFile()', () => {
       media: {
         body: 'mock-create-read-streadm'
       },
-      requestBody: {}
+      requestBody: {
+        mimeType: 'mime-type'
+      }
     })
   })
 })

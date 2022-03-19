@@ -69,26 +69,31 @@ export async function getFileId(
  * @param parentId  - The IDs of the parent folders which contain the file.
  * @param destFileName - The name of the file in remote
  * @param srcFileName - The name(path) of the file in local filesystem
+ * @param destMimeType - The MIME type of the file.
  * @returns Print the id of the file that is sended into remote
  */
 export async function uploadFile(
   drive: drive_v3.Drive,
   parentId: string,
   destFileName: string,
-  srcFileName: string
+  srcFileName: string,
+  destMimeType: string
 ): Promise<string> {
   try {
-    const res = await drive.files.create({
+    const params: drive_v3.Params$Resource$Files$Create = {
       requestBody: {
         name: path.basename(destFileName),
         parents: [parentId]
       },
       media: {
-        // mimeType: 'image/jpeg',
         body: fs.createReadStream(srcFileName)
       },
       fields: 'id'
-    })
+    }
+    if (destMimeType) {
+      params.requestBody!.mimeType = destMimeType
+    }
+    const res = await drive.files.create(params)
     return res.data.id || ''
   } catch (err: any) {
     throw new UploadFileError(JSON.stringify(err.errors))
@@ -100,23 +105,28 @@ export async function uploadFile(
  * @param drive - drive instance.
  * @param fileId  - id of file in Google Deive.
  * @param srcFileName - file name in local filesystem.
+ * @param destMimeType - The MIME type of the file.
  * @returns id of file in Google Drive
  */
 export async function updateFile(
   drive: drive_v3.Drive,
   fileId: string,
-  srcFileName: string
+  srcFileName: string,
+  destMimeType: string
 ): Promise<string> {
   try {
-    const res = await drive.files.update({
+    const params: drive_v3.Params$Resource$Files$Update = {
       fileId,
       requestBody: {},
       media: {
-        // mimeType: 'image/jpeg',
         body: fs.createReadStream(srcFileName)
       },
       fields: 'id'
-    })
+    }
+    if (destMimeType) {
+      params.requestBody!.mimeType = destMimeType
+    }
+    const res = await drive.files.update(params)
     return res.data.id || ''
   } catch (err: any) {
     throw new UpdateFileError(JSON.stringify(err.errors))
@@ -127,13 +137,14 @@ export async function sendFile(
   drive: drive_v3.Drive,
   parentId: string,
   destFileName: string,
-  srcFileName: string
+  srcFileName: string,
+  destMimeType: string
 ): Promise<string> {
   const fileId = await getFileId(drive, parentId, destFileName)
   if (fileId === '') {
-    return uploadFile(drive, parentId, destFileName, srcFileName)
+    return uploadFile(drive, parentId, destFileName, srcFileName, destMimeType)
   }
-  return updateFile(drive, fileId, srcFileName)
+  return updateFile(drive, fileId, srcFileName, destMimeType)
 }
 
 // try {
