@@ -22,7 +22,6 @@ const {
   GetFileIdError,
   UploadFileError,
   UpdateFileError,
-  validateQueryValue,
   getFileId,
   uploadFile,
   updateFile,
@@ -31,15 +30,6 @@ const {
 
 afterEach(() => {
   ;(mockFs as any)._reset()
-})
-
-describe('getFileId()', () => {
-  it('should return true', () => {
-    expect(validateQueryValue('123abc')).toBeTruthy()
-  })
-  it('should return false', () => {
-    expect(validateQueryValue("123'abc")).toBeFalsy()
-  })
 })
 
 describe('getFileId()', () => {

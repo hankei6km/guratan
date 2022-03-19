@@ -1,21 +1,33 @@
 import { PassThrough } from 'stream'
 import { jest } from '@jest/globals'
 
-jest.unstable_mockModule('../src/tsend.js', async () => {
+jest.unstable_mockModule('../src/tdrive.js', async () => {
   const mockDriveClient = jest.fn()
-  const mockSendFile = jest.fn<any, any[]>()
   const reset = () => {
     mockDriveClient.mockReset().mockReturnValue('test-drive')
-    mockSendFile.mockReset().mockResolvedValue('test-id')
   }
 
   reset()
   return {
     driveClient: mockDriveClient,
+    _reset: reset,
+    _getMocks: () => ({
+      mockDriveClient
+    })
+  }
+})
+
+jest.unstable_mockModule('../src/tsend.js', async () => {
+  const mockSendFile = jest.fn<any, any[]>()
+  const reset = () => {
+    mockSendFile.mockReset().mockResolvedValue('test-id')
+  }
+
+  reset()
+  return {
     sendFile: mockSendFile,
     _reset: reset,
     _getMocks: () => ({
-      mockDriveClient,
       mockSendFile
     })
   }
