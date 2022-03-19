@@ -66,10 +66,10 @@ export async function getFileId(
 /**
  * Create file using by source file into Google Drive.
  * @param drive - drive instance.
- * @param parentId  - id of folder in Google Deive.
- * @param destFileName - file name in Google Drive.
- * @param srcFileName - file name in local filesystem.
- * @returns id of file in Google Drive
+ * @param parentId  - The IDs of the parent folders which contain the file.
+ * @param destFileName - The name of the file in remote
+ * @param srcFileName - The name(path) of the file in local filesystem
+ * @returns Print the id of the file that is sended into remote
  */
 export async function uploadFile(
   drive: drive_v3.Drive,
