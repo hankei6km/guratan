@@ -21,6 +21,8 @@ type OptsShare = Opts & {
   domain: string
   allowFileDiscovery: boolean
   view: string
+  moveToNewOwnersRoot: boolean
+  transferOwnership: boolean
   sendNotificationEmail: boolean
   emailMessage: string
   printId: boolean
@@ -60,6 +62,8 @@ export const cliShare = async ({
   domain,
   allowFileDiscovery,
   view,
+  moveToNewOwnersRoot,
+  transferOwnership,
   sendNotificationEmail,
   emailMessage,
   printId,
@@ -75,6 +79,8 @@ export const cliShare = async ({
       domain,
       allowFileDiscovery,
       view,
+      moveToNewOwnersRoot,
+      transferOwnership,
       sendNotificationEmail,
       emailMessage
     })

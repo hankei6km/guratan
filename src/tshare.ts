@@ -49,6 +49,14 @@ export type CreatePermissonOpts = {
    */
   view: string
   /**
+   * @type This parameter will only take effect if the item is not in a shared drive and the request is attempting to transfer the ownership of the item.
+   */
+  moveToNewOwnersRoot: boolean
+  /**
+   * @type Whether to transfer ownership to the specified user and downgrade the current owner to a writer.
+   */
+  transferOwnership: boolean
+  /**
    * @type Whether the permission allows the file to be discovered through search. This is only applicable for permissions of type domain or anyone.
    */
   sendNotificationEmail: boolean
@@ -78,6 +86,8 @@ export async function createPermisson(
       domain,
       view,
       allowFileDiscovery,
+      moveToNewOwnersRoot,
+      transferOwnership,
       sendNotificationEmail,
       emailMessage
     } = opts
@@ -88,6 +98,8 @@ export async function createPermisson(
         role
       },
       fileId,
+      moveToNewOwnersRoot,
+      transferOwnership,
       sendNotificationEmail,
       fields: 'id'
     }
