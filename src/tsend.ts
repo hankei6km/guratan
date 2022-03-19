@@ -28,6 +28,28 @@ export class UpdateFileError extends Error {
 }
 
 /**
+ * Options for sendFile().
+ */
+export type SendFileOpts = {
+  /**
+   * @param parentId  - The IDs of the parent folders which contain the file.
+   */
+  parentId: string
+  /**
+   * @param destFileName - The name of the file in remote
+   */
+  destFileName: string
+  /**
+   * @param srcFileName - The name(path) of the file in local filesystem
+   */
+  srcFileName: string
+  /**
+   * @param destMimeType - The MIME type of the file.
+   */
+  destMimeType: string
+}
+
+/**
  * Get file id in spesiced parent.
  * @param drive - drive instance.
  * @param parentId  - id of folder in Google Deive.
@@ -66,20 +88,18 @@ export async function getFileId(
 /**
  * Create file using by source file into Google Drive.
  * @param drive - drive instance.
- * @param parentId  - The IDs of the parent folders which contain the file.
- * @param destFileName - The name of the file in remote
- * @param srcFileName - The name(path) of the file in local filesystem
- * @param destMimeType - The MIME type of the file.
+ * @param opts - options.
  * @returns Print the id of the file that is sended into remote
  */
 export async function uploadFile(
   drive: drive_v3.Drive,
-  parentId: string,
-  destFileName: string,
-  srcFileName: string,
-  destMimeType: string
+  opts: Pick<
+    SendFileOpts,
+    'parentId' | 'destFileName' | 'srcFileName' | 'destMimeType'
+  >
 ): Promise<string> {
   try {
+    const { parentId, destFileName, srcFileName, destMimeType } = opts
     const params: drive_v3.Params$Resource$Files$Create = {
       requestBody: {
         name: path.basename(destFileName),
@@ -103,18 +123,15 @@ export async function uploadFile(
 /**
  * Update file using by source file into Google Drive.
  * @param drive - drive instance.
- * @param fileId  - id of file in Google Deive.
- * @param srcFileName - file name in local filesystem.
- * @param destMimeType - The MIME type of the file.
+ * @param opts - options.
  * @returns id of file in Google Drive
  */
 export async function updateFile(
   drive: drive_v3.Drive,
-  fileId: string,
-  srcFileName: string,
-  destMimeType: string
+  opts: { fileId: string } & Pick<SendFileOpts, 'srcFileName' | 'destMimeType'>
 ): Promise<string> {
   try {
+    const { fileId, srcFileName, destMimeType } = opts
     const params: drive_v3.Params$Resource$Files$Update = {
       fileId,
       requestBody: {},
@@ -133,18 +150,27 @@ export async function updateFile(
   }
 }
 
+/**
+ * Send file using by source file into Google Drive.
+ * @param drive - drive instance.
+ * @param opts - options.
+ * @returns id of file in Google Drive
+ */
 export async function sendFile(
   drive: drive_v3.Drive,
-  parentId: string,
-  destFileName: string,
-  srcFileName: string,
-  destMimeType: string
+  opts: SendFileOpts
 ): Promise<string> {
+  const { parentId, destFileName, srcFileName, destMimeType } = opts
   const fileId = await getFileId(drive, parentId, destFileName)
   if (fileId === '') {
-    return uploadFile(drive, parentId, destFileName, srcFileName, destMimeType)
+    return uploadFile(drive, {
+      parentId,
+      destFileName,
+      srcFileName,
+      destMimeType
+    })
   }
-  return updateFile(drive, fileId, srcFileName, destMimeType)
+  return updateFile(drive, { fileId, srcFileName, destMimeType })
 }
 
 // try {

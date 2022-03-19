@@ -39,13 +39,12 @@ export const cliSend = async ({
   stderr
 }: OptsSend): Promise<number> => {
   try {
-    const id = await sendFile(
-      driveClient(),
+    const id = await sendFile(driveClient(), {
       parentId,
       destFileName,
       srcFileName,
       destMimeType
-    )
+    })
     if (printId) {
       stdout.write(id)
     }
