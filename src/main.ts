@@ -89,7 +89,6 @@ const argv = await yargs(hideBin(process.argv))
       },
       'allow-file-discovery': {
         type: 'boolean',
-        default: false,
         description:
           'Whether the permission allows the file to be discovered through search.'
       },

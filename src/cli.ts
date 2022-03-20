@@ -21,7 +21,7 @@ type OptsShare = Opts & {
   role: string
   emailAddress: string
   domain: string
-  allowFileDiscovery: boolean
+  allowFileDiscovery?: boolean
   view: string
   moveToNewOwnersRoot?: boolean
   transferOwnership?: boolean

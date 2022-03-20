@@ -72,7 +72,6 @@ describe('createPermisson()', () => {
         emailAddress: '',
         domain: '',
         view: '',
-        allowFileDiscovery: false,
         emailMessage: ''
       })
     ).toEqual('test-id')
@@ -126,7 +125,8 @@ describe('createPermisson()', () => {
     expect(create).toBeCalledWith({
       requestBody: {
         type: 'test-type',
-        role: 'test-role'
+        role: 'test-role',
+        allowFileDiscovery: false
       },
       fileId: 'test-file-id',
       fields: 'id',

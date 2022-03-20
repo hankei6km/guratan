@@ -43,7 +43,7 @@ export type CreatePermissonOpts = {
   /**
    * @type Whether the permission allows the file to be discovered through search.
    */
-  allowFileDiscovery: boolean
+  allowFileDiscovery?: boolean
   /**
    * @type Indicates the view for this permission. Only populated for permissions that belong to a view. published is the only supported value.
    */
@@ -109,7 +109,7 @@ export async function createPermisson(
     if (view) {
       createParams.requestBody!.view = view
     }
-    if (allowFileDiscovery) {
+    if (allowFileDiscovery !== undefined) {
       createParams.requestBody!.allowFileDiscovery = allowFileDiscovery
     }
     if (moveToNewOwnersRoot !== undefined) {
