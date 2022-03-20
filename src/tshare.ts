@@ -43,7 +43,7 @@ export type CreatePermissonOpts = {
   /**
    * @type Whether the permission allows the file to be discovered through search.
    */
-  allowFileDiscovery: boolean
+  allowFileDiscovery?: boolean
   /**
    * @type Indicates the view for this permission. Only populated for permissions that belong to a view. published is the only supported value.
    */
@@ -51,15 +51,15 @@ export type CreatePermissonOpts = {
   /**
    * @type This parameter will only take effect if the item is not in a shared drive and the request is attempting to transfer the ownership of the item.
    */
-  moveToNewOwnersRoot: boolean
+  moveToNewOwnersRoot?: boolean
   /**
    * @type Whether to transfer ownership to the specified user and downgrade the current owner to a writer.
    */
-  transferOwnership: boolean
+  transferOwnership?: boolean
   /**
    * @type Whether the permission allows the file to be discovered through search. This is only applicable for permissions of type domain or anyone.
    */
-  sendNotificationEmail: boolean
+  sendNotificationEmail?: boolean
   /**
    * @type A plain text custom message to include in the notification email.
    */
@@ -98,9 +98,6 @@ export async function createPermisson(
         role
       },
       fileId,
-      moveToNewOwnersRoot,
-      transferOwnership,
-      sendNotificationEmail,
       fields: 'id'
     }
     if (emailAddress) {
@@ -112,8 +109,17 @@ export async function createPermisson(
     if (view) {
       createParams.requestBody!.view = view
     }
-    if (allowFileDiscovery) {
+    if (allowFileDiscovery !== undefined) {
       createParams.requestBody!.allowFileDiscovery = allowFileDiscovery
+    }
+    if (moveToNewOwnersRoot !== undefined) {
+      createParams.moveToNewOwnersRoot = moveToNewOwnersRoot
+    }
+    if (transferOwnership !== undefined) {
+      createParams.transferOwnership = transferOwnership
+    }
+    if (sendNotificationEmail !== undefined) {
+      createParams.sendNotificationEmail = sendNotificationEmail
     }
     if (sendNotificationEmail && emailMessage) {
       createParams.emailMessage = emailMessage

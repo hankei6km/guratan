@@ -72,10 +72,6 @@ describe('createPermisson()', () => {
         emailAddress: '',
         domain: '',
         view: '',
-        allowFileDiscovery: false,
-        moveToNewOwnersRoot: false,
-        transferOwnership: false,
-        sendNotificationEmail: true,
         emailMessage: ''
       })
     ).toEqual('test-id')
@@ -85,10 +81,7 @@ describe('createPermisson()', () => {
         role: 'test-role'
       },
       fileId: 'test-file-id',
-      fields: 'id',
-      moveToNewOwnersRoot: false,
-      transferOwnership: false,
-      sendNotificationEmail: true
+      fields: 'id'
     })
     expect(update).toBeCalledWith({
       permissionId: 'test-id',
@@ -132,7 +125,8 @@ describe('createPermisson()', () => {
     expect(create).toBeCalledWith({
       requestBody: {
         type: 'test-type',
-        role: 'test-role'
+        role: 'test-role',
+        allowFileDiscovery: false
       },
       fileId: 'test-file-id',
       fields: 'id',

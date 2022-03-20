@@ -84,13 +84,11 @@ const argv = await yargs(hideBin(process.argv))
       },
       'move-to-new-owners-root': {
         type: 'boolean',
-        default: false,
         description:
           'This parameter will only take effect if the item is not in a shared drive and the request is attempting to transfer the ownership of the item.'
       },
       'allow-file-discovery': {
         type: 'boolean',
-        default: false,
         description:
           'Whether the permission allows the file to be discovered through search.'
       },
@@ -102,13 +100,11 @@ const argv = await yargs(hideBin(process.argv))
       },
       'transfer-ownership': {
         type: 'boolean',
-        default: false,
         description:
           'Whether to transfer ownership to the specified user and downgrade the current owner to a writer.'
       },
       'send-notification-email': {
         type: 'boolean',
-        default: true,
         description:
           'Whether to send a notification email when sharing to users or groups.'
       },
