@@ -124,6 +124,7 @@ const argv = await yargs(hideBin(process.argv))
   })
   .demandCommand()
   .demand(0)
+  .strictOptions(true)
   .help().argv
 
 switch (`${argv._[0]}`) {
