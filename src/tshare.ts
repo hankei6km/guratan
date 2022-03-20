@@ -51,7 +51,7 @@ export type CreatePermissonOpts = {
   /**
    * @type This parameter will only take effect if the item is not in a shared drive and the request is attempting to transfer the ownership of the item.
    */
-  moveToNewOwnersRoot: boolean
+  moveToNewOwnersRoot?: boolean
   /**
    * @type Whether to transfer ownership to the specified user and downgrade the current owner to a writer.
    */
@@ -98,7 +98,6 @@ export async function createPermisson(
         role
       },
       fileId,
-      moveToNewOwnersRoot,
       fields: 'id'
     }
     if (emailAddress) {
@@ -112,6 +111,9 @@ export async function createPermisson(
     }
     if (allowFileDiscovery) {
       createParams.requestBody!.allowFileDiscovery = allowFileDiscovery
+    }
+    if (moveToNewOwnersRoot !== undefined) {
+      createParams.moveToNewOwnersRoot = moveToNewOwnersRoot
     }
     if (transferOwnership !== undefined) {
       createParams.transferOwnership = transferOwnership

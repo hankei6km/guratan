@@ -84,7 +84,6 @@ const argv = await yargs(hideBin(process.argv))
       },
       'move-to-new-owners-root': {
         type: 'boolean',
-        default: false,
         description:
           'This parameter will only take effect if the item is not in a shared drive and the request is attempting to transfer the ownership of the item.'
       },

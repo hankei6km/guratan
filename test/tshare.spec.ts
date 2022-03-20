@@ -73,7 +73,6 @@ describe('createPermisson()', () => {
         domain: '',
         view: '',
         allowFileDiscovery: false,
-        moveToNewOwnersRoot: false,
         emailMessage: ''
       })
     ).toEqual('test-id')
@@ -83,8 +82,7 @@ describe('createPermisson()', () => {
         role: 'test-role'
       },
       fileId: 'test-file-id',
-      fields: 'id',
-      moveToNewOwnersRoot: false
+      fields: 'id'
     })
     expect(update).toBeCalledWith({
       permissionId: 'test-id',
