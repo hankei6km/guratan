@@ -55,7 +55,7 @@ export type CreatePermissonOpts = {
   /**
    * @type Whether to transfer ownership to the specified user and downgrade the current owner to a writer.
    */
-  transferOwnership: boolean
+  transferOwnership?: boolean
   /**
    * @type Whether the permission allows the file to be discovered through search. This is only applicable for permissions of type domain or anyone.
    */
@@ -99,7 +99,6 @@ export async function createPermisson(
       },
       fileId,
       moveToNewOwnersRoot,
-      transferOwnership,
       fields: 'id'
     }
     if (emailAddress) {
@@ -113,6 +112,9 @@ export async function createPermisson(
     }
     if (allowFileDiscovery) {
       createParams.requestBody!.allowFileDiscovery = allowFileDiscovery
+    }
+    if (transferOwnership !== undefined) {
+      createParams.transferOwnership = transferOwnership
     }
     if (sendNotificationEmail !== undefined) {
       createParams.sendNotificationEmail = sendNotificationEmail

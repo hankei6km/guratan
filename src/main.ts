@@ -102,7 +102,6 @@ const argv = await yargs(hideBin(process.argv))
       },
       'transfer-ownership': {
         type: 'boolean',
-        default: false,
         description:
           'Whether to transfer ownership to the specified user and downgrade the current owner to a writer.'
       },

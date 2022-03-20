@@ -24,7 +24,7 @@ type OptsShare = Opts & {
   allowFileDiscovery: boolean
   view: string
   moveToNewOwnersRoot: boolean
-  transferOwnership: boolean
+  transferOwnership?: boolean
   sendNotificationEmail?: boolean
   emailMessage: string
   printId: boolean
