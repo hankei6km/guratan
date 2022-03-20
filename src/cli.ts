@@ -25,7 +25,7 @@ type OptsShare = Opts & {
   view: string
   moveToNewOwnersRoot: boolean
   transferOwnership: boolean
-  sendNotificationEmail: boolean
+  sendNotificationEmail?: boolean
   emailMessage: string
   printId: boolean
 }

@@ -75,7 +75,6 @@ describe('createPermisson()', () => {
         allowFileDiscovery: false,
         moveToNewOwnersRoot: false,
         transferOwnership: false,
-        sendNotificationEmail: true,
         emailMessage: ''
       })
     ).toEqual('test-id')
@@ -87,8 +86,7 @@ describe('createPermisson()', () => {
       fileId: 'test-file-id',
       fields: 'id',
       moveToNewOwnersRoot: false,
-      transferOwnership: false,
-      sendNotificationEmail: true
+      transferOwnership: false
     })
     expect(update).toBeCalledWith({
       permissionId: 'test-id',

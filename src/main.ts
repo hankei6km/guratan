@@ -108,7 +108,6 @@ const argv = await yargs(hideBin(process.argv))
       },
       'send-notification-email': {
         type: 'boolean',
-        default: true,
         description:
           'Whether to send a notification email when sharing to users or groups.'
       },

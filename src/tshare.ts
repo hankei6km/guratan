@@ -59,7 +59,7 @@ export type CreatePermissonOpts = {
   /**
    * @type Whether the permission allows the file to be discovered through search. This is only applicable for permissions of type domain or anyone.
    */
-  sendNotificationEmail: boolean
+  sendNotificationEmail?: boolean
   /**
    * @type A plain text custom message to include in the notification email.
    */
@@ -100,7 +100,6 @@ export async function createPermisson(
       fileId,
       moveToNewOwnersRoot,
       transferOwnership,
-      sendNotificationEmail,
       fields: 'id'
     }
     if (emailAddress) {
@@ -114,6 +113,9 @@ export async function createPermisson(
     }
     if (allowFileDiscovery) {
       createParams.requestBody!.allowFileDiscovery = allowFileDiscovery
+    }
+    if (sendNotificationEmail !== undefined) {
+      createParams.sendNotificationEmail = sendNotificationEmail
     }
     if (sendNotificationEmail && emailMessage) {
       createParams.emailMessage = emailMessage
