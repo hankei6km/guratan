@@ -32,6 +32,11 @@ export class UpdateFileError extends Error {
  */
 export type SendFileOpts = {
   /**
+   * @type The ID of the file or shared drive.
+   */
+  fileId: string
+  /**
+  /**
    * @type The IDs of the parent folders which contain the file.
    */
   parentId: string
@@ -174,9 +179,16 @@ export async function sendFile(
   drive: drive_v3.Drive,
   opts: SendFileOpts
 ): Promise<string> {
-  const { parentId, destFileName, srcFileName, destMimeType, srcMimeType } =
-    opts
-  const fileId = await getFileId(drive, parentId, destFileName)
+  const {
+    fileId: inFileId,
+    parentId,
+    destFileName,
+    srcFileName,
+    destMimeType,
+    srcMimeType
+  } = opts
+  let fileId =
+    inFileId !== '' ? inFileId : await getFileId(drive, parentId, destFileName)
   if (fileId === '') {
     return uploadFile(drive, {
       parentId,

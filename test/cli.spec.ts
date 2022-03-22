@@ -70,6 +70,7 @@ describe('cliSend()', () => {
     stderr.on('data', (d) => (errData = errData + d))
     expect(
       await cliSend({
+        fileId: 'file-id',
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
@@ -81,6 +82,7 @@ describe('cliSend()', () => {
       })
     ).toEqual(0)
     expect(mockSendFile).toBeCalledWith('test-drive', {
+      fileId: 'file-id',
       parentId: 'parent-id',
       destFileName: 'dest-file-name',
       srcFileName: 'src-file-name',
@@ -100,6 +102,7 @@ describe('cliSend()', () => {
     stderr.on('data', (d) => (errData = errData + d))
     expect(
       await cliSend({
+        fileId: 'file-id',
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
@@ -111,6 +114,7 @@ describe('cliSend()', () => {
       })
     ).toEqual(0)
     expect(mockSendFile).toBeCalledWith('test-drive', {
+      fileId: 'file-id',
       parentId: 'parent-id',
       destFileName: 'dest-file-name',
       srcFileName: 'src-file-name',

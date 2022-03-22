@@ -8,6 +8,7 @@ type Opts = {
   stderr: Writable
 }
 type OptsSend = Opts & {
+  fileId: string
   parentId: string
   destFileName: string
   srcFileName: string
@@ -31,6 +32,7 @@ type OptsShare = Opts & {
 }
 
 export const cliSend = async ({
+  fileId,
   parentId,
   destFileName,
   srcFileName,
@@ -42,6 +44,7 @@ export const cliSend = async ({
 }: OptsSend): Promise<number> => {
   try {
     const id = await sendFile(driveClient(), {
+      fileId,
       parentId,
       destFileName,
       srcFileName,

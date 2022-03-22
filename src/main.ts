@@ -9,14 +9,22 @@ const argv = await yargs(hideBin(process.argv))
   .env(envVarsPrefix)
   .command('send [OPTIONS]', 'send file to folder in Google Drive', (yargs) => {
     return yargs.options({
+      'file-id': {
+        type: 'string',
+        default: '',
+        required: false,
+        description: 'The ID of the file or shared drive.'
+      },
       'parent-id': {
         type: 'string',
-        required: true,
+        default: '',
+        required: false,
         description: 'The IDs of the parent folders which contain the file.'
       },
       'dest-file-name': {
         type: 'string',
-        required: true,
+        default: '',
+        required: false,
         description: 'The name of the file in remote'
       },
       'src-file-name': {
@@ -131,6 +139,7 @@ switch (`${argv._[0]}`) {
   case 'send':
     process.exit(
       await cliSend({
+        fileId: argv['file-id'],
         parentId: argv['parent-id'] || '',
         destFileName: argv['dest-file-name'] || '',
         srcFileName: argv['src-file-name'] || '',
