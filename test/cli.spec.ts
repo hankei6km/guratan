@@ -137,6 +137,8 @@ describe('cliShare()', () => {
     expect(
       await cliShare({
         fileId: 'test-file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
         type: 'test-type',
         role: 'test-role',
         emailAddress: 'test-email-address',
@@ -154,6 +156,8 @@ describe('cliShare()', () => {
     ).toEqual(0)
     expect(mockCreatePermisson).toBeCalledWith('test-drive', {
       fileId: 'test-file-id',
+      parentId: 'parent-id',
+      destFileName: 'dest-file-name',
       type: 'test-type',
       role: 'test-role',
       emailAddress: 'test-email-address',
@@ -179,6 +183,8 @@ describe('cliShare()', () => {
     expect(
       await cliShare({
         fileId: 'test-file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
         type: 'test-type',
         role: 'test-role',
         emailAddress: 'test-email-address',
@@ -196,6 +202,8 @@ describe('cliShare()', () => {
     ).toEqual(0)
     expect(mockCreatePermisson).toBeCalledWith('test-drive', {
       fileId: 'test-file-id',
+      parentId: 'parent-id',
+      destFileName: 'dest-file-name',
       type: 'test-type',
       role: 'test-role',
       emailAddress: 'test-email-address',

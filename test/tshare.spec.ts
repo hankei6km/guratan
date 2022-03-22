@@ -5,6 +5,9 @@ const { CreatePermissonError, UpdatePermissonError, createPermisson } =
 
 describe('createPermisson()', () => {
   it('should return id of permission', async () => {
+    const list = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const create = jest
       .fn<any, any[]>()
       .mockResolvedValue({ data: { id: 'test-id' } })
@@ -12,6 +15,9 @@ describe('createPermisson()', () => {
       .fn<any, any[]>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
+      files: {
+        list
+      },
       permissions: {
         create,
         update
@@ -21,6 +27,8 @@ describe('createPermisson()', () => {
     expect(
       await createPermisson(drive, {
         fileId: 'test-file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
         type: 'test-type',
         role: 'test-role',
         emailAddress: 'test-mail',
@@ -33,6 +41,7 @@ describe('createPermisson()', () => {
         emailMessage: 'test-message'
       })
     ).toEqual('test-id')
+    expect(list).toBeCalledTimes(0)
     expect(create).toBeCalledWith({
       requestBody: {
         type: 'test-type',
@@ -51,6 +60,9 @@ describe('createPermisson()', () => {
     expect(update).toBeCalledTimes(0) // transferOwnership が指定されているので.
   })
   it('should return id of permission(default values)', async () => {
+    const list = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const create = jest
       .fn<any, any[]>()
       .mockResolvedValue({ data: { id: 'test-id' } })
@@ -58,6 +70,9 @@ describe('createPermisson()', () => {
       .fn<any, any[]>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
+      files: {
+        list
+      },
       permissions: {
         create,
         update
@@ -67,6 +82,8 @@ describe('createPermisson()', () => {
     expect(
       await createPermisson(drive, {
         fileId: 'test-file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
         type: 'test-type',
         role: 'test-role',
         emailAddress: '',
@@ -75,6 +92,7 @@ describe('createPermisson()', () => {
         emailMessage: ''
       })
     ).toEqual('test-id')
+    expect(list).toBeCalledTimes(0)
     expect(create).toBeCalledWith({
       requestBody: {
         type: 'test-type',
@@ -94,6 +112,9 @@ describe('createPermisson()', () => {
   })
 
   it('should return id of permission(email message)', async () => {
+    const list = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const create = jest
       .fn<any, any[]>()
       .mockResolvedValue({ data: { id: 'test-id' } })
@@ -101,6 +122,9 @@ describe('createPermisson()', () => {
       .fn<any, any[]>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
+      files: {
+        list
+      },
       permissions: {
         create,
         update
@@ -110,6 +134,8 @@ describe('createPermisson()', () => {
     expect(
       await createPermisson(drive, {
         fileId: 'test-file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
         type: 'test-type',
         role: 'test-role',
         emailAddress: '',
@@ -122,6 +148,7 @@ describe('createPermisson()', () => {
         emailMessage: 'test-message'
       })
     ).toEqual('test-id')
+    expect(list).toBeCalledTimes(0)
     expect(create).toBeCalledWith({
       requestBody: {
         type: 'test-type',
@@ -129,6 +156,63 @@ describe('createPermisson()', () => {
         allowFileDiscovery: false
       },
       fileId: 'test-file-id',
+      fields: 'id',
+      moveToNewOwnersRoot: false,
+      transferOwnership: false,
+      sendNotificationEmail: true,
+      emailMessage: 'test-message'
+    })
+  })
+
+  it('should get fileId by using getFileId()', async () => {
+    const list = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { files: [{ id: 'file-id-from-list' }] } })
+    const create = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'test-id' } })
+    const update = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'test-id' } })
+    const drive: any = {
+      files: {
+        list
+      },
+      permissions: {
+        create,
+        update
+      }
+    }
+
+    expect(
+      await createPermisson(drive, {
+        fileId: '',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        type: 'test-type',
+        role: 'test-role',
+        emailAddress: '',
+        domain: '',
+        view: '',
+        allowFileDiscovery: false,
+        moveToNewOwnersRoot: false,
+        transferOwnership: false,
+        sendNotificationEmail: true,
+        emailMessage: 'test-message'
+      })
+    ).toEqual('test-id')
+    expect(list).toBeCalledWith({
+      fields: 'files(id, name)',
+      pageSize: 10,
+      q: "'parent-id' in parents and name = 'dest-file-name'"
+    })
+    expect(create).toBeCalledWith({
+      requestBody: {
+        type: 'test-type',
+        role: 'test-role',
+        allowFileDiscovery: false
+      },
+      fileId: 'file-id-from-list',
       fields: 'id',
       moveToNewOwnersRoot: false,
       transferOwnership: false,
@@ -147,6 +231,8 @@ describe('createPermisson()', () => {
 
     const res = createPermisson(drive, {
       fileId: 'test-file-id',
+      parentId: 'parent-id',
+      destFileName: 'dest-file-name',
       type: 'test-type',
       role: 'test-role',
       emailAddress: '',
@@ -176,6 +262,8 @@ describe('createPermisson()', () => {
 
     const res = createPermisson(drive, {
       fileId: 'test-file-id',
+      parentId: 'parent-id',
+      destFileName: 'dest-file-name',
       type: 'test-type',
       role: 'test-role',
       emailAddress: '',
@@ -201,6 +289,8 @@ describe('createPermisson()', () => {
 
     const res = createPermisson(drive, {
       fileId: 'test-file-id',
+      parentId: 'parent-id',
+      destFileName: 'dest-file-name',
       type: 'test-type',
       role: 'test-role',
       emailAddress: '',

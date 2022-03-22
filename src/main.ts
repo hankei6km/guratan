@@ -60,6 +60,18 @@ const argv = await yargs(hideBin(process.argv))
         required: false,
         description: 'The ID of the file or shared drive.'
       },
+      'parent-id': {
+        type: 'string',
+        default: '',
+        required: false,
+        description: 'The IDs of the parent folders which contain the file.'
+      },
+      'dest-file-name': {
+        type: 'string',
+        default: '',
+        required: false,
+        description: 'The name of the file in remote'
+      },
       type: {
         choices: ['user', 'group', 'domain', 'anyone'],
         required: false,
@@ -155,6 +167,8 @@ switch (`${argv._[0]}`) {
     process.exit(
       await cliShare({
         fileId: argv['file-id'],
+        parentId: argv['parent-id'] || '',
+        destFileName: argv['dest-file-name'] || '',
         type: argv['type'],
         role: argv['role'],
         emailAddress: argv['email-address'],
