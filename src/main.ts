@@ -56,7 +56,7 @@ const argv = await yargs(hideBin(process.argv))
     return yargs.options({
       'file-id': {
         type: 'string',
-        default: 'reader',
+        default: '',
         required: false,
         description: 'The ID of the file or shared drive.'
       },
