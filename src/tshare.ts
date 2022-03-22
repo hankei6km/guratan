@@ -1,4 +1,5 @@
 import { drive_v3 } from '@googleapis/drive'
+import { getFileId } from './tsend.js'
 
 export class CreatePermissonError extends Error {
   constructor(message: string) {
@@ -24,6 +25,14 @@ export type CreatePermissonOpts = {
    * @type The ID of the file or shared drive.
    */
   fileId: string
+  /**
+   * @type The IDs of the parent folders which contain the file.
+   */
+  parentId: string
+  /**
+   * @type The name of the file in remote
+   */
+  destFileName: string
   /**
    * @type The type of the grantee.
    */
@@ -79,7 +88,9 @@ export async function createPermisson(
   let created = false
   try {
     const {
-      fileId,
+      fileId: inFileId,
+      parentId,
+      destFileName,
       type,
       role,
       emailAddress,
@@ -92,6 +103,7 @@ export async function createPermisson(
       emailMessage
     } = opts
 
+    const fileId = inFileId || (await getFileId(drive, parentId, destFileName))
     const createParams: drive_v3.Params$Resource$Permissions$Create = {
       requestBody: {
         type,

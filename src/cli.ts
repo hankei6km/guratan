@@ -18,6 +18,8 @@ type OptsSend = Opts & {
 }
 type OptsShare = Opts & {
   fileId: string
+  parentId: string
+  destFileName: string
   type: string
   role: string
   emailAddress: string
@@ -64,6 +66,8 @@ export const cliSend = async ({
 
 export const cliShare = async ({
   fileId,
+  parentId,
+  destFileName,
   type,
   role,
   emailAddress,
@@ -81,6 +85,8 @@ export const cliShare = async ({
   try {
     const id = await createPermisson(driveClient(), {
       fileId,
+      parentId,
+      destFileName,
       type,
       role,
       emailAddress,
