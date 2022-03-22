@@ -297,6 +297,7 @@ describe('sendFile()', () => {
     }
     expect(
       await sendFile(drive, {
+        fileId: '',
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
@@ -324,7 +325,7 @@ describe('sendFile()', () => {
     expect(update).toBeCalledTimes(0)
   })
 
-  it('should call update', async () => {
+  it('should call update(fileId is blank)', async () => {
     const list = jest
       .fn<any, any[]>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
@@ -343,6 +344,7 @@ describe('sendFile()', () => {
     }
     expect(
       await sendFile(drive, {
+        fileId: '',
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
@@ -358,6 +360,48 @@ describe('sendFile()', () => {
     expect(create).toBeCalledTimes(0)
     expect(update).toBeCalledWith({
       fileId: 'test-id',
+      fields: 'id',
+      media: {
+        mimeType: 'src-mime-type',
+        body: 'mock-create-read-streadm'
+      },
+      requestBody: {
+        mimeType: 'dest-mime-type'
+      }
+    })
+  })
+
+  it('should call update(fileId is specified)', async () => {
+    const list = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
+    const create = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'create-test-id' } })
+    const update = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'update-test-id' } })
+    const drive: any = {
+      files: {
+        list,
+        create,
+        update
+      }
+    }
+    expect(
+      await sendFile(drive, {
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        srcFileName: 'src-file-name',
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type'
+      })
+    ).toEqual('update-test-id')
+    expect(list).toBeCalledTimes(0)
+    expect(create).toBeCalledTimes(0)
+    expect(update).toBeCalledWith({
+      fileId: 'file-id',
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
