@@ -1,6 +1,6 @@
 # guratan
 
-Google Drive へファイルを送信する簡易ツール。
+Google Drive を操作する簡易ツール。
 
 ## Usage
 
