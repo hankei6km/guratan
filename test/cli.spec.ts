@@ -1,5 +1,6 @@
 import { PassThrough } from 'stream'
 import { jest } from '@jest/globals'
+import { GetFileIdError, getFileId } from '../src/tsend.js'
 
 jest.unstable_mockModule('../src/tdrive.js', async () => {
   const mockDriveClient = jest.fn()
@@ -25,10 +26,28 @@ jest.unstable_mockModule('../src/tsend.js', async () => {
 
   reset()
   return {
+    GetFileIdError,
+    getFileId,
     sendFile: mockSendFile,
     _reset: reset,
     _getMocks: () => ({
       mockSendFile
+    })
+  }
+})
+
+jest.unstable_mockModule('../src/trecv.js', async () => {
+  const mockRecvFile = jest.fn<any, any[]>()
+  const reset = () => {
+    mockRecvFile.mockReset().mockResolvedValue('test-id')
+  }
+
+  reset()
+  return {
+    recvFile: mockRecvFile,
+    _reset: reset,
+    _getMocks: () => ({
+      mockRecvFile
     })
   }
 })
@@ -50,13 +69,16 @@ jest.unstable_mockModule('../src/tshare.js', async () => {
 })
 
 const mockTsend = await import('../src/tsend.js')
+const mockTrecv = await import('../src/trecv.js')
 const mockTshare = await import('../src/tshare.js')
 const { mockSendFile } = (mockTsend as any)._getMocks()
+const { mockRecvFile } = (mockTrecv as any)._getMocks()
 const { mockCreatePermisson } = (mockTshare as any)._getMocks()
-const { cliSend, cliShare } = await import('../src/cli.js')
+const { cliSend, cliRecv, cliShare } = await import('../src/cli.js')
 
 afterEach(() => {
   ;(mockTsend as any)._reset()
+  ;(mockTrecv as any)._reset()
   ;(mockTshare as any)._reset()
 })
 
@@ -120,6 +142,68 @@ describe('cliSend()', () => {
       srcFileName: 'src-file-name',
       destMimeType: 'mime-type',
       srcMimeType: 'src-mime-type'
+    })
+    expect(outData).toEqual('test-id')
+    expect(errData).toEqual('')
+  })
+})
+
+describe('cliRecv()', () => {
+  it('should return 0', async () => {
+    const stdout = new PassThrough()
+    const stderr = new PassThrough()
+    let outData = ''
+    stdout.on('data', (d) => (outData = outData + d))
+    let errData = ''
+    stderr.on('data', (d) => (errData = errData + d))
+    expect(
+      await cliRecv({
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        srcFileName: 'src-file-name',
+        destFileName: 'dest-file-name',
+        destMimeType: 'dest-mime-type',
+        printId: false,
+        stdout,
+        stderr
+      })
+    ).toEqual(0)
+    expect(mockRecvFile).toBeCalledWith('test-drive', {
+      fileId: 'file-id',
+      parentId: 'parent-id',
+      srcFileName: 'src-file-name',
+      destFileName: 'dest-file-name',
+      destMimeType: 'dest-mime-type'
+    })
+    expect(outData).toEqual('')
+    expect(errData).toEqual('')
+  })
+
+  it('should print id', async () => {
+    const stdout = new PassThrough()
+    const stderr = new PassThrough()
+    let outData = ''
+    stdout.on('data', (d) => (outData = outData + d))
+    let errData = ''
+    stderr.on('data', (d) => (errData = errData + d))
+    expect(
+      await cliRecv({
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        srcFileName: 'src-file-name',
+        destFileName: 'dest-file-name',
+        destMimeType: 'mime-type',
+        printId: true,
+        stdout,
+        stderr
+      })
+    ).toEqual(0)
+    expect(mockRecvFile).toBeCalledWith('test-drive', {
+      fileId: 'file-id',
+      parentId: 'parent-id',
+      srcFileName: 'src-file-name',
+      destFileName: 'dest-file-name',
+      destMimeType: 'mime-type'
     })
     expect(outData).toEqual('test-id')
     expect(errData).toEqual('')
