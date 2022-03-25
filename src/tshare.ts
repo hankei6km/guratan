@@ -1,5 +1,5 @@
 import { drive_v3 } from '@googleapis/drive'
-import { getFileId } from './tsend.js'
+import { getFileId } from './tdrive.js'
 
 export class CreatePermissonError extends Error {
   constructor(message: string) {

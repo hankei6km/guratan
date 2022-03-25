@@ -18,15 +18,9 @@ jest.unstable_mockModule('fs', async () => {
 
 const mockFs = await import('fs')
 const { mockCreateReadStream } = (mockFs as any)._getMocks()
-const {
-  GetFileIdError,
-  UploadFileError,
-  UpdateFileError,
-  getFileId,
-  uploadFile,
-  updateFile,
-  sendFile
-} = await import('../src/tsend.js')
+const { GetFileIdError, getFileId } = await import('../src/tdrive.js')
+const { UploadFileError, UpdateFileError, uploadFile, updateFile, sendFile } =
+  await import('../src/tsend.js')
 
 afterEach(() => {
   ;(mockFs as any)._reset()

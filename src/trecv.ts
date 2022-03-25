@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import { promisify } from 'util'
 import { drive_v3 } from '@googleapis/drive'
-import { getFileId, GetFileIdError } from './tsend.js'
+import { getFileId, GetFileIdError } from './tdrive.js'
 
 export class DownloadFileError extends Error {
   constructor(message: string) {

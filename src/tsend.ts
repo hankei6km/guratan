@@ -1,15 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import { drive_v3 } from '@googleapis/drive'
-import { validateQueryValue } from './tdrive.js'
-
-export class GetFileIdError extends Error {
-  constructor(message: string) {
-    //https://stackoverflow.com/questions/41102060/typescript-extending-error-class
-    super(message)
-    Object.setPrototypeOf(this, GetFileIdError.prototype)
-  }
-}
+import { getFileId } from './tdrive.js'
 
 export class UploadFileError extends Error {
   constructor(message: string) {
@@ -56,42 +48,6 @@ export type SendFileOpts = {
    * @type Media mime-type.
    */
   srcMimeType: string
-}
-
-/**
- * Get file id in spesiced parent.
- * @param drive - drive instance.
- * @param parentId  - id of folder in Google Deive.
- * @param fileName  - file name.
- * @returns id of file or blank(when file is not found)
- */
-export async function getFileId(
-  drive: drive_v3.Drive,
-  parentId: string,
-  fileName: string
-): Promise<string> {
-  try {
-    if (validateQueryValue(parentId) === false) {
-      throw new GetFileIdError(`Invalid paretnt id : ${parentId}`)
-    }
-    if (validateQueryValue(fileName) === false) {
-      throw new GetFileIdError(`Invalid file name : ${fileName}`)
-    }
-    const list = await drive.files.list({
-      pageSize: 10,
-      q: `'${parentId}' in parents and name = '${fileName}'`,
-      fields: 'files(id, name)'
-    })
-    if (list.data.files && list.data.files.length > 0) {
-      return list.data.files[0].id || ''
-    }
-    return ''
-  } catch (err: any) {
-    if (err.errors) {
-      throw new GetFileIdError(JSON.stringify(err.errors))
-    }
-    throw err
-  }
 }
 
 /**

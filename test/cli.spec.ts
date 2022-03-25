@@ -1,6 +1,5 @@
 import { PassThrough } from 'stream'
 import { jest } from '@jest/globals'
-import { GetFileIdError, getFileId } from '../src/tsend.js'
 
 jest.unstable_mockModule('../src/tdrive.js', async () => {
   const mockDriveClient = jest.fn()
@@ -26,8 +25,6 @@ jest.unstable_mockModule('../src/tsend.js', async () => {
 
   reset()
   return {
-    GetFileIdError,
-    getFileId,
     sendFile: mockSendFile,
     _reset: reset,
     _getMocks: () => ({

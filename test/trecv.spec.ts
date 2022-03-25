@@ -30,7 +30,7 @@ const mockFs = await import('fs')
 const { mockCreateWriteStream, mockClose, mockWrite } = (
   mockFs as any
 )._getMocks()
-const { GetFileIdError } = await import('../src/tsend.js')
+const { GetFileIdError } = await import('../src/tdrive.js')
 const { DownloadFileError, downloadFile, recvFile } = await import(
   '../src/trecv.js'
 )
