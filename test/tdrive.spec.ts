@@ -20,7 +20,8 @@ jest.unstable_mockModule('google-auth-library', async () => {
 const mockGoogleAuthLibrary = await import('google-auth-library')
 const { mockGoogleAuth } = (mockGoogleAuthLibrary as any)._getMocks()
 
-const { validateQueryValue, driveClient } = await import('../src/tdrive.js')
+const { GetFileIdError, validateQueryValue, getFileId, driveClient } =
+  await import('../src/tdrive.js')
 
 afterEach(() => {
   ;(mockGoogleAuthLibrary as any)._reset()
@@ -32,6 +33,83 @@ describe('validateQueryValue()', () => {
   })
   it('should return false', () => {
     expect(validateQueryValue("123'abc")).toBeFalsy()
+  })
+})
+
+describe('getFileId()', () => {
+  it('should return id of file', async () => {
+    const list = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
+    const drive: any = {
+      files: {
+        list
+      }
+    }
+
+    expect(await getFileId(drive, 'parent-id', 'file-name')).toEqual('test-id')
+    expect(list).toBeCalledWith({
+      fields: 'files(id, name)',
+      pageSize: 10,
+      q: "'parent-id' in parents and name = 'file-name'"
+    })
+  })
+
+  it('should not return id of file when not found', async () => {
+    const list = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { files: [] } })
+    const drive: any = {
+      files: {
+        list
+      }
+    }
+
+    expect(await getFileId(drive, 'parent-id', 'file-name')).toEqual('')
+    expect(list).toBeCalledWith({
+      fields: 'files(id, name)',
+      pageSize: 10,
+      q: "'parent-id' in parents and name = 'file-name'"
+    })
+  })
+
+  it('should throw GetFileIdError', async () => {
+    const list = jest.fn<any, any[]>().mockRejectedValue({ errors: 'err' })
+    const drive: any = {
+      files: {
+        list
+      }
+    }
+
+    const res = getFileId(drive, 'parent-id', 'file-name')
+    await expect(res).rejects.toThrowError('err')
+    await expect(res).rejects.toBeInstanceOf(GetFileIdError)
+  })
+
+  it('should throw GetFileIdError(parentId)', async () => {
+    const list = jest.fn<any, any[]>().mockRejectedValue({ errors: 'err' })
+    const drive: any = {
+      files: {
+        list
+      }
+    }
+
+    const res = getFileId(drive, "parent'id", 'file-name')
+    await expect(res).rejects.toThrowError("Invalid paretnt id : parent'id")
+    await expect(res).rejects.toBeInstanceOf(GetFileIdError)
+  })
+
+  it('should throw GetFileIdError(fileName)', async () => {
+    const list = jest.fn<any, any[]>().mockRejectedValue({ errors: 'err' })
+    const drive: any = {
+      files: {
+        list
+      }
+    }
+
+    const res = getFileId(drive, 'parent-id', "file'name")
+    await expect(res).rejects.toThrowError("Invalid file name : file'name")
+    await expect(res).rejects.toBeInstanceOf(GetFileIdError)
   })
 })
 
