@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-import { cliRecv, cliSend, cliShare } from './cli.js'
 
 const envVarsPrefix = process.env['GURATAN_ENV_VARS_PREFIX'] || 'GURATAN'
 const argv = await yargs(hideBin(process.argv))
@@ -192,6 +191,7 @@ const argv = await yargs(hideBin(process.argv))
 
 switch (`${argv._[0]}`) {
   case 'send':
+    const { cliSend } = await import('./cli.js')
     process.exit(
       await cliSend({
         fileId: argv['file-id'],
@@ -207,6 +207,7 @@ switch (`${argv._[0]}`) {
     )
     break
   case 'recv':
+    const { cliRecv } = await import('./cli.js')
     process.exit(
       await cliRecv({
         fileId: argv['file-id'],
@@ -221,6 +222,7 @@ switch (`${argv._[0]}`) {
     )
     break
   case 'share':
+    const { cliShare } = await import('./cli.js')
     process.exit(
       await cliShare({
         fileId: argv['file-id'],
