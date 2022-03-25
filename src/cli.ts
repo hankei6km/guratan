@@ -1,8 +1,5 @@
 import { Writable } from 'stream'
 import { driveClient } from './tdrive.js'
-import { sendFile } from './tsend.js'
-import { recvFile } from './trecv.js'
-import { createPermisson } from './tshare.js'
 
 type Opts = {
   stdout: Writable
@@ -54,6 +51,7 @@ export const cliSend = async ({
   stderr
 }: OptsSend): Promise<number> => {
   try {
+    const { sendFile } = await import('./tsend.js')
     const id = await sendFile(driveClient(), {
       fileId,
       parentId,
@@ -84,6 +82,7 @@ export const cliRecv = async ({
   stderr
 }: OptsRecv): Promise<number> => {
   try {
+    const { recvFile } = await import('./trecv.js')
     const id = await recvFile(driveClient(), {
       fileId,
       parentId,
@@ -121,6 +120,7 @@ export const cliShare = async ({
   stderr
 }: OptsShare): Promise<number> => {
   try {
+    const { createPermisson } = await import('./tshare.js')
     const id = await createPermisson(driveClient(), {
       fileId,
       parentId,
