@@ -17,6 +17,18 @@ $ GOOGLE_APPLICATION_CREDENTIALS=./gha-creds-temp.json npx guratan send --parent
 - 各オプションは環境変数での指定も可能(例. `--parent-id` = `GURATAN_PARENT_ID`)
 - `guratan` からは upload と update のみ可能
 
+### recv
+
+```
+$ GOOGLE_APPLICATION_CREDENTIALS=./gha-creds-temp.json npx guratan recv --parent-id 12345ABC --src-file-name test.txt --dest-file-name path/to/test.txt
+```
+
+- `GOOGLE_APPLICATION_CREDENTIALS` にはサービスアカウントの鍵ファイルを指定
+- 受信元フォルダー(`--parent-id`) のファイル(`--dest-file-name`)を受信する
+- 同名ファイルが複数ある場合は最初にヒットしたものを受信する
+- `--parent-id` `--src-file-name` の代わりに `--file-id` で受信ファイルを指定できる
+- 各オプションは環境変数での指定も可能(例. `--parent-id` = `GURATAN_PARENT_ID`)
+
 ### share
 
 ```
