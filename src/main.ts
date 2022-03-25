@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-import { cliSend, cliShare } from './cli.js'
+import { cliRecv, cliSend, cliShare } from './cli.js'
 
 const envVarsPrefix = process.env['GURATAN_ENV_VARS_PREFIX'] || 'GURATAN'
 const argv = await yargs(hideBin(process.argv))
@@ -52,6 +52,49 @@ const argv = await yargs(hideBin(process.argv))
       }
     })
   })
+  .command(
+    'recv [OPTIONS]',
+    'receive file from Google Drive to local file',
+    (yargs) => {
+      return yargs.options({
+        'file-id': {
+          type: 'string',
+          default: '',
+          required: false,
+          description: 'The ID of the file or shared drive.'
+        },
+        'parent-id': {
+          type: 'string',
+          default: '',
+          required: false,
+          description: 'The IDs of the parent folders which contain the file.'
+        },
+        'src-file-name': {
+          type: 'string',
+          required: false,
+          description: 'The name of the file in remote'
+        },
+        'dest-file-name': {
+          type: 'string',
+          default: '',
+          required: true,
+          description: 'The name(path) of the file in local filesystem'
+        },
+        'dest-mime-type': {
+          type: 'string',
+          required: false,
+          default: '',
+          description: 'Media mime-type'
+        },
+        'print-id': {
+          type: 'boolean',
+          required: false,
+          default: false,
+          description: 'Print the id of the file that is received from remote'
+        }
+      })
+    }
+  )
   .command('share [OPTIONS]', 'share file in Google Drive', (yargs) => {
     return yargs.options({
       'file-id': {
@@ -157,6 +200,20 @@ switch (`${argv._[0]}`) {
         srcFileName: argv['src-file-name'] || '',
         destMimeType: argv['dest-mime-type'] || '',
         srcMimeType: argv['src-mime-type'] || '',
+        printId: argv['print-id'] || false,
+        stdout: process.stdout,
+        stderr: process.stderr
+      })
+    )
+    break
+  case 'recv':
+    process.exit(
+      await cliRecv({
+        fileId: argv['file-id'],
+        parentId: argv['parent-id'] || '',
+        srcFileName: argv['src-file-name'] || '',
+        destFileName: argv['dest-file-name'] || '',
+        destMimeType: argv['dest-mime-type'] || '',
         printId: argv['print-id'] || false,
         stdout: process.stdout,
         stderr: process.stderr
