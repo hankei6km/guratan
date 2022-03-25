@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs'
+import { promisify } from 'util'
 import { drive_v3 } from '@googleapis/drive'
 import { getFileId } from './tdrive.js'
 
@@ -63,30 +64,39 @@ export async function uploadFile(
     'parentId' | 'destFileName' | 'srcFileName' | 'destMimeType' | 'srcMimeType'
   >
 ): Promise<string> {
+  let ret: string = ''
   try {
     const { parentId, destFileName, srcFileName, destMimeType, srcMimeType } =
       opts
-    const params: drive_v3.Params$Resource$Files$Create = {
-      requestBody: {
-        name: path.basename(destFileName),
-        parents: [parentId]
-      },
-      media: {
-        body: fs.createReadStream(srcFileName)
-      },
-      fields: 'id'
+    const srcStream = fs.createReadStream(srcFileName)
+    try {
+      const params: drive_v3.Params$Resource$Files$Create = {
+        requestBody: {
+          name: path.basename(destFileName),
+          parents: [parentId]
+        },
+        media: {
+          body: srcStream
+        },
+        fields: 'id'
+      }
+      if (destMimeType) {
+        params.requestBody!.mimeType = destMimeType
+      }
+      if (srcMimeType) {
+        params.media!.mimeType = srcMimeType
+      }
+      const res = await drive.files.create(params)
+      ret = res.data.id || ''
+    } catch (err: any) {
+      throw new UploadFileError(JSON.stringify(err.errors))
+    } finally {
+      await promisify(srcStream.close.bind(srcStream))()
     }
-    if (destMimeType) {
-      params.requestBody!.mimeType = destMimeType
-    }
-    if (srcMimeType) {
-      params.media!.mimeType = srcMimeType
-    }
-    const res = await drive.files.create(params)
-    return res.data.id || ''
   } catch (err: any) {
-    throw new UploadFileError(JSON.stringify(err.errors))
+    throw err
   }
+  return ret
 }
 
 /**
@@ -102,27 +112,36 @@ export async function updateFile(
     'srcFileName' | 'destMimeType' | 'srcMimeType'
   >
 ): Promise<string> {
+  let ret: string = ''
   try {
     const { fileId, srcFileName, destMimeType, srcMimeType } = opts
-    const params: drive_v3.Params$Resource$Files$Update = {
-      fileId,
-      requestBody: {},
-      media: {
-        body: fs.createReadStream(srcFileName)
-      },
-      fields: 'id'
+    const srcStream = fs.createReadStream(srcFileName)
+    try {
+      const params: drive_v3.Params$Resource$Files$Update = {
+        fileId,
+        requestBody: {},
+        media: {
+          body: srcStream
+        },
+        fields: 'id'
+      }
+      if (destMimeType) {
+        params.requestBody!.mimeType = destMimeType
+      }
+      if (srcMimeType) {
+        params.media!.mimeType = srcMimeType
+      }
+      const res = await drive.files.update(params)
+      ret = res.data.id || ''
+    } catch (err: any) {
+      throw new UpdateFileError(JSON.stringify(err.errors))
+    } finally {
+      await promisify(srcStream.close.bind(srcStream))()
     }
-    if (destMimeType) {
-      params.requestBody!.mimeType = destMimeType
-    }
-    if (srcMimeType) {
-      params.media!.mimeType = srcMimeType
-    }
-    const res = await drive.files.update(params)
-    return res.data.id || ''
   } catch (err: any) {
-    throw new UpdateFileError(JSON.stringify(err.errors))
+    throw err
   }
+  return ret
 }
 
 /**
