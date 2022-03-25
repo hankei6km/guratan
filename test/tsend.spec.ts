@@ -2,8 +2,14 @@ import { jest } from '@jest/globals'
 
 jest.unstable_mockModule('fs', async () => {
   const mockCreateReadStream = jest.fn()
+  const mockClose = jest.fn<any, any[]>()
   const reset = () => {
-    mockCreateReadStream.mockReset().mockReturnValue('mock-create-read-streadm')
+    mockClose.mockReset().mockImplementation((cb) => {
+      setImmediate(cb)
+    })
+    mockCreateReadStream.mockReset().mockReturnValue({
+      close: mockClose
+    })
   }
 
   reset()
@@ -11,13 +17,14 @@ jest.unstable_mockModule('fs', async () => {
     createReadStream: mockCreateReadStream,
     _reset: reset,
     _getMocks: () => ({
-      mockCreateReadStream
+      mockCreateReadStream,
+      mockClose
     })
   }
 })
 
 const mockFs = await import('fs')
-const { mockCreateReadStream } = (mockFs as any)._getMocks()
+const { mockClose, mockCreateReadStream } = (mockFs as any)._getMocks()
 const { GetFileIdError, getFileId } = await import('../src/tdrive.js')
 const { UploadFileError, UpdateFileError, uploadFile, updateFile, sendFile } =
   await import('../src/tsend.js')
@@ -128,7 +135,7 @@ describe('uploadFile()', () => {
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
-        body: 'mock-create-read-streadm'
+        body: { close: mockClose }
       },
       requestBody: {
         name: 'dest-file-name',
@@ -136,6 +143,7 @@ describe('uploadFile()', () => {
         parents: ['parent-id']
       }
     })
+    expect(mockClose).toBeCalledTimes(1)
   })
 
   it('should return id of file(mimeType is blank)', async () => {
@@ -161,13 +169,14 @@ describe('uploadFile()', () => {
     expect(create).toBeCalledWith({
       fields: 'id',
       media: {
-        body: 'mock-create-read-streadm'
+        body: { close: mockClose }
       },
       requestBody: {
         name: 'dest-file-name',
         parents: ['parent-id']
       }
     })
+    expect(mockClose).toBeCalledTimes(1)
   })
 
   it('should throw UploadFileError', async () => {
@@ -187,6 +196,7 @@ describe('uploadFile()', () => {
     })
     await expect(res).rejects.toThrowError('err')
     await expect(res).rejects.toBeInstanceOf(UploadFileError)
+    expect(mockClose).toBeCalledTimes(1)
   })
 })
 
@@ -215,12 +225,13 @@ describe('updateFile()', () => {
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
-        body: 'mock-create-read-streadm'
+        body: { close: mockClose }
       },
       requestBody: {
         mimeType: 'dest-mime-type'
       }
     })
+    expect(mockClose).toBeCalledTimes(1)
   })
 
   it('should return id of file(mimeType is blank)', async () => {
@@ -246,10 +257,11 @@ describe('updateFile()', () => {
       fileId: 'file-id',
       fields: 'id',
       media: {
-        body: 'mock-create-read-streadm'
+        body: { close: mockClose }
       },
       requestBody: {}
     })
+    expect(mockClose).toBeCalledTimes(1)
   })
 
   it('should throw UploadFileError', async () => {
@@ -268,6 +280,7 @@ describe('updateFile()', () => {
     })
     await expect(res).rejects.toThrowError('err')
     await expect(res).rejects.toBeInstanceOf(UpdateFileError)
+    expect(mockClose).toBeCalledTimes(1)
   })
 })
 
@@ -308,7 +321,7 @@ describe('sendFile()', () => {
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
-        body: 'mock-create-read-streadm'
+        body: { close: mockClose }
       },
       requestBody: {
         name: 'dest-file-name',
@@ -317,6 +330,7 @@ describe('sendFile()', () => {
       }
     })
     expect(update).toBeCalledTimes(0)
+    expect(mockClose).toBeCalledTimes(1)
   })
 
   it('should call update(fileId is blank)', async () => {
@@ -357,12 +371,13 @@ describe('sendFile()', () => {
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
-        body: 'mock-create-read-streadm'
+        body: { close: mockClose }
       },
       requestBody: {
         mimeType: 'dest-mime-type'
       }
     })
+    expect(mockClose).toBeCalledTimes(1)
   })
 
   it('should call update(fileId is specified)', async () => {
@@ -399,11 +414,12 @@ describe('sendFile()', () => {
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
-        body: 'mock-create-read-streadm'
+        body: { close: mockClose }
       },
       requestBody: {
         mimeType: 'dest-mime-type'
       }
     })
+    expect(mockClose).toBeCalledTimes(1)
   })
 })
