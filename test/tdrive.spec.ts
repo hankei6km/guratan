@@ -118,7 +118,7 @@ describe('driveClient()', () => {
     const d = driveClient()
     expect(d).toBeInstanceOf(drive_v3.Drive)
     expect(mockGoogleAuth).toBeCalledWith({
-      scopes: ['https://www.googleapis.com/auth/drive.file']
+      scopes: ['https://www.googleapis.com/auth/drive']
     })
   })
 })
