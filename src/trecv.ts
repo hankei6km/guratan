@@ -81,7 +81,7 @@ export async function downloadFile(
           `status:${err.response.status}\nstatusText:${err.response.statusText}`
         )
       }
-      throw new DownloadFileError(JSON.stringify(err))
+      throw new DownloadFileError(err)
     } finally {
       // return promisify(dest.close.bind(dest))()  ここで return すると常に undfeind になる
       ret = promisify(dest.close.bind(dest))()
