@@ -73,7 +73,7 @@ export async function downloadFile(
         }
       }
     } catch (err: any) {
-      if (err.erros) {
+      if (err.errors) {
         throw new DownloadFileError(JSON.stringify(err.errors))
       }
       if (err.response?.status) {
