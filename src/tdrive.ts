@@ -63,7 +63,7 @@ export function validateQueryValue(s: string): boolean {
  * @returns instance of drive.
  */
 export function driveClient() {
-  const SCOPES = ['https://www.googleapis.com/auth/drive.file']
+  const SCOPES = ['https://www.googleapis.com/auth/drive']
   const auth = new GoogleAuth({
     scopes: SCOPES
   })
