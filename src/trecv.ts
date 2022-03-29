@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import { promisify } from 'util'
 import { drive_v3 } from '@googleapis/drive'
 import { getFileId, GetFileIdError } from './tdrive.js'
+import { Writable } from 'stream'
 
 export class DownloadFileError extends Error {
   constructor(message: string) {
@@ -36,6 +37,10 @@ export type RecvFileOpts = {
    * @type Media mime-type.
    */
   destMimeType: string
+  /**
+   * @type The dest content from stream. It passed by pipe option.
+   */
+  destStream?: Writable
 }
 
 /**
@@ -46,12 +51,15 @@ export type RecvFileOpts = {
  */
 export async function downloadFile(
   drive: drive_v3.Drive,
-  opts: Pick<RecvFileOpts, 'fileId' | 'destFileName' | 'destMimeType'>
+  opts: Pick<
+    RecvFileOpts,
+    'fileId' | 'destFileName' | 'destMimeType' | 'destStream'
+  >
 ): Promise<void> {
-  let ret: Promise<void>
+  let ret: Promise<void> = undefined as any
   try {
-    const { fileId, destFileName, destMimeType } = opts
-    const dest = fs.createWriteStream(destFileName)
+    const { fileId, destFileName, destMimeType, destStream } = opts
+    const dest = destStream ? destStream : fs.createWriteStream(destFileName)
     try {
       if (destMimeType) {
         const params: drive_v3.Params$Resource$Files$Export = {
@@ -84,7 +92,9 @@ export async function downloadFile(
       throw new DownloadFileError(err)
     } finally {
       // return promisify(dest.close.bind(dest))()  ここで return すると常に undfeind になる
-      ret = promisify(dest.close.bind(dest))()
+      if ((dest as any).close) {
+        ret = promisify((dest as any).close.bind(dest))()
+      }
     }
   } catch (err: any) {
     throw err
@@ -107,8 +117,12 @@ export async function recvFile(
     parentId,
     srcFileName,
     destFileName,
-    destMimeType
+    destMimeType,
+    destStream
   } = opts
+  if (destFileName === '' && destStream === undefined) {
+    throw new Error('The destination is not specified')
+  }
   let fileId =
     inFileId !== '' ? inFileId : await getFileId(drive, parentId, srcFileName)
   if (fileId === '') {
@@ -117,6 +131,6 @@ export async function recvFile(
       `The srouce file not found`
     )
   }
-  await downloadFile(drive, { fileId, destFileName, destMimeType })
+  await downloadFile(drive, { fileId, destFileName, destMimeType, destStream })
   return fileId
 }
