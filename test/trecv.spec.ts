@@ -106,8 +106,7 @@ describe('downloadFile()', () => {
       await downloadFile(drive, {
         fileId: 'test-id',
         destFileName: 'dest-file-name',
-        destMimeType: 'dest-mime-type',
-        removeBom: false
+        destMimeType: 'dest-mime-type'
       })
     ).toBeUndefined()
     expect(mockExport).toBeCalledWith(
@@ -205,8 +204,7 @@ describe('downloadFile()', () => {
       await downloadFile(drive, {
         fileId: 'test-id',
         destFileName: 'dest-file-name',
-        destMimeType: '',
-        removeBom: false
+        destMimeType: ''
       })
     ).toBeUndefined()
     expect(mockExport).toBeCalledTimes(0)
@@ -242,7 +240,6 @@ describe('downloadFile()', () => {
         fileId: 'test-id',
         destFileName: 'dest-file-name',
         destMimeType: '',
-        removeBom: false,
         destStream: mockDestStream as any
       })
     ).toBeUndefined()
@@ -274,8 +271,7 @@ describe('downloadFile()', () => {
     const res = downloadFile(drive, {
       fileId: 'file-id',
       destFileName: 'dest-file-name',
-      destMimeType: 'dest-mime-type',
-      removeBom: false
+      destMimeType: 'dest-mime-type'
     })
     await expect(res).rejects.toThrowError('err')
     await expect(res).rejects.toBeInstanceOf(DownloadFileError)
@@ -293,8 +289,7 @@ describe('downloadFile()', () => {
     const res = downloadFile(drive, {
       fileId: 'file-id',
       destFileName: 'dest-file-name',
-      destMimeType: '',
-      removeBom: false
+      destMimeType: ''
     })
     await expect(res).rejects.toThrowError('err')
     await expect(res).rejects.toBeInstanceOf(DownloadFileError)
@@ -324,8 +319,7 @@ describe('recvFile()', () => {
         parentId: 'parent-id',
         srcFileName: 'src-file-name',
         destFileName: 'dest-file-name',
-        destMimeType: 'dest-mime-type',
-        removeBom: false
+        destMimeType: 'dest-mime-type'
       })
     ).toEqual('test-id')
     expect(list).toBeCalledWith({
@@ -368,8 +362,7 @@ describe('recvFile()', () => {
         parentId: 'parent-id',
         srcFileName: 'src-file-name',
         destFileName: 'dest-file-name',
-        destMimeType: 'dest-mime-type',
-        removeBom: false
+        destMimeType: 'dest-mime-type'
       })
     ).toEqual('file-id')
     expect(list).toBeCalledTimes(0)
@@ -410,7 +403,6 @@ describe('recvFile()', () => {
         srcFileName: 'src-file-name',
         destFileName: 'dest-file-name',
         destMimeType: 'dest-mime-type',
-        removeBom: false,
         destStream: mockDestStream as any
       })
     ).toEqual('test-id')
@@ -448,8 +440,7 @@ describe('recvFile()', () => {
       parentId: 'parent-id',
       srcFileName: 'src-file-name',
       destFileName: 'dest-file-name',
-      destMimeType: 'dest-mime-type',
-      removeBom: false
+      destMimeType: 'dest-mime-type'
     })
     await expect(res).rejects.toThrowError('The srouce file not found')
     await expect(res).rejects.toBeInstanceOf(GetFileIdError)
@@ -462,8 +453,7 @@ describe('recvFile()', () => {
       parentId: 'parent-id',
       srcFileName: 'src-file-name',
       destFileName: '',
-      destMimeType: 'dest-mime-type',
-      removeBom: false
+      destMimeType: 'dest-mime-type'
     })
     await expect(res).rejects.toThrowError('The destination is not specified')
   })

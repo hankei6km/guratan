@@ -43,7 +43,7 @@ export type RecvFileOpts = {
   /**
    * @type Remove BOM chars in receiving content.
    */
-  removeBom: boolean
+  removeBom?: boolean
   /**
    * @type The dest content from stream. It passed by pipe option.
    */
