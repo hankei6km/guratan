@@ -99,6 +99,12 @@ const argv = await yargs(hideBin(process.argv))
           default: false,
           description: 'Use stdout instead of the dest file'
         },
+        'remove-bom': {
+          type: 'boolean',
+          required: false,
+          default: false,
+          description: 'Remove BOM chars in receiving content'
+        },
         'print-id': {
           type: 'boolean',
           required: false,
@@ -230,6 +236,7 @@ switch (`${argv._[0]}`) {
         destFileName: argv['dest-file-name'] || '',
         destMimeType: argv['dest-mime-type'] || '',
         pipe: argv['pipe'] || false,
+        removeBom: argv['remove-bom'] || false,
         printId: argv['print-id'] || false,
         stdin: process.stdin,
         stdout: process.stdout,

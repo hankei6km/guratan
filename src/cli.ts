@@ -23,6 +23,7 @@ type OptsRecv = Opts & {
   destFileName: string
   destMimeType: string
   pipe: boolean
+  removeBom: boolean
   printId: boolean
 }
 type OptsShare = Opts & {
@@ -85,6 +86,7 @@ export const cliRecv = async ({
   destMimeType,
   printId,
   pipe,
+  removeBom,
   stdout,
   stderr
 }: OptsRecv): Promise<number> => {
@@ -96,6 +98,7 @@ export const cliRecv = async ({
       srcFileName,
       destFileName,
       destMimeType,
+      removeBom,
       destStream: pipe ? stdout : undefined
     })
     if (printId && !pipe) {

@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import { Writable, pipeline } from 'stream'
 import { promisify } from 'util'
 import { drive_v3 } from '@googleapis/drive'
+import stripBomStream from 'strip-bom-stream'
 import { getFileId, GetFileIdError } from './tdrive.js'
 
 const promisePipeline = promisify(pipeline)
@@ -40,6 +41,10 @@ export type RecvFileOpts = {
    */
   destMimeType: string
   /**
+   * @type Remove BOM chars in receiving content.
+   */
+  removeBom: boolean
+  /**
    * @type The dest content from stream. It passed by pipe option.
    */
   destStream?: Writable
@@ -55,13 +60,13 @@ export async function downloadFile(
   drive: drive_v3.Drive,
   opts: Pick<
     RecvFileOpts,
-    'fileId' | 'destFileName' | 'destMimeType' | 'destStream'
+    'fileId' | 'destFileName' | 'destMimeType' | 'removeBom' | 'destStream'
   >
 ): Promise<void> {
   let ret: Promise<void> = undefined as any
   try {
-    const { fileId, destFileName, destMimeType, destStream } = opts
-    const dest = destStream ? destStream : fs.createWriteStream(destFileName)
+    const { fileId, destFileName, destMimeType, destStream, removeBom } = opts
+    let dest = destStream ? destStream : fs.createWriteStream(destFileName)
     try {
       if (destMimeType) {
         const params: drive_v3.Params$Resource$Files$Export = {
@@ -69,7 +74,11 @@ export async function downloadFile(
           mimeType: destMimeType
         }
         const res = await drive.files.export(params, { responseType: 'stream' })
-        await promisePipeline(res.data, dest)
+        if (removeBom) {
+          await promisePipeline(res.data, stripBomStream(), dest)
+        } else {
+          await promisePipeline(res.data, dest)
+        }
       } else {
         const params: drive_v3.Params$Resource$Files$Get = {
           fileId,
@@ -116,6 +125,7 @@ export async function recvFile(
     srcFileName,
     destFileName,
     destMimeType,
+    removeBom,
     destStream
   } = opts
   if (destFileName === '' && destStream === undefined) {
@@ -129,6 +139,12 @@ export async function recvFile(
       `The srouce file not found`
     )
   }
-  await downloadFile(drive, { fileId, destFileName, destMimeType, destStream })
+  await downloadFile(drive, {
+    fileId,
+    destFileName,
+    destMimeType,
+    removeBom,
+    destStream
+  })
   return fileId
 }
