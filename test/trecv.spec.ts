@@ -114,6 +114,43 @@ describe('downloadFile()', () => {
     expect(mockClose).toBeCalledTimes(1)
   })
 
+  it('should use destStream', async () => {
+    const mockExport = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: mockExportGen() })
+    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const drive: any = {
+      files: {
+        export: mockExport,
+        get
+      }
+    }
+    const mockDestStream = {
+      write: jest.fn()
+    }
+    expect(
+      await downloadFile(drive, {
+        fileId: 'test-id',
+        destFileName: 'dest-file-name',
+        destMimeType: '',
+        destStream: mockDestStream as any
+      })
+    ).toBeUndefined()
+    expect(mockExport).toBeCalledTimes(0)
+    expect(mockCreateWriteStream).toBeCalledTimes(0)
+    expect(get).toBeCalledWith(
+      {
+        fileId: 'test-id',
+        alt: 'media'
+      },
+      { responseType: 'stream' }
+    )
+    expect(mockDestStream.write).toBeCalledWith('get-data1')
+    expect(mockDestStream.write).toBeCalledWith('get-data2')
+    expect(mockWrite).toReturnTimes(0)
+    expect(mockClose).toBeCalledTimes(0)
+  })
+
   it('should throw downloadFileError(export)', async () => {
     const mockExport = jest
       .fn<any, any[]>()
@@ -236,6 +273,52 @@ describe('recvFile()', () => {
     expect(mockClose).toBeCalledTimes(1)
   })
 
+  it('should use destStream', async () => {
+    const list = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
+    const mockExport = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: mockExportGen() })
+    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const drive: any = {
+      files: {
+        list,
+        export: mockExport,
+        get
+      }
+    }
+    const mockDestStream = { write: jest.fn() }
+    expect(
+      await recvFile(drive, {
+        fileId: '',
+        parentId: 'parent-id',
+        srcFileName: 'src-file-name',
+        destFileName: 'dest-file-name',
+        destMimeType: 'dest-mime-type',
+        destStream: mockDestStream as any
+      })
+    ).toEqual('test-id')
+    expect(list).toBeCalledWith({
+      fields: 'files(id, name)',
+      pageSize: 10,
+      q: "'parent-id' in parents and name = 'src-file-name'"
+    })
+    expect(mockExport).toBeCalledWith(
+      {
+        fileId: 'test-id',
+        mimeType: 'dest-mime-type'
+      },
+      { responseType: 'stream' }
+    )
+    expect(mockCreateWriteStream).toBeCalledTimes(0)
+    expect(mockDestStream.write).toBeCalledWith('export-data1')
+    expect(mockDestStream.write).toBeCalledWith('export-data2')
+    expect(mockWrite).toBeCalledTimes(0)
+    expect(get).toBeCalledTimes(0)
+    expect(mockClose).toBeCalledTimes(0)
+  })
+
   it('should throw when file not found', async () => {
     const list = jest
       .fn<any, any[]>()
@@ -254,5 +337,17 @@ describe('recvFile()', () => {
     })
     await expect(res).rejects.toThrowError('The srouce file not found')
     await expect(res).rejects.toBeInstanceOf(GetFileIdError)
+  })
+
+  it('should throw error when dest-file-name and dest-strem not passed', async () => {
+    const drive: any = {}
+    const res = recvFile(drive, {
+      fileId: 'file-id',
+      parentId: 'parent-id',
+      srcFileName: 'src-file-name',
+      destFileName: '',
+      destMimeType: 'dest-mime-type'
+    })
+    await expect(res).rejects.toThrowError('The destination is not specified')
   })
 })

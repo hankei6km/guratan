@@ -202,6 +202,7 @@ describe('cliRecv()', () => {
         srcFileName: 'src-file-name',
         destFileName: 'dest-file-name',
         destMimeType: 'dest-mime-type',
+        pipe: false,
         printId: false,
         stdin,
         stdout,
@@ -216,6 +217,36 @@ describe('cliRecv()', () => {
       destMimeType: 'dest-mime-type'
     })
     expect(outData).toEqual('')
+    expect(errData).toEqual('')
+  })
+
+  it('should use stdout', async () => {
+    const stdin = new PassThrough()
+    const stderr = new PassThrough()
+    let errData = ''
+    stderr.on('data', (d) => (errData = errData + d))
+    expect(
+      await cliRecv({
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        srcFileName: 'src-file-name',
+        destFileName: 'dest-file-name',
+        destMimeType: 'dest-mime-type',
+        pipe: true,
+        printId: false,
+        stdin,
+        stdout: 'std-out' as any,
+        stderr
+      })
+    ).toEqual(0)
+    expect(mockRecvFile).toBeCalledWith('test-drive', {
+      fileId: 'file-id',
+      parentId: 'parent-id',
+      srcFileName: 'src-file-name',
+      destFileName: 'dest-file-name',
+      destMimeType: 'dest-mime-type',
+      destStream: 'std-out'
+    })
     expect(errData).toEqual('')
   })
 
@@ -234,6 +265,7 @@ describe('cliRecv()', () => {
         srcFileName: 'src-file-name',
         destFileName: 'dest-file-name',
         destMimeType: 'mime-type',
+        pipe: false,
         printId: true,
         stdin,
         stdout,
