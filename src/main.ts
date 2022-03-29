@@ -29,7 +29,8 @@ const argv = await yargs(hideBin(process.argv))
       },
       'src-file-name': {
         type: 'string',
-        required: true,
+        default: '',
+        required: false,
         description: 'The name(path) of the file in local filesystem'
       },
       'dest-mime-type': {
@@ -43,6 +44,12 @@ const argv = await yargs(hideBin(process.argv))
         required: false,
         default: '',
         description: 'Media mime-type'
+      },
+      pipe: {
+        type: 'boolean',
+        required: false,
+        default: false,
+        description: 'Use stdin instead of the source file'
       },
       'print-id': {
         type: 'boolean',
@@ -200,7 +207,9 @@ switch (`${argv._[0]}`) {
         srcFileName: argv['src-file-name'] || '',
         destMimeType: argv['dest-mime-type'] || '',
         srcMimeType: argv['src-mime-type'] || '',
+        pipe: argv['pipe'] || false,
         printId: argv['print-id'] || false,
+        stdin: process.stdin,
         stdout: process.stdout,
         stderr: process.stderr
       })
@@ -215,6 +224,7 @@ switch (`${argv._[0]}`) {
         destFileName: argv['dest-file-name'] || '',
         destMimeType: argv['dest-mime-type'] || '',
         printId: argv['print-id'] || false,
+        stdin: process.stdin,
         stdout: process.stdout,
         stderr: process.stderr
       })
@@ -237,6 +247,7 @@ switch (`${argv._[0]}`) {
         sendNotificationEmail: argv['send-notification-email'],
         printId: argv['print-id'] || false,
         emailMessage: argv['email-message'],
+        stdin: process.stdin,
         stdout: process.stdout,
         stderr: process.stderr
       })

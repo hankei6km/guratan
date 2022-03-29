@@ -81,6 +81,7 @@ afterEach(() => {
 
 describe('cliSend()', () => {
   it('should return 0', async () => {
+    const stdin = new PassThrough()
     const stdout = new PassThrough()
     const stderr = new PassThrough()
     let outData = ''
@@ -95,7 +96,9 @@ describe('cliSend()', () => {
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
         srcMimeType: 'src-mime-type',
+        pipe: false,
         printId: false,
+        stdin,
         stdout,
         stderr
       })
@@ -112,7 +115,43 @@ describe('cliSend()', () => {
     expect(errData).toEqual('')
   })
 
+  it('should use stdin', async () => {
+    const stdout = new PassThrough()
+    const stderr = new PassThrough()
+    let outData = ''
+    stdout.on('data', (d) => (outData = outData + d))
+    let errData = ''
+    stderr.on('data', (d) => (errData = errData + d))
+    expect(
+      await cliSend({
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        srcFileName: 'src-file-name',
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type',
+        pipe: true,
+        printId: false,
+        stdin: 'std-in' as any,
+        stdout,
+        stderr
+      })
+    ).toEqual(0)
+    expect(mockSendFile).toBeCalledWith('test-drive', {
+      fileId: 'file-id',
+      parentId: 'parent-id',
+      destFileName: 'dest-file-name',
+      srcFileName: 'src-file-name',
+      destMimeType: 'dest-mime-type',
+      srcMimeType: 'src-mime-type',
+      srcStream: 'std-in'
+    })
+    expect(outData).toEqual('')
+    expect(errData).toEqual('')
+  })
+
   it('should print id', async () => {
+    const stdin = new PassThrough()
     const stdout = new PassThrough()
     const stderr = new PassThrough()
     let outData = ''
@@ -127,7 +166,9 @@ describe('cliSend()', () => {
         srcFileName: 'src-file-name',
         destMimeType: 'mime-type',
         srcMimeType: 'src-mime-type',
+        pipe: false,
         printId: true,
+        stdin,
         stdout,
         stderr
       })
@@ -147,6 +188,7 @@ describe('cliSend()', () => {
 
 describe('cliRecv()', () => {
   it('should return 0', async () => {
+    const stdin = new PassThrough()
     const stdout = new PassThrough()
     const stderr = new PassThrough()
     let outData = ''
@@ -161,6 +203,7 @@ describe('cliRecv()', () => {
         destFileName: 'dest-file-name',
         destMimeType: 'dest-mime-type',
         printId: false,
+        stdin,
         stdout,
         stderr
       })
@@ -177,6 +220,7 @@ describe('cliRecv()', () => {
   })
 
   it('should print id', async () => {
+    const stdin = new PassThrough()
     const stdout = new PassThrough()
     const stderr = new PassThrough()
     let outData = ''
@@ -191,6 +235,7 @@ describe('cliRecv()', () => {
         destFileName: 'dest-file-name',
         destMimeType: 'mime-type',
         printId: true,
+        stdin,
         stdout,
         stderr
       })
@@ -209,6 +254,7 @@ describe('cliRecv()', () => {
 
 describe('cliShare()', () => {
   it('should return 0', async () => {
+    const stdin = new PassThrough()
     const stdout = new PassThrough()
     const stderr = new PassThrough()
     let outData = ''
@@ -231,6 +277,7 @@ describe('cliShare()', () => {
         sendNotificationEmail: true,
         emailMessage: 'test-message',
         printId: false,
+        stdin,
         stdout,
         stderr
       })
@@ -255,6 +302,7 @@ describe('cliShare()', () => {
   })
 
   it('should print id', async () => {
+    const stdin = new PassThrough()
     const stdout = new PassThrough()
     const stderr = new PassThrough()
     let outData = ''
@@ -277,6 +325,7 @@ describe('cliShare()', () => {
         sendNotificationEmail: true,
         emailMessage: 'test-message',
         printId: true,
+        stdin,
         stdout,
         stderr
       })
