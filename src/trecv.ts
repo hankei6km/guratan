@@ -69,9 +69,6 @@ export async function downloadFile(
           mimeType: destMimeType
         }
         const res = await drive.files.export(params, { responseType: 'stream' })
-        //for await (const c of res.data) {
-        //  dest.write(c)
-        //}
         await promisePipeline(res.data, dest)
       } else {
         const params: drive_v3.Params$Resource$Files$Get = {
@@ -79,9 +76,6 @@ export async function downloadFile(
           alt: 'media'
         }
         const res = await drive.files.get(params, { responseType: 'stream' })
-        // for await (const c of res.data) {
-        //   dest.write(c)
-        // }
         await promisePipeline(res.data, dest)
       }
     } catch (err: any) {
