@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@googleapis/drive": "^2.3.0",
+    "strip-bom-stream": "^5.0.0",
     "yargs": "^17.3.1"
   },
   "devDependencies": {

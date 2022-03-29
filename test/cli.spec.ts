@@ -204,6 +204,7 @@ describe('cliRecv()', () => {
         destMimeType: 'dest-mime-type',
         pipe: false,
         printId: false,
+        removeBom: false,
         stdin,
         stdout,
         stderr
@@ -214,7 +215,8 @@ describe('cliRecv()', () => {
       parentId: 'parent-id',
       srcFileName: 'src-file-name',
       destFileName: 'dest-file-name',
-      destMimeType: 'dest-mime-type'
+      destMimeType: 'dest-mime-type',
+      removeBom: false
     })
     expect(outData).toEqual('')
     expect(errData).toEqual('')
@@ -234,6 +236,7 @@ describe('cliRecv()', () => {
         destMimeType: 'dest-mime-type',
         pipe: true,
         printId: false,
+        removeBom: false,
         stdin,
         stdout: 'std-out' as any,
         stderr
@@ -245,7 +248,8 @@ describe('cliRecv()', () => {
       srcFileName: 'src-file-name',
       destFileName: 'dest-file-name',
       destMimeType: 'dest-mime-type',
-      destStream: 'std-out'
+      destStream: 'std-out',
+      removeBom: false
     })
     expect(errData).toEqual('')
   })
@@ -266,6 +270,7 @@ describe('cliRecv()', () => {
         destFileName: 'dest-file-name',
         destMimeType: 'mime-type',
         pipe: false,
+        removeBom: false,
         printId: true,
         stdin,
         stdout,
@@ -277,7 +282,8 @@ describe('cliRecv()', () => {
       parentId: 'parent-id',
       srcFileName: 'src-file-name',
       destFileName: 'dest-file-name',
-      destMimeType: 'mime-type'
+      destMimeType: 'mime-type',
+      removeBom: false
     })
     expect(outData).toEqual('test-id')
     expect(errData).toEqual('')
