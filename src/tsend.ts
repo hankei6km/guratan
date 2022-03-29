@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs'
+import { Readable } from 'stream'
 import { drive_v3 } from '@googleapis/drive'
 import { getFileId } from './tdrive.js'
 
@@ -48,6 +49,10 @@ export type SendFileOpts = {
    * @type Media mime-type.
    */
   srcMimeType: string
+  /**
+   * @type The srouce content from stream. It passed by pipe option.
+   */
+  srcStream?: Readable
 }
 
 /**
@@ -60,19 +65,30 @@ export async function uploadFile(
   drive: drive_v3.Drive,
   opts: Pick<
     SendFileOpts,
-    'parentId' | 'destFileName' | 'srcFileName' | 'destMimeType' | 'srcMimeType'
+    | 'parentId'
+    | 'destFileName'
+    | 'srcFileName'
+    | 'destMimeType'
+    | 'srcMimeType'
+    | 'srcStream'
   >
 ): Promise<string> {
   try {
-    const { parentId, destFileName, srcFileName, destMimeType, srcMimeType } =
-      opts
+    const {
+      parentId,
+      destFileName,
+      srcFileName,
+      destMimeType,
+      srcMimeType,
+      srcStream
+    } = opts
     const params: drive_v3.Params$Resource$Files$Create = {
       requestBody: {
         name: path.basename(destFileName),
         parents: [parentId]
       },
       media: {
-        body: fs.createReadStream(srcFileName)
+        body: srcStream ? srcStream : fs.createReadStream(srcFileName)
       },
       fields: 'id'
     }
@@ -99,16 +115,16 @@ export async function updateFile(
   drive: drive_v3.Drive,
   opts: { fileId: string } & Pick<
     SendFileOpts,
-    'srcFileName' | 'destMimeType' | 'srcMimeType'
+    'srcFileName' | 'destMimeType' | 'srcMimeType' | 'srcStream'
   >
 ): Promise<string> {
   try {
-    const { fileId, srcFileName, destMimeType, srcMimeType } = opts
+    const { fileId, srcFileName, destMimeType, srcMimeType, srcStream } = opts
     const params: drive_v3.Params$Resource$Files$Update = {
       fileId,
       requestBody: {},
       media: {
-        body: fs.createReadStream(srcFileName)
+        body: srcStream ? srcStream : fs.createReadStream(srcFileName)
       },
       fields: 'id'
     }
@@ -141,8 +157,12 @@ export async function sendFile(
     destFileName,
     srcFileName,
     destMimeType,
-    srcMimeType
+    srcMimeType,
+    srcStream
   } = opts
+  if (srcFileName === '' && srcStream === undefined) {
+    throw new Error('The source content is not specified')
+  }
   let fileId =
     inFileId !== '' ? inFileId : await getFileId(drive, parentId, destFileName)
   if (fileId === '') {
@@ -151,8 +171,15 @@ export async function sendFile(
       destFileName,
       srcFileName,
       destMimeType,
-      srcMimeType
+      srcMimeType,
+      srcStream
     })
   }
-  return updateFile(drive, { fileId, srcFileName, destMimeType, srcMimeType })
+  return updateFile(drive, {
+    fileId,
+    srcFileName,
+    destMimeType,
+    srcMimeType,
+    srcStream
+  })
 }

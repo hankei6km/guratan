@@ -1,7 +1,8 @@
-import { Writable } from 'stream'
+import { Readable, Writable } from 'stream'
 import { driveClient } from './tdrive.js'
 
 type Opts = {
+  stdin: Readable
   stdout: Writable
   stderr: Writable
 }
@@ -12,6 +13,7 @@ type OptsSend = Opts & {
   srcFileName: string
   destMimeType: string
   srcMimeType: string
+  pipe: boolean
   printId: boolean
 }
 type OptsRecv = Opts & {
@@ -46,7 +48,9 @@ export const cliSend = async ({
   srcFileName,
   destMimeType,
   srcMimeType,
+  pipe,
   printId,
+  stdin,
   stdout,
   stderr
 }: OptsSend): Promise<number> => {
@@ -58,7 +62,8 @@ export const cliSend = async ({
       destFileName,
       srcFileName,
       destMimeType,
-      srcMimeType
+      srcMimeType,
+      srcStream: pipe ? stdin : undefined
     })
     if (printId) {
       stdout.write(id)
