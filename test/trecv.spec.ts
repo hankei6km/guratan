@@ -1,5 +1,26 @@
 import { jest } from '@jest/globals'
 
+jest.unstable_mockModule('stream', async () => {
+  const mockPipeline = jest.fn<any, any[]>()
+  const reset = () => {
+    mockPipeline.mockReset().mockImplementation(async (s, d, cb) => {
+      for await (const c of s) {
+        d.write(c)
+      }
+      cb(null)
+    })
+  }
+
+  reset()
+  return {
+    pipeline: mockPipeline,
+    _reset: reset,
+    _getMocks: () => ({
+      mockPipeline
+    })
+  }
+})
+
 jest.unstable_mockModule('fs', async () => {
   const mockWrite = jest.fn()
   const mockClose = jest.fn<any, any[]>()
@@ -26,6 +47,7 @@ jest.unstable_mockModule('fs', async () => {
   }
 })
 
+const mockStream = await import('stream')
 const mockFs = await import('fs')
 const { mockCreateWriteStream, mockClose, mockWrite } = (
   mockFs as any
@@ -37,6 +59,7 @@ const { DownloadFileError, downloadFile, recvFile } = await import(
 
 afterEach(() => {
   ;(mockFs as any)._reset()
+  ;(mockStream as any)._reset()
 })
 
 async function* mockExportGen() {
