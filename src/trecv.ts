@@ -1,8 +1,10 @@
 import * as fs from 'fs'
+import { Writable, pipeline } from 'stream'
 import { promisify } from 'util'
 import { drive_v3 } from '@googleapis/drive'
 import { getFileId, GetFileIdError } from './tdrive.js'
-import { Writable } from 'stream'
+
+const promisePipeline = promisify(pipeline)
 
 export class DownloadFileError extends Error {
   constructor(message: string) {
@@ -67,18 +69,20 @@ export async function downloadFile(
           mimeType: destMimeType
         }
         const res = await drive.files.export(params, { responseType: 'stream' })
-        for await (const c of res.data) {
-          dest.write(c)
-        }
+        //for await (const c of res.data) {
+        //  dest.write(c)
+        //}
+        await promisePipeline(res.data, dest)
       } else {
         const params: drive_v3.Params$Resource$Files$Get = {
           fileId,
           alt: 'media'
         }
         const res = await drive.files.get(params, { responseType: 'stream' })
-        for await (const c of res.data) {
-          dest.write(c)
-        }
+        // for await (const c of res.data) {
+        //   dest.write(c)
+        // }
+        await promisePipeline(res.data, dest)
       }
     } catch (err: any) {
       if (err.errors) {
