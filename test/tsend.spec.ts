@@ -42,7 +42,8 @@ describe('uploadFile()', () => {
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
-        srcMimeType: 'src-mime-type'
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: false
       })
     ).toEqual('test-id')
     expect(mockCreateReadStream).toBeCalledWith('src-file-name')
@@ -52,6 +53,43 @@ describe('uploadFile()', () => {
         mimeType: 'src-mime-type',
         body: 'mock-create-read-streadm'
       },
+      supportsAllDrives: false,
+      requestBody: {
+        name: 'dest-file-name',
+        mimeType: 'dest-mime-type',
+        parents: ['parent-id']
+      }
+    })
+  })
+
+  it('should return id of file(supports all drives)', async () => {
+    const create = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'test-id' } })
+    const drive: any = {
+      files: {
+        create
+      }
+    }
+
+    expect(
+      await uploadFile(drive, {
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        srcFileName: 'src-file-name',
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: true
+      })
+    ).toEqual('test-id')
+    expect(mockCreateReadStream).toBeCalledWith('src-file-name')
+    expect(create).toBeCalledWith({
+      fields: 'id',
+      media: {
+        mimeType: 'src-mime-type',
+        body: 'mock-create-read-streadm'
+      },
+      supportsAllDrives: true,
       requestBody: {
         name: 'dest-file-name',
         mimeType: 'dest-mime-type',
@@ -76,7 +114,8 @@ describe('uploadFile()', () => {
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
         destMimeType: '',
-        srcMimeType: ''
+        srcMimeType: '',
+        supportsAllDrives: false
       })
     ).toEqual('test-id')
     expect(mockCreateReadStream).toBeCalledWith('src-file-name')
@@ -85,6 +124,7 @@ describe('uploadFile()', () => {
       media: {
         body: 'mock-create-read-streadm'
       },
+      supportsAllDrives: false,
       requestBody: {
         name: 'dest-file-name',
         parents: ['parent-id']
@@ -109,6 +149,7 @@ describe('uploadFile()', () => {
         srcFileName: 'src-file-name',
         destMimeType: '',
         srcMimeType: '',
+        supportsAllDrives: false,
         srcStream: 'src-stream' as any
       })
     ).toEqual('test-id')
@@ -118,6 +159,7 @@ describe('uploadFile()', () => {
       media: {
         body: 'src-stream'
       },
+      supportsAllDrives: false,
       requestBody: {
         name: 'dest-file-name',
         parents: ['parent-id']
@@ -138,7 +180,8 @@ describe('uploadFile()', () => {
       destFileName: 'dest-file-name',
       srcFileName: 'src-file-name',
       destMimeType: 'dest-mime-type',
-      srcMimeType: 'src-mime-type'
+      srcMimeType: 'src-mime-type',
+      supportsAllDrives: false
     })
     await expect(res).rejects.toThrowError('err')
     await expect(res).rejects.toBeInstanceOf(UploadFileError)
@@ -161,7 +204,8 @@ describe('updateFile()', () => {
         fileId: 'file-id',
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
-        srcMimeType: 'src-mime-type'
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: false
       })
     ).toEqual('test-id')
     expect(mockCreateReadStream).toBeCalledWith('src-file-name')
@@ -172,6 +216,41 @@ describe('updateFile()', () => {
         mimeType: 'src-mime-type',
         body: 'mock-create-read-streadm'
       },
+      supportsAllDrives: false,
+      requestBody: {
+        mimeType: 'dest-mime-type'
+      }
+    })
+  })
+
+  it('should return id of file(supports all drives)', async () => {
+    const update = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'test-id' } })
+    const drive: any = {
+      files: {
+        update
+      }
+    }
+
+    expect(
+      await updateFile(drive, {
+        fileId: 'file-id',
+        srcFileName: 'src-file-name',
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: true
+      })
+    ).toEqual('test-id')
+    expect(mockCreateReadStream).toBeCalledWith('src-file-name')
+    expect(update).toBeCalledWith({
+      fileId: 'file-id',
+      fields: 'id',
+      media: {
+        mimeType: 'src-mime-type',
+        body: 'mock-create-read-streadm'
+      },
+      supportsAllDrives: true,
       requestBody: {
         mimeType: 'dest-mime-type'
       }
@@ -193,7 +272,8 @@ describe('updateFile()', () => {
         fileId: 'file-id',
         srcFileName: 'src-file-name',
         destMimeType: '',
-        srcMimeType: ''
+        srcMimeType: '',
+        supportsAllDrives: false
       })
     ).toEqual('test-id')
     expect(mockCreateReadStream).toBeCalledWith('src-file-name')
@@ -203,6 +283,7 @@ describe('updateFile()', () => {
       media: {
         body: 'mock-create-read-streadm'
       },
+      supportsAllDrives: false,
       requestBody: {}
     })
   })
@@ -223,6 +304,7 @@ describe('updateFile()', () => {
         srcFileName: 'src-file-name',
         destMimeType: '',
         srcMimeType: '',
+        supportsAllDrives: false,
         srcStream: 'src-stream' as any
       })
     ).toEqual('test-id')
@@ -233,6 +315,7 @@ describe('updateFile()', () => {
       media: {
         body: 'src-stream'
       },
+      supportsAllDrives: false,
       requestBody: {}
     })
   })
@@ -249,7 +332,8 @@ describe('updateFile()', () => {
       fileId: 'file-id',
       srcFileName: 'src-file-name',
       destMimeType: 'dest-mime-type',
-      srcMimeType: 'src-mime-type'
+      srcMimeType: 'src-mime-type',
+      supportsAllDrives: false
     })
     await expect(res).rejects.toThrowError('err')
     await expect(res).rejects.toBeInstanceOf(UpdateFileError)
@@ -281,13 +365,16 @@ describe('sendFile()', () => {
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
-        srcMimeType: 'src-mime-type'
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: false
       })
     ).toEqual('create-test-id')
     expect(list).toBeCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
-      q: "'parent-id' in parents and name = 'dest-file-name'"
+      q: "'parent-id' in parents and name = 'dest-file-name'",
+      includeItemsFromAllDrives: false,
+      supportsAllDrives: false
     })
     expect(create).toBeCalledWith({
       fields: 'id',
@@ -295,6 +382,58 @@ describe('sendFile()', () => {
         mimeType: 'src-mime-type',
         body: 'mock-create-read-streadm'
       },
+      supportsAllDrives: false,
+      requestBody: {
+        name: 'dest-file-name',
+        mimeType: 'dest-mime-type',
+        parents: ['parent-id']
+      }
+    })
+    expect(update).toBeCalledTimes(0)
+  })
+
+  it('should call create(supports all drives)', async () => {
+    const list = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { files: [{}] } })
+    const create = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'create-test-id' } })
+    const update = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'update-test-id' } })
+    const drive: any = {
+      files: {
+        list,
+        create,
+        update
+      }
+    }
+    expect(
+      await sendFile(drive, {
+        fileId: '',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        srcFileName: 'src-file-name',
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: true
+      })
+    ).toEqual('create-test-id')
+    expect(list).toBeCalledWith({
+      fields: 'files(id, name)',
+      pageSize: 10,
+      q: "'parent-id' in parents and name = 'dest-file-name'",
+      includeItemsFromAllDrives: true,
+      supportsAllDrives: true
+    })
+    expect(create).toBeCalledWith({
+      fields: 'id',
+      media: {
+        mimeType: 'src-mime-type',
+        body: 'mock-create-read-streadm'
+      },
+      supportsAllDrives: true,
       requestBody: {
         name: 'dest-file-name',
         mimeType: 'dest-mime-type',
@@ -329,13 +468,16 @@ describe('sendFile()', () => {
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
         srcMimeType: 'src-mime-type',
+        supportsAllDrives: false,
         srcStream: 'src-stream' as any
       })
     ).toEqual('create-test-id')
     expect(list).toBeCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
-      q: "'parent-id' in parents and name = 'dest-file-name'"
+      q: "'parent-id' in parents and name = 'dest-file-name'",
+      includeItemsFromAllDrives: false,
+      supportsAllDrives: false
     })
     expect(create).toBeCalledWith({
       fields: 'id',
@@ -343,6 +485,7 @@ describe('sendFile()', () => {
         mimeType: 'src-mime-type',
         body: 'src-stream'
       },
+      supportsAllDrives: false,
       requestBody: {
         name: 'dest-file-name',
         mimeType: 'dest-mime-type',
@@ -376,13 +519,16 @@ describe('sendFile()', () => {
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
-        srcMimeType: 'src-mime-type'
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: false
       })
     ).toEqual('update-test-id')
     expect(list).toBeCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
-      q: "'parent-id' in parents and name = 'dest-file-name'"
+      q: "'parent-id' in parents and name = 'dest-file-name'",
+      includeItemsFromAllDrives: false,
+      supportsAllDrives: false
     })
     expect(create).toBeCalledTimes(0)
     expect(update).toBeCalledWith({
@@ -392,6 +538,57 @@ describe('sendFile()', () => {
         mimeType: 'src-mime-type',
         body: 'mock-create-read-streadm'
       },
+      supportsAllDrives: false,
+      requestBody: {
+        mimeType: 'dest-mime-type'
+      }
+    })
+  })
+
+  it('should call update(supports all drives)', async () => {
+    const list = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
+    const create = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'create-test-id' } })
+    const update = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { id: 'update-test-id' } })
+    const drive: any = {
+      files: {
+        list,
+        create,
+        update
+      }
+    }
+    expect(
+      await sendFile(drive, {
+        fileId: '',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        srcFileName: 'src-file-name',
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: true
+      })
+    ).toEqual('update-test-id')
+    expect(list).toBeCalledWith({
+      fields: 'files(id, name)',
+      pageSize: 10,
+      q: "'parent-id' in parents and name = 'dest-file-name'",
+      includeItemsFromAllDrives: true,
+      supportsAllDrives: true
+    })
+    expect(create).toBeCalledTimes(0)
+    expect(update).toBeCalledWith({
+      fileId: 'test-id',
+      fields: 'id',
+      media: {
+        mimeType: 'src-mime-type',
+        body: 'mock-create-read-streadm'
+      },
+      supportsAllDrives: true,
       requestBody: {
         mimeType: 'dest-mime-type'
       }
@@ -422,7 +619,8 @@ describe('sendFile()', () => {
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
-        srcMimeType: 'src-mime-type'
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: false
       })
     ).toEqual('update-test-id')
     expect(list).toBeCalledTimes(0)
@@ -434,6 +632,7 @@ describe('sendFile()', () => {
         mimeType: 'src-mime-type',
         body: 'mock-create-read-streadm'
       },
+      supportsAllDrives: false,
       requestBody: {
         mimeType: 'dest-mime-type'
       }
@@ -465,6 +664,7 @@ describe('sendFile()', () => {
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
         srcMimeType: 'src-mime-type',
+        supportsAllDrives: false,
         srcStream: 'src-stream' as any
       })
     ).toEqual('update-test-id')
@@ -477,6 +677,7 @@ describe('sendFile()', () => {
         mimeType: 'src-mime-type',
         body: 'src-stream'
       },
+      supportsAllDrives: false,
       requestBody: {
         mimeType: 'dest-mime-type'
       }
@@ -491,7 +692,8 @@ describe('sendFile()', () => {
       destFileName: 'dest-file-name',
       srcFileName: '',
       destMimeType: 'dest-mime-type',
-      srcMimeType: 'src-mime-type'
+      srcMimeType: 'src-mime-type',
+      supportsAllDrives: false
     })
     await expect(res).rejects.toThrowError(
       'The source content is not specified'

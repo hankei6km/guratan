@@ -103,7 +103,8 @@ export async function createPermisson(
       emailMessage
     } = opts
 
-    const fileId = inFileId || (await getFileId(drive, parentId, destFileName))
+    const fileId =
+      inFileId || (await getFileId(drive, parentId, destFileName, false))
     const createParams: drive_v3.Params$Resource$Permissions$Create = {
       requestBody: {
         type,

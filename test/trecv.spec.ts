@@ -325,7 +325,9 @@ describe('recvFile()', () => {
     expect(list).toBeCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
-      q: "'parent-id' in parents and name = 'src-file-name'"
+      q: "'parent-id' in parents and name = 'src-file-name'",
+      includeItemsFromAllDrives: false,
+      supportsAllDrives: false
     })
     expect(mockExport).toBeCalledWith(
       {
@@ -409,7 +411,9 @@ describe('recvFile()', () => {
     expect(list).toBeCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
-      q: "'parent-id' in parents and name = 'src-file-name'"
+      q: "'parent-id' in parents and name = 'src-file-name'",
+      includeItemsFromAllDrives: false,
+      supportsAllDrives: false
     })
     expect(mockExport).toBeCalledWith(
       {

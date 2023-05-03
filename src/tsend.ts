@@ -50,6 +50,10 @@ export type SendFileOpts = {
    */
   srcMimeType: string
   /**
+   * Supports both My Drives and shared drives
+   */
+  supportsAllDrives: boolean
+  /**
    * @type The srouce content from stream. It passed by pipe option.
    */
   srcStream?: Readable
@@ -71,6 +75,7 @@ export async function uploadFile(
     | 'destMimeType'
     | 'srcMimeType'
     | 'srcStream'
+    | 'supportsAllDrives'
   >
 ): Promise<string> {
   try {
@@ -80,6 +85,7 @@ export async function uploadFile(
       srcFileName,
       destMimeType,
       srcMimeType,
+      supportsAllDrives,
       srcStream
     } = opts
     const params: drive_v3.Params$Resource$Files$Create = {
@@ -90,7 +96,8 @@ export async function uploadFile(
       media: {
         body: srcStream ? srcStream : fs.createReadStream(srcFileName)
       },
-      fields: 'id'
+      fields: 'id',
+      supportsAllDrives
     }
     if (destMimeType) {
       params.requestBody!.mimeType = destMimeType
@@ -115,18 +122,30 @@ export async function updateFile(
   drive: drive_v3.Drive,
   opts: { fileId: string } & Pick<
     SendFileOpts,
-    'srcFileName' | 'destMimeType' | 'srcMimeType' | 'srcStream'
+    | 'srcFileName'
+    | 'destMimeType'
+    | 'srcMimeType'
+    | 'srcStream'
+    | 'supportsAllDrives'
   >
 ): Promise<string> {
   try {
-    const { fileId, srcFileName, destMimeType, srcMimeType, srcStream } = opts
+    const {
+      fileId,
+      srcFileName,
+      destMimeType,
+      srcMimeType,
+      srcStream,
+      supportsAllDrives
+    } = opts
     const params: drive_v3.Params$Resource$Files$Update = {
       fileId,
       requestBody: {},
       media: {
         body: srcStream ? srcStream : fs.createReadStream(srcFileName)
       },
-      fields: 'id'
+      fields: 'id',
+      supportsAllDrives
     }
     if (destMimeType) {
       params.requestBody!.mimeType = destMimeType
@@ -158,13 +177,16 @@ export async function sendFile(
     srcFileName,
     destMimeType,
     srcMimeType,
+    supportsAllDrives,
     srcStream
   } = opts
   if (srcFileName === '' && srcStream === undefined) {
     throw new Error('The source content is not specified')
   }
   let fileId =
-    inFileId !== '' ? inFileId : await getFileId(drive, parentId, destFileName)
+    inFileId !== ''
+      ? inFileId
+      : await getFileId(drive, parentId, destFileName, supportsAllDrives)
   if (fileId === '') {
     return uploadFile(drive, {
       parentId,
@@ -172,6 +194,7 @@ export async function sendFile(
       srcFileName,
       destMimeType,
       srcMimeType,
+      supportsAllDrives,
       srcStream
     })
   }
@@ -180,6 +203,7 @@ export async function sendFile(
     srcFileName,
     destMimeType,
     srcMimeType,
+    supportsAllDrives,
     srcStream
   })
 }

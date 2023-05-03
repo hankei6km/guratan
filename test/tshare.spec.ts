@@ -204,7 +204,9 @@ describe('createPermisson()', () => {
     expect(list).toBeCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
-      q: "'parent-id' in parents and name = 'dest-file-name'"
+      q: "'parent-id' in parents and name = 'dest-file-name'",
+      includeItemsFromAllDrives: false,
+      supportsAllDrives: false
     })
     expect(create).toBeCalledWith({
       requestBody: {

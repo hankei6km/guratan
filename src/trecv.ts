@@ -132,7 +132,9 @@ export async function recvFile(
     throw new Error('The destination is not specified')
   }
   let fileId =
-    inFileId !== '' ? inFileId : await getFileId(drive, parentId, srcFileName)
+    inFileId !== ''
+      ? inFileId
+      : await getFileId(drive, parentId, srcFileName, false)
   if (fileId === '') {
     throw new GetFileIdError(
       // `The srouce file not found in paretnt id : ${srcFileName}, ${parentId}`

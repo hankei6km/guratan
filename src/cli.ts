@@ -13,6 +13,7 @@ type OptsSend = Opts & {
   srcFileName: string
   destMimeType: string
   srcMimeType: string
+  supportsAllDrives: boolean
   pipe: boolean
   printId: boolean
 }
@@ -50,6 +51,7 @@ export const cliSend = async ({
   srcFileName,
   destMimeType,
   srcMimeType,
+  supportsAllDrives,
   pipe,
   printId,
   stdin,
@@ -65,6 +67,7 @@ export const cliSend = async ({
       srcFileName,
       destMimeType,
       srcMimeType,
+      supportsAllDrives,
       srcStream: pipe ? stdin : undefined
     })
     if (printId) {
