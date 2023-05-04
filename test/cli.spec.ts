@@ -400,6 +400,7 @@ describe('cliShare()', () => {
         transferOwnership: false,
         sendNotificationEmail: true,
         emailMessage: 'test-message',
+        supportsAllDrives: false,
         printId: false,
         stdin,
         stdout,
@@ -419,7 +420,58 @@ describe('cliShare()', () => {
       moveToNewOwnersRoot: false,
       transferOwnership: false,
       sendNotificationEmail: true,
-      emailMessage: 'test-message'
+      emailMessage: 'test-message',
+      supportsAllDrives: false
+    })
+    expect(outData).toEqual('')
+    expect(errData).toEqual('')
+  })
+
+  it('should supports all drives', async () => {
+    const stdin = new PassThrough()
+    const stdout = new PassThrough()
+    const stderr = new PassThrough()
+    let outData = ''
+    stdout.on('data', (d) => (outData = outData + d))
+    let errData = ''
+    stderr.on('data', (d) => (errData = errData + d))
+    expect(
+      await cliShare({
+        fileId: 'test-file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        type: 'test-type',
+        role: 'test-role',
+        emailAddress: 'test-email-address',
+        domain: 'test-domain',
+        view: 'test-view',
+        allowFileDiscovery: false,
+        moveToNewOwnersRoot: false,
+        transferOwnership: false,
+        sendNotificationEmail: true,
+        emailMessage: 'test-message',
+        supportsAllDrives: true,
+        printId: false,
+        stdin,
+        stdout,
+        stderr
+      })
+    ).toEqual(0)
+    expect(mockCreatePermisson).toBeCalledWith('test-drive', {
+      fileId: 'test-file-id',
+      parentId: 'parent-id',
+      destFileName: 'dest-file-name',
+      type: 'test-type',
+      role: 'test-role',
+      emailAddress: 'test-email-address',
+      domain: 'test-domain',
+      view: 'test-view',
+      allowFileDiscovery: false,
+      moveToNewOwnersRoot: false,
+      transferOwnership: false,
+      sendNotificationEmail: true,
+      emailMessage: 'test-message',
+      supportsAllDrives: true
     })
     expect(outData).toEqual('')
     expect(errData).toEqual('')
@@ -448,6 +500,7 @@ describe('cliShare()', () => {
         transferOwnership: false,
         sendNotificationEmail: true,
         emailMessage: 'test-message',
+        supportsAllDrives: false,
         printId: true,
         stdin,
         stdout,
@@ -467,7 +520,8 @@ describe('cliShare()', () => {
       moveToNewOwnersRoot: false,
       transferOwnership: false,
       sendNotificationEmail: true,
-      emailMessage: 'test-message'
+      emailMessage: 'test-message',
+      supportsAllDrives: false
     })
     expect(outData).toEqual('test-permission-id')
     expect(errData).toEqual('')

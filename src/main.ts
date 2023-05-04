@@ -253,6 +253,13 @@ const argv = await yargs(hideBin(process.argv))
           description:
             'A plain text custom message to include in the notification email.'
         },
+        'supports-all-drives': {
+          type: 'boolean',
+          required: false,
+          default: false,
+          description:
+            'Supports both My Drives and shared drives(`includeItemsFromAllDrives` is also enabled)'
+        },
         'print-id': {
           type: 'boolean',
           required: false,
@@ -278,6 +285,7 @@ const argv = await yargs(hideBin(process.argv))
           sendNotificationEmail: argv['send-notification-email'],
           printId: argv['print-id'] || false,
           emailMessage: argv['email-message'],
+          supportsAllDrives: argv['supports-all-drives'] || false,
           stdin: process.stdin,
           stdout: process.stdout,
           stderr: process.stderr

@@ -42,6 +42,7 @@ type OptsShare = Opts & {
   transferOwnership?: boolean
   sendNotificationEmail?: boolean
   emailMessage: string
+  supportsAllDrives: boolean
   printId: boolean
 }
 
@@ -132,6 +133,7 @@ export const cliShare = async ({
   transferOwnership,
   sendNotificationEmail,
   emailMessage,
+  supportsAllDrives,
   printId,
   stdout,
   stderr
@@ -151,7 +153,8 @@ export const cliShare = async ({
       moveToNewOwnersRoot,
       transferOwnership,
       sendNotificationEmail,
-      emailMessage
+      emailMessage,
+      supportsAllDrives
     })
     if (printId) {
       stdout.write(id)
