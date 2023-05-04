@@ -42,8 +42,7 @@ describe('uploadFile()', () => {
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
-        srcMimeType: 'src-mime-type',
-        supportsAllDrives: false
+        srcMimeType: 'src-mime-type'
       })
     ).toEqual('test-id')
     expect(mockCreateReadStream).toBeCalledWith('src-file-name')
@@ -204,8 +203,7 @@ describe('updateFile()', () => {
         fileId: 'file-id',
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
-        srcMimeType: 'src-mime-type',
-        supportsAllDrives: false
+        srcMimeType: 'src-mime-type'
       })
     ).toEqual('test-id')
     expect(mockCreateReadStream).toBeCalledWith('src-file-name')
@@ -365,8 +363,7 @@ describe('sendFile()', () => {
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
-        srcMimeType: 'src-mime-type',
-        supportsAllDrives: false
+        srcMimeType: 'src-mime-type'
       })
     ).toEqual('create-test-id')
     expect(list).toBeCalledWith({

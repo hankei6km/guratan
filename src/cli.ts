@@ -13,7 +13,7 @@ type OptsSend = Opts & {
   srcFileName: string
   destMimeType: string
   srcMimeType: string
-  supportsAllDrives: boolean
+  supportsAllDrives?: boolean
   pipe: boolean
   printId: boolean
 }
@@ -23,7 +23,7 @@ type OptsRecv = Opts & {
   srcFileName: string
   destFileName: string
   destMimeType: string
-  supportsAllDrives: boolean
+  supportsAllDrives?: boolean
   pipe: boolean
   removeBom: boolean
   printId: boolean
@@ -42,7 +42,7 @@ type OptsShare = Opts & {
   transferOwnership?: boolean
   sendNotificationEmail?: boolean
   emailMessage: string
-  supportsAllDrives: boolean
+  supportsAllDrives?: boolean
   printId: boolean
 }
 
@@ -69,7 +69,7 @@ export const cliSend = async ({
       srcFileName,
       destMimeType,
       srcMimeType,
-      supportsAllDrives,
+      supportsAllDrives: supportsAllDrives || false,
       srcStream: pipe ? stdin : undefined
     })
     if (printId) {
@@ -104,7 +104,7 @@ export const cliRecv = async ({
       srcFileName,
       destFileName,
       destMimeType,
-      supportsAllDrives,
+      supportsAllDrives: supportsAllDrives || false,
       removeBom,
       destStream: pipe ? stdout : undefined
     })
@@ -154,7 +154,7 @@ export const cliShare = async ({
       transferOwnership,
       sendNotificationEmail,
       emailMessage,
-      supportsAllDrives
+      supportsAllDrives: supportsAllDrives || false
     })
     if (printId) {
       stdout.write(id)

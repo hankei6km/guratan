@@ -38,8 +38,7 @@ describe('createPermisson()', () => {
         transferOwnership: true,
         allowFileDiscovery: true,
         sendNotificationEmail: false,
-        emailMessage: 'test-message',
-        supportsAllDrives: false
+        emailMessage: 'test-message'
       })
     ).toEqual('test-id')
     expect(list).toBeCalledTimes(0)

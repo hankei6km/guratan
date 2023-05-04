@@ -76,7 +76,7 @@ export type CreatePermissonOpts = {
   /**
    * Supports both My Drives and shared drives
    */
-  supportsAllDrives: boolean
+  supportsAllDrives?: boolean
 }
 
 /**
@@ -110,7 +110,12 @@ export async function createPermisson(
 
     const fileId =
       inFileId ||
-      (await getFileId(drive, parentId, destFileName, supportsAllDrives))
+      (await getFileId(
+        drive,
+        parentId,
+        destFileName,
+        supportsAllDrives || false
+      ))
     const createParams: drive_v3.Params$Resource$Permissions$Create = {
       requestBody: {
         type,
@@ -118,7 +123,7 @@ export async function createPermisson(
       },
       fileId,
       fields: 'id',
-      supportsAllDrives
+      supportsAllDrives: supportsAllDrives || false
     }
     if (emailAddress) {
       createParams.requestBody!.emailAddress = emailAddress
@@ -160,7 +165,7 @@ export async function createPermisson(
         },
         fileId,
         fields: 'id',
-        supportsAllDrives
+        supportsAllDrives: supportsAllDrives || false
       })
     }
     return id

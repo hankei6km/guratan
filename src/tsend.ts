@@ -52,7 +52,7 @@ export type SendFileOpts = {
   /**
    * Supports both My Drives and shared drives
    */
-  supportsAllDrives: boolean
+  supportsAllDrives?: boolean
   /**
    * @type The srouce content from stream. It passed by pipe option.
    */
@@ -97,7 +97,7 @@ export async function uploadFile(
         body: srcStream ? srcStream : fs.createReadStream(srcFileName)
       },
       fields: 'id',
-      supportsAllDrives
+      supportsAllDrives: supportsAllDrives || false
     }
     if (destMimeType) {
       params.requestBody!.mimeType = destMimeType
@@ -145,7 +145,7 @@ export async function updateFile(
         body: srcStream ? srcStream : fs.createReadStream(srcFileName)
       },
       fields: 'id',
-      supportsAllDrives
+      supportsAllDrives: supportsAllDrives || false
     }
     if (destMimeType) {
       params.requestBody!.mimeType = destMimeType
@@ -186,7 +186,12 @@ export async function sendFile(
   let fileId =
     inFileId !== ''
       ? inFileId
-      : await getFileId(drive, parentId, destFileName, supportsAllDrives)
+      : await getFileId(
+          drive,
+          parentId,
+          destFileName,
+          supportsAllDrives || false
+        )
   if (fileId === '') {
     return uploadFile(drive, {
       parentId,

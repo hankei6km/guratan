@@ -98,7 +98,6 @@ describe('cliSend()', () => {
         srcMimeType: 'src-mime-type',
         pipe: false,
         printId: false,
-        supportsAllDrives: false,
         stdin,
         stdout,
         stderr
@@ -248,7 +247,6 @@ describe('cliRecv()', () => {
         pipe: false,
         printId: false,
         removeBom: false,
-        supportsAllDrives: false,
         stdin,
         stdout,
         stderr
@@ -400,7 +398,6 @@ describe('cliShare()', () => {
         transferOwnership: false,
         sendNotificationEmail: true,
         emailMessage: 'test-message',
-        supportsAllDrives: false,
         printId: false,
         stdin,
         stdout,

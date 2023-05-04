@@ -106,8 +106,7 @@ describe('downloadFile()', () => {
       await downloadFile(drive, {
         fileId: 'test-id',
         destFileName: 'dest-file-name',
-        destMimeType: 'dest-mime-type',
-        supportsAllDrives: false
+        destMimeType: 'dest-mime-type'
       })
     ).toBeUndefined()
     expect(mockExport).toBeCalledWith(
@@ -396,8 +395,7 @@ describe('recvFile()', () => {
         parentId: 'parent-id',
         srcFileName: 'src-file-name',
         destFileName: 'dest-file-name',
-        destMimeType: 'dest-mime-type',
-        supportsAllDrives: false
+        destMimeType: 'dest-mime-type'
       })
     ).toEqual('test-id')
     expect(list).toBeCalledWith({

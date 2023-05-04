@@ -43,7 +43,7 @@ export type RecvFileOpts = {
   /**
    * Supports both My Drives and shared drives
    */
-  supportsAllDrives: boolean
+  supportsAllDrives?: boolean
   /**
    * @type Remove BOM chars in receiving content.
    */
@@ -99,7 +99,7 @@ export async function downloadFile(
         const params: drive_v3.Params$Resource$Files$Get = {
           fileId,
           alt: 'media',
-          supportsAllDrives
+          supportsAllDrives: supportsAllDrives || false
         }
         const res = await drive.files.get(params, { responseType: 'stream' })
         await promisePipeline(res.data, dest)
@@ -152,7 +152,12 @@ export async function recvFile(
   let fileId =
     inFileId !== ''
       ? inFileId
-      : await getFileId(drive, parentId, srcFileName, supportsAllDrives)
+      : await getFileId(
+          drive,
+          parentId,
+          srcFileName,
+          supportsAllDrives || false
+        )
   if (fileId === '') {
     throw new GetFileIdError(
       // `The srouce file not found in paretnt id : ${srcFileName}, ${parentId}`
