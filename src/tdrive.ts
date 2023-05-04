@@ -14,14 +14,14 @@ export class GetFileIdError extends Error {
  * @param drive - drive instance.
  * @param parentId  - id of folder in Google Deive.
  * @param fileName  - file name.
- * @param supportsAllDrives  - supports both My Drives and shared drives.
+ * @param [supportsAllDrives=false]  - supports both My Drives and shared drives.
  * @returns id of file or blank(when file is not found)
  */
 export async function getFileId(
   drive: drive_v3.Drive,
   parentId: string,
   fileName: string,
-  supportsAllDrives: boolean
+  supportsAllDrives: boolean = false
 ): Promise<string> {
   try {
     if (validateQueryValue(parentId) === false) {

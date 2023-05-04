@@ -47,9 +47,7 @@ describe('getFileId()', () => {
       }
     }
 
-    expect(await getFileId(drive, 'parent-id', 'file-name', false)).toEqual(
-      'test-id'
-    )
+    expect(await getFileId(drive, 'parent-id', 'file-name')).toEqual('test-id')
     expect(list).toBeCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
