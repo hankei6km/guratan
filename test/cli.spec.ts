@@ -248,6 +248,7 @@ describe('cliRecv()', () => {
         pipe: false,
         printId: false,
         removeBom: false,
+        supportsAllDrives: false,
         stdin,
         stdout,
         stderr
@@ -259,6 +260,7 @@ describe('cliRecv()', () => {
       srcFileName: 'src-file-name',
       destFileName: 'dest-file-name',
       destMimeType: 'dest-mime-type',
+      supportsAllDrives: false,
       removeBom: false
     })
     expect(outData).toEqual('')
@@ -279,6 +281,7 @@ describe('cliRecv()', () => {
         destMimeType: 'dest-mime-type',
         pipe: true,
         printId: false,
+        supportsAllDrives: false,
         removeBom: false,
         stdin,
         stdout: 'std-out' as any,
@@ -292,6 +295,7 @@ describe('cliRecv()', () => {
       destFileName: 'dest-file-name',
       destMimeType: 'dest-mime-type',
       destStream: 'std-out',
+      supportsAllDrives: false,
       removeBom: false
     })
     expect(errData).toEqual('')
@@ -312,6 +316,7 @@ describe('cliRecv()', () => {
         srcFileName: 'src-file-name',
         destFileName: 'dest-file-name',
         destMimeType: 'mime-type',
+        supportsAllDrives: false,
         pipe: false,
         removeBom: false,
         printId: true,
@@ -326,9 +331,47 @@ describe('cliRecv()', () => {
       srcFileName: 'src-file-name',
       destFileName: 'dest-file-name',
       destMimeType: 'mime-type',
+      supportsAllDrives: false,
       removeBom: false
     })
     expect(outData).toEqual('test-id')
+    expect(errData).toEqual('')
+  })
+
+  it('should supports all drives', async () => {
+    const stdin = new PassThrough()
+    const stdout = new PassThrough()
+    const stderr = new PassThrough()
+    let outData = ''
+    stdout.on('data', (d) => (outData = outData + d))
+    let errData = ''
+    stderr.on('data', (d) => (errData = errData + d))
+    expect(
+      await cliRecv({
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        srcFileName: 'src-file-name',
+        destFileName: 'dest-file-name',
+        destMimeType: 'dest-mime-type',
+        pipe: false,
+        printId: false,
+        removeBom: false,
+        supportsAllDrives: true,
+        stdin,
+        stdout,
+        stderr
+      })
+    ).toEqual(0)
+    expect(mockRecvFile).toBeCalledWith('test-drive', {
+      fileId: 'file-id',
+      parentId: 'parent-id',
+      srcFileName: 'src-file-name',
+      destFileName: 'dest-file-name',
+      destMimeType: 'dest-mime-type',
+      supportsAllDrives: true,
+      removeBom: false
+    })
+    expect(outData).toEqual('')
     expect(errData).toEqual('')
   })
 })

@@ -122,6 +122,13 @@ const argv = await yargs(hideBin(process.argv))
           default: '',
           description: 'Media mime-type'
         },
+        'supports-all-drives': {
+          type: 'boolean',
+          required: false,
+          default: false,
+          description:
+            'Supports both My Drives and shared drives(`includeItemsFromAllDrives` is also enabled). It not used with "export" method(it has no `supportsAllDrives` parameter)'
+        },
         pipe: {
           type: 'boolean',
           required: false,
@@ -150,6 +157,7 @@ const argv = await yargs(hideBin(process.argv))
           srcFileName: argv['src-file-name'] || '',
           destFileName: argv['dest-file-name'] || '',
           destMimeType: argv['dest-mime-type'] || '',
+          supportsAllDrives: argv['supports-all-drives'] || false,
           pipe: argv['pipe'] || false,
           removeBom: argv['remove-bom'] || false,
           printId: argv['print-id'] || false,

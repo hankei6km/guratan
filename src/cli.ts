@@ -23,6 +23,7 @@ type OptsRecv = Opts & {
   srcFileName: string
   destFileName: string
   destMimeType: string
+  supportsAllDrives: boolean
   pipe: boolean
   removeBom: boolean
   printId: boolean
@@ -87,6 +88,7 @@ export const cliRecv = async ({
   srcFileName,
   destFileName,
   destMimeType,
+  supportsAllDrives,
   printId,
   pipe,
   removeBom,
@@ -101,6 +103,7 @@ export const cliRecv = async ({
       srcFileName,
       destFileName,
       destMimeType,
+      supportsAllDrives,
       removeBom,
       destStream: pipe ? stdout : undefined
     })

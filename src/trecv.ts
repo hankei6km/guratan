@@ -41,6 +41,10 @@ export type RecvFileOpts = {
    */
   destMimeType: string
   /**
+   * Supports both My Drives and shared drives
+   */
+  supportsAllDrives: boolean
+  /**
    * @type Remove BOM chars in receiving content.
    */
   removeBom?: boolean
@@ -60,12 +64,24 @@ export async function downloadFile(
   drive: drive_v3.Drive,
   opts: Pick<
     RecvFileOpts,
-    'fileId' | 'destFileName' | 'destMimeType' | 'removeBom' | 'destStream'
+    | 'fileId'
+    | 'destFileName'
+    | 'destMimeType'
+    | 'supportsAllDrives'
+    | 'removeBom'
+    | 'destStream'
   >
 ): Promise<void> {
   let ret: Promise<void> = undefined as any
   try {
-    const { fileId, destFileName, destMimeType, destStream, removeBom } = opts
+    const {
+      fileId,
+      destFileName,
+      destMimeType,
+      destStream,
+      supportsAllDrives,
+      removeBom
+    } = opts
     let dest = destStream ? destStream : fs.createWriteStream(destFileName)
     try {
       if (destMimeType) {
@@ -82,7 +98,8 @@ export async function downloadFile(
       } else {
         const params: drive_v3.Params$Resource$Files$Get = {
           fileId,
-          alt: 'media'
+          alt: 'media',
+          supportsAllDrives
         }
         const res = await drive.files.get(params, { responseType: 'stream' })
         await promisePipeline(res.data, dest)
@@ -125,6 +142,7 @@ export async function recvFile(
     srcFileName,
     destFileName,
     destMimeType,
+    supportsAllDrives,
     removeBom,
     destStream
   } = opts
@@ -134,7 +152,7 @@ export async function recvFile(
   let fileId =
     inFileId !== ''
       ? inFileId
-      : await getFileId(drive, parentId, srcFileName, false)
+      : await getFileId(drive, parentId, srcFileName, supportsAllDrives)
   if (fileId === '') {
     throw new GetFileIdError(
       // `The srouce file not found in paretnt id : ${srcFileName}, ${parentId}`
@@ -145,6 +163,7 @@ export async function recvFile(
     fileId,
     destFileName,
     destMimeType,
+    supportsAllDrives,
     removeBom,
     destStream
   })
