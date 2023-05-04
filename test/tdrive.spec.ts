@@ -51,7 +51,31 @@ describe('getFileId()', () => {
     expect(list).toBeCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
-      q: "'parent-id' in parents and name = 'file-name'"
+      q: "'parent-id' in parents and name = 'file-name'",
+      includeItemsFromAllDrives: false,
+      supportsAllDrives: false
+    })
+  })
+
+  it('should enable supportsAllDrives', async () => {
+    const list = jest
+      .fn<any, any[]>()
+      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
+    const drive: any = {
+      files: {
+        list
+      }
+    }
+
+    expect(await getFileId(drive, 'parent-id', 'file-name', true)).toEqual(
+      'test-id'
+    )
+    expect(list).toBeCalledWith({
+      fields: 'files(id, name)',
+      pageSize: 10,
+      q: "'parent-id' in parents and name = 'file-name'",
+      includeItemsFromAllDrives: true,
+      supportsAllDrives: true
     })
   })
 
@@ -65,11 +89,13 @@ describe('getFileId()', () => {
       }
     }
 
-    expect(await getFileId(drive, 'parent-id', 'file-name')).toEqual('')
+    expect(await getFileId(drive, 'parent-id', 'file-name', false)).toEqual('')
     expect(list).toBeCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
-      q: "'parent-id' in parents and name = 'file-name'"
+      q: "'parent-id' in parents and name = 'file-name'",
+      includeItemsFromAllDrives: false,
+      supportsAllDrives: false
     })
   })
 
@@ -81,7 +107,7 @@ describe('getFileId()', () => {
       }
     }
 
-    const res = getFileId(drive, 'parent-id', 'file-name')
+    const res = getFileId(drive, 'parent-id', 'file-name', false)
     await expect(res).rejects.toThrowError('err')
     await expect(res).rejects.toBeInstanceOf(GetFileIdError)
   })
@@ -94,7 +120,7 @@ describe('getFileId()', () => {
       }
     }
 
-    const res = getFileId(drive, "parent'id", 'file-name')
+    const res = getFileId(drive, "parent'id", 'file-name', false)
     await expect(res).rejects.toThrowError("Invalid paretnt id : parent'id")
     await expect(res).rejects.toBeInstanceOf(GetFileIdError)
   })
@@ -107,7 +133,7 @@ describe('getFileId()', () => {
       }
     }
 
-    const res = getFileId(drive, 'parent-id', "file'name")
+    const res = getFileId(drive, 'parent-id', "file'name", false)
     await expect(res).rejects.toThrowError("Invalid file name : file'name")
     await expect(res).rejects.toBeInstanceOf(GetFileIdError)
   })

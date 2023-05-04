@@ -14,12 +14,14 @@ export class GetFileIdError extends Error {
  * @param drive - drive instance.
  * @param parentId  - id of folder in Google Deive.
  * @param fileName  - file name.
+ * @param [supportsAllDrives=false]  - supports both My Drives and shared drives.
  * @returns id of file or blank(when file is not found)
  */
 export async function getFileId(
   drive: drive_v3.Drive,
   parentId: string,
-  fileName: string
+  fileName: string,
+  supportsAllDrives: boolean = false
 ): Promise<string> {
   try {
     if (validateQueryValue(parentId) === false) {
@@ -31,7 +33,9 @@ export async function getFileId(
     const list = await drive.files.list({
       pageSize: 10,
       q: `'${parentId}' in parents and name = '${fileName}'`,
-      fields: 'files(id, name)'
+      fields: 'files(id, name)',
+      includeItemsFromAllDrives: supportsAllDrives, // 現状では supportsAllDrives が指定されていれば常に true にする
+      supportsAllDrives
     })
     if (list.data.files && list.data.files.length > 0) {
       return list.data.files[0].id || ''

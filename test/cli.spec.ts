@@ -109,7 +109,8 @@ describe('cliSend()', () => {
       destFileName: 'dest-file-name',
       srcFileName: 'src-file-name',
       destMimeType: 'dest-mime-type',
-      srcMimeType: 'src-mime-type'
+      srcMimeType: 'src-mime-type',
+      supportsAllDrives: false
     })
     expect(outData).toEqual('')
     expect(errData).toEqual('')
@@ -132,6 +133,7 @@ describe('cliSend()', () => {
         srcMimeType: 'src-mime-type',
         pipe: true,
         printId: false,
+        supportsAllDrives: false,
         stdin: 'std-in' as any,
         stdout,
         stderr
@@ -144,7 +146,8 @@ describe('cliSend()', () => {
       srcFileName: 'src-file-name',
       destMimeType: 'dest-mime-type',
       srcMimeType: 'src-mime-type',
-      srcStream: 'std-in'
+      srcStream: 'std-in',
+      supportsAllDrives: false
     })
     expect(outData).toEqual('')
     expect(errData).toEqual('')
@@ -166,6 +169,7 @@ describe('cliSend()', () => {
         srcFileName: 'src-file-name',
         destMimeType: 'mime-type',
         srcMimeType: 'src-mime-type',
+        supportsAllDrives: false,
         pipe: false,
         printId: true,
         stdin,
@@ -179,7 +183,45 @@ describe('cliSend()', () => {
       destFileName: 'dest-file-name',
       srcFileName: 'src-file-name',
       destMimeType: 'mime-type',
-      srcMimeType: 'src-mime-type'
+      srcMimeType: 'src-mime-type',
+      supportsAllDrives: false
+    })
+    expect(outData).toEqual('test-id')
+    expect(errData).toEqual('')
+  })
+
+  it('should supports all drives', async () => {
+    const stdin = new PassThrough()
+    const stdout = new PassThrough()
+    const stderr = new PassThrough()
+    let outData = ''
+    stdout.on('data', (d) => (outData = outData + d))
+    let errData = ''
+    stderr.on('data', (d) => (errData = errData + d))
+    expect(
+      await cliSend({
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        srcFileName: 'src-file-name',
+        destMimeType: 'mime-type',
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: true,
+        pipe: false,
+        printId: true,
+        stdin,
+        stdout,
+        stderr
+      })
+    ).toEqual(0)
+    expect(mockSendFile).toBeCalledWith('test-drive', {
+      fileId: 'file-id',
+      parentId: 'parent-id',
+      destFileName: 'dest-file-name',
+      srcFileName: 'src-file-name',
+      destMimeType: 'mime-type',
+      srcMimeType: 'src-mime-type',
+      supportsAllDrives: true
     })
     expect(outData).toEqual('test-id')
     expect(errData).toEqual('')
@@ -216,6 +258,7 @@ describe('cliRecv()', () => {
       srcFileName: 'src-file-name',
       destFileName: 'dest-file-name',
       destMimeType: 'dest-mime-type',
+      supportsAllDrives: false,
       removeBom: false
     })
     expect(outData).toEqual('')
@@ -236,6 +279,7 @@ describe('cliRecv()', () => {
         destMimeType: 'dest-mime-type',
         pipe: true,
         printId: false,
+        supportsAllDrives: false,
         removeBom: false,
         stdin,
         stdout: 'std-out' as any,
@@ -249,6 +293,7 @@ describe('cliRecv()', () => {
       destFileName: 'dest-file-name',
       destMimeType: 'dest-mime-type',
       destStream: 'std-out',
+      supportsAllDrives: false,
       removeBom: false
     })
     expect(errData).toEqual('')
@@ -269,6 +314,7 @@ describe('cliRecv()', () => {
         srcFileName: 'src-file-name',
         destFileName: 'dest-file-name',
         destMimeType: 'mime-type',
+        supportsAllDrives: false,
         pipe: false,
         removeBom: false,
         printId: true,
@@ -283,9 +329,47 @@ describe('cliRecv()', () => {
       srcFileName: 'src-file-name',
       destFileName: 'dest-file-name',
       destMimeType: 'mime-type',
+      supportsAllDrives: false,
       removeBom: false
     })
     expect(outData).toEqual('test-id')
+    expect(errData).toEqual('')
+  })
+
+  it('should supports all drives', async () => {
+    const stdin = new PassThrough()
+    const stdout = new PassThrough()
+    const stderr = new PassThrough()
+    let outData = ''
+    stdout.on('data', (d) => (outData = outData + d))
+    let errData = ''
+    stderr.on('data', (d) => (errData = errData + d))
+    expect(
+      await cliRecv({
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        srcFileName: 'src-file-name',
+        destFileName: 'dest-file-name',
+        destMimeType: 'dest-mime-type',
+        pipe: false,
+        printId: false,
+        removeBom: false,
+        supportsAllDrives: true,
+        stdin,
+        stdout,
+        stderr
+      })
+    ).toEqual(0)
+    expect(mockRecvFile).toBeCalledWith('test-drive', {
+      fileId: 'file-id',
+      parentId: 'parent-id',
+      srcFileName: 'src-file-name',
+      destFileName: 'dest-file-name',
+      destMimeType: 'dest-mime-type',
+      supportsAllDrives: true,
+      removeBom: false
+    })
+    expect(outData).toEqual('')
     expect(errData).toEqual('')
   })
 })
@@ -333,7 +417,58 @@ describe('cliShare()', () => {
       moveToNewOwnersRoot: false,
       transferOwnership: false,
       sendNotificationEmail: true,
-      emailMessage: 'test-message'
+      emailMessage: 'test-message',
+      supportsAllDrives: false
+    })
+    expect(outData).toEqual('')
+    expect(errData).toEqual('')
+  })
+
+  it('should supports all drives', async () => {
+    const stdin = new PassThrough()
+    const stdout = new PassThrough()
+    const stderr = new PassThrough()
+    let outData = ''
+    stdout.on('data', (d) => (outData = outData + d))
+    let errData = ''
+    stderr.on('data', (d) => (errData = errData + d))
+    expect(
+      await cliShare({
+        fileId: 'test-file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        type: 'test-type',
+        role: 'test-role',
+        emailAddress: 'test-email-address',
+        domain: 'test-domain',
+        view: 'test-view',
+        allowFileDiscovery: false,
+        moveToNewOwnersRoot: false,
+        transferOwnership: false,
+        sendNotificationEmail: true,
+        emailMessage: 'test-message',
+        supportsAllDrives: true,
+        printId: false,
+        stdin,
+        stdout,
+        stderr
+      })
+    ).toEqual(0)
+    expect(mockCreatePermisson).toBeCalledWith('test-drive', {
+      fileId: 'test-file-id',
+      parentId: 'parent-id',
+      destFileName: 'dest-file-name',
+      type: 'test-type',
+      role: 'test-role',
+      emailAddress: 'test-email-address',
+      domain: 'test-domain',
+      view: 'test-view',
+      allowFileDiscovery: false,
+      moveToNewOwnersRoot: false,
+      transferOwnership: false,
+      sendNotificationEmail: true,
+      emailMessage: 'test-message',
+      supportsAllDrives: true
     })
     expect(outData).toEqual('')
     expect(errData).toEqual('')
@@ -362,6 +497,7 @@ describe('cliShare()', () => {
         transferOwnership: false,
         sendNotificationEmail: true,
         emailMessage: 'test-message',
+        supportsAllDrives: false,
         printId: true,
         stdin,
         stdout,
@@ -381,7 +517,8 @@ describe('cliShare()', () => {
       moveToNewOwnersRoot: false,
       transferOwnership: false,
       sendNotificationEmail: true,
-      emailMessage: 'test-message'
+      emailMessage: 'test-message',
+      supportsAllDrives: false
     })
     expect(outData).toEqual('test-permission-id')
     expect(errData).toEqual('')

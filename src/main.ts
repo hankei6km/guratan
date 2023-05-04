@@ -48,6 +48,13 @@ const argv = await yargs(hideBin(process.argv))
           default: '',
           description: 'Media mime-type'
         },
+        'supports-all-drives': {
+          type: 'boolean',
+          required: false,
+          default: false,
+          description:
+            'Supports both My Drives and shared drives(`includeItemsFromAllDrives` is also enabled)'
+        },
         pipe: {
           type: 'boolean',
           required: false,
@@ -72,6 +79,7 @@ const argv = await yargs(hideBin(process.argv))
           destMimeType: argv['dest-mime-type'] || '',
           srcMimeType: argv['src-mime-type'] || '',
           pipe: argv['pipe'] || false,
+          supportsAllDrives: argv['supports-all-drives'] || false,
           printId: argv['print-id'] || false,
           stdin: process.stdin,
           stdout: process.stdout,
@@ -114,6 +122,13 @@ const argv = await yargs(hideBin(process.argv))
           default: '',
           description: 'Media mime-type'
         },
+        'supports-all-drives': {
+          type: 'boolean',
+          required: false,
+          default: false,
+          description:
+            'Supports both My Drives and shared drives(`includeItemsFromAllDrives` is also enabled). It not used with "export" method(it has no `supportsAllDrives` parameter)'
+        },
         pipe: {
           type: 'boolean',
           required: false,
@@ -142,6 +157,7 @@ const argv = await yargs(hideBin(process.argv))
           srcFileName: argv['src-file-name'] || '',
           destFileName: argv['dest-file-name'] || '',
           destMimeType: argv['dest-mime-type'] || '',
+          supportsAllDrives: argv['supports-all-drives'] || false,
           pipe: argv['pipe'] || false,
           removeBom: argv['remove-bom'] || false,
           printId: argv['print-id'] || false,
@@ -237,6 +253,13 @@ const argv = await yargs(hideBin(process.argv))
           description:
             'A plain text custom message to include in the notification email.'
         },
+        'supports-all-drives': {
+          type: 'boolean',
+          required: false,
+          default: false,
+          description:
+            'Supports both My Drives and shared drives(`includeItemsFromAllDrives` is also enabled)'
+        },
         'print-id': {
           type: 'boolean',
           required: false,
@@ -262,6 +285,7 @@ const argv = await yargs(hideBin(process.argv))
           sendNotificationEmail: argv['send-notification-email'],
           printId: argv['print-id'] || false,
           emailMessage: argv['email-message'],
+          supportsAllDrives: argv['supports-all-drives'] || false,
           stdin: process.stdin,
           stdout: process.stdout,
           stderr: process.stderr

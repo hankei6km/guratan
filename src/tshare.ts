@@ -73,6 +73,10 @@ export type CreatePermissonOpts = {
    * @type A plain text custom message to include in the notification email.
    */
   emailMessage: string
+  /**
+   * Supports both My Drives and shared drives
+   */
+  supportsAllDrives?: boolean
 }
 
 /**
@@ -100,17 +104,26 @@ export async function createPermisson(
       moveToNewOwnersRoot,
       transferOwnership,
       sendNotificationEmail,
-      emailMessage
+      emailMessage,
+      supportsAllDrives
     } = opts
 
-    const fileId = inFileId || (await getFileId(drive, parentId, destFileName))
+    const fileId =
+      inFileId ||
+      (await getFileId(
+        drive,
+        parentId,
+        destFileName,
+        supportsAllDrives || false
+      ))
     const createParams: drive_v3.Params$Resource$Permissions$Create = {
       requestBody: {
         type,
         role
       },
       fileId,
-      fields: 'id'
+      fields: 'id',
+      supportsAllDrives: supportsAllDrives || false
     }
     if (emailAddress) {
       createParams.requestBody!.emailAddress = emailAddress
@@ -151,7 +164,8 @@ export async function createPermisson(
           role
         },
         fileId,
-        fields: 'id'
+        fields: 'id',
+        supportsAllDrives: supportsAllDrives || false
       })
     }
     return id
