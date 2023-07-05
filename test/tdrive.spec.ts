@@ -39,7 +39,7 @@ describe('validateQueryValue()', () => {
 describe('getFileId()', () => {
   it('should return id of file', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const drive: any = {
       files: {
@@ -59,7 +59,7 @@ describe('getFileId()', () => {
 
   it('should enable supportsAllDrives', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const drive: any = {
       files: {
@@ -81,7 +81,7 @@ describe('getFileId()', () => {
 
   it('should not return id of file when not found', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [] } })
     const drive: any = {
       files: {
@@ -100,7 +100,9 @@ describe('getFileId()', () => {
   })
 
   it('should throw GetFileIdError', async () => {
-    const list = jest.fn<any, any[]>().mockRejectedValue({ errors: 'err' })
+    const list = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockRejectedValue({ errors: 'err' })
     const drive: any = {
       files: {
         list
@@ -113,7 +115,9 @@ describe('getFileId()', () => {
   })
 
   it('should throw GetFileIdError(parentId)', async () => {
-    const list = jest.fn<any, any[]>().mockRejectedValue({ errors: 'err' })
+    const list = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockRejectedValue({ errors: 'err' })
     const drive: any = {
       files: {
         list
@@ -126,7 +130,9 @@ describe('getFileId()', () => {
   })
 
   it('should throw GetFileIdError(fileName)', async () => {
-    const list = jest.fn<any, any[]>().mockRejectedValue({ errors: 'err' })
+    const list = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockRejectedValue({ errors: 'err' })
     const drive: any = {
       files: {
         list

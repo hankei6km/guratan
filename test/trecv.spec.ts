@@ -1,7 +1,8 @@
 import { jest } from '@jest/globals'
 
 jest.unstable_mockModule('stream', async () => {
-  const mockPipeline = jest.fn<any, any[]>()
+  const mockPipeline =
+    jest.fn<(s: any, d1: any, d2: any, d3: any) => Promise<void>>()
   const reset = () => {
     mockPipeline.mockReset().mockImplementation(async (s, d1, d2, d3) => {
       if (typeof d2 === 'function') {
@@ -36,7 +37,7 @@ jest.unstable_mockModule('stream', async () => {
 
 jest.unstable_mockModule('fs', async () => {
   const mockWrite = jest.fn()
-  const mockClose = jest.fn<any, any[]>()
+  const mockClose = jest.fn<(cb: () => Error) => void>()
   const mockCreateWriteStream = jest.fn()
   const reset = () => {
     mockClose.mockReset().mockImplementation((cb) => {
@@ -93,9 +94,11 @@ async function* mockGetGen() {
 describe('downloadFile()', () => {
   it('should call exrpot()', async () => {
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: mockExportGen() })
-    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: mockGetGen() })
     const drive: any = {
       files: {
         export: mockExport,
@@ -125,9 +128,11 @@ describe('downloadFile()', () => {
 
   it('should call exrpot() with removbeBom', async () => {
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: mockExportGenBom() })
-    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: mockGetGen() })
     const drive: any = {
       files: {
         export: mockExport,
@@ -159,9 +164,11 @@ describe('downloadFile()', () => {
 
   it('should call exrpot() with suppots all drives(it not effect)', async () => {
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: mockExportGenBom() })
-    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: mockGetGen() })
     const drive: any = {
       files: {
         export: mockExport,
@@ -193,9 +200,11 @@ describe('downloadFile()', () => {
 
   it('should call exrpot() with bom pass through', async () => {
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: mockExportGenBom() })
-    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: mockGetGen() })
     const drive: any = {
       files: {
         export: mockExport,
@@ -227,9 +236,11 @@ describe('downloadFile()', () => {
 
   it('should call get()', async () => {
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: mockExportGen() })
-    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: mockGetGen() })
     const drive: any = {
       files: {
         export: mockExport,
@@ -261,9 +272,11 @@ describe('downloadFile()', () => {
 
   it('should call get() with supports all drives', async () => {
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: mockExportGen() })
-    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: mockGetGen() })
     const drive: any = {
       files: {
         export: mockExport,
@@ -295,9 +308,11 @@ describe('downloadFile()', () => {
 
   it('should use destStream', async () => {
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: mockExportGen() })
-    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: mockGetGen() })
     const drive: any = {
       files: {
         export: mockExport,
@@ -334,7 +349,7 @@ describe('downloadFile()', () => {
 
   it('should throw downloadFileError(export)', async () => {
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockRejectedValue({ errors: 'err' })
     const drive: any = {
       files: {
@@ -354,7 +369,9 @@ describe('downloadFile()', () => {
   })
 
   it('should throw downloadFileError(get)', async () => {
-    const get = jest.fn<any, any[]>().mockRejectedValue({ errors: 'err' })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockRejectedValue({ errors: 'err' })
     const drive: any = {
       files: {
         get
@@ -376,12 +393,14 @@ describe('downloadFile()', () => {
 describe('recvFile()', () => {
   it('should call getFileId', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: mockExportGen() })
-    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: mockGetGen() })
     const drive: any = {
       files: {
         list,
@@ -421,12 +440,14 @@ describe('recvFile()', () => {
 
   it('should call getFileId with support all drives', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: mockExportGen() })
-    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: mockGetGen() })
     const drive: any = {
       files: {
         list,
@@ -467,12 +488,14 @@ describe('recvFile()', () => {
 
   it('should not call getFileId', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: mockExportGen() })
-    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: mockGetGen() })
     const drive: any = {
       files: {
         list,
@@ -507,12 +530,14 @@ describe('recvFile()', () => {
 
   it('should use destStream', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: mockExportGen() })
-    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: mockGetGen() })
     const drive: any = {
       files: {
         list,
@@ -556,12 +581,14 @@ describe('recvFile()', () => {
 
   it('should use get() with support all drives', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const mockExport = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: mockExportGen() })
-    const get = jest.fn<any, any[]>().mockResolvedValue({ data: mockGetGen() })
+    const get = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: mockGetGen() })
     const drive: any = {
       files: {
         list,
@@ -603,7 +630,7 @@ describe('recvFile()', () => {
 
   it('should throw when file not found', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [] } })
     const drive: any = {
       files: {
