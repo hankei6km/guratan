@@ -6,13 +6,13 @@ const { CreatePermissonError, UpdatePermissonError, createPermisson } =
 describe('createPermisson()', () => {
   it('should return id of permission', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -63,13 +63,13 @@ describe('createPermisson()', () => {
 
   it('should return id of permission(supports all drives)', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -121,13 +121,13 @@ describe('createPermisson()', () => {
 
   it('should return id of permission(default values)', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -176,13 +176,13 @@ describe('createPermisson()', () => {
 
   it('should return id of permission(default values and support all drives)', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -231,13 +231,13 @@ describe('createPermisson()', () => {
 
   it('should return id of permission(email message)', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -286,13 +286,13 @@ describe('createPermisson()', () => {
 
   it('should get fileId by using getFileId()(support all drives)', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'file-id-from-list' }] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -347,13 +347,13 @@ describe('createPermisson()', () => {
 
   it('should get fileId by using getFileId()', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'file-id-from-list' }] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -407,7 +407,9 @@ describe('createPermisson()', () => {
   })
 
   it('should throw CreatePermissonError', async () => {
-    const create = jest.fn<any, any[]>().mockRejectedValue({ errors: 'err' })
+    const create = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockRejectedValue({ errors: 'err' })
     const drive: any = {
       permissions: {
         create
@@ -436,9 +438,11 @@ describe('createPermisson()', () => {
 
   it('should throw UpdatePermissonError', async () => {
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
-    const update = jest.fn<any, any[]>().mockRejectedValue({ errors: 'err' })
+    const update = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockRejectedValue({ errors: 'err' })
     const drive: any = {
       permissions: {
         create,
@@ -467,7 +471,9 @@ describe('createPermisson()', () => {
   })
 
   it('should throw error when create() return blank id', async () => {
-    const create = jest.fn<any, any[]>().mockResolvedValue({ data: { id: '' } })
+    const create = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockResolvedValue({ data: { id: '' } })
     const drive: any = {
       permissions: {
         create

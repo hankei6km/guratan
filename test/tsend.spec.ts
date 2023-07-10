@@ -28,7 +28,7 @@ afterEach(() => {
 describe('uploadFile()', () => {
   it('should return id of file', async () => {
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -63,7 +63,7 @@ describe('uploadFile()', () => {
 
   it('should return id of file(supports all drives)', async () => {
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -99,7 +99,7 @@ describe('uploadFile()', () => {
 
   it('should return id of file(mimeType is blank)', async () => {
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -133,7 +133,7 @@ describe('uploadFile()', () => {
 
   it('should use srcStream', async () => {
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -167,7 +167,9 @@ describe('uploadFile()', () => {
   })
 
   it('should throw UploadFileError', async () => {
-    const create = jest.fn<any, any[]>().mockRejectedValue({ errors: 'err' })
+    const create = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockRejectedValue({ errors: 'err' })
     const drive: any = {
       files: {
         create
@@ -190,7 +192,7 @@ describe('uploadFile()', () => {
 describe('updateFile()', () => {
   it('should return id of file', async () => {
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -223,7 +225,7 @@ describe('updateFile()', () => {
 
   it('should return id of file(supports all drives)', async () => {
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -257,7 +259,7 @@ describe('updateFile()', () => {
 
   it('should return id of file(mimeType is blank)', async () => {
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -288,7 +290,7 @@ describe('updateFile()', () => {
 
   it('should use srcStream', async () => {
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'test-id' } })
     const drive: any = {
       files: {
@@ -319,7 +321,9 @@ describe('updateFile()', () => {
   })
 
   it('should throw UploadFileError', async () => {
-    const update = jest.fn<any, any[]>().mockRejectedValue({ errors: 'err' })
+    const update = jest
+      .fn<(a: any) => Promise<any>>()
+      .mockRejectedValue({ errors: 'err' })
     const drive: any = {
       files: {
         update
@@ -341,13 +345,13 @@ describe('updateFile()', () => {
 describe('sendFile()', () => {
   it('should call create', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{}] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'create-test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'update-test-id' } })
     const drive: any = {
       files: {
@@ -391,13 +395,13 @@ describe('sendFile()', () => {
 
   it('should call create(supports all drives)', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{}] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'create-test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'update-test-id' } })
     const drive: any = {
       files: {
@@ -442,13 +446,13 @@ describe('sendFile()', () => {
 
   it('should call create(pass srcStream)', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{}] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'create-test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'update-test-id' } })
     const drive: any = {
       files: {
@@ -494,13 +498,13 @@ describe('sendFile()', () => {
 
   it('should call update(fileId is blank)', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'create-test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'update-test-id' } })
     const drive: any = {
       files: {
@@ -544,13 +548,13 @@ describe('sendFile()', () => {
 
   it('should call update(supports all drives)', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'create-test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'update-test-id' } })
     const drive: any = {
       files: {
@@ -594,13 +598,13 @@ describe('sendFile()', () => {
 
   it('should call update(fileId is specified)', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'create-test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'update-test-id' } })
     const drive: any = {
       files: {
@@ -638,13 +642,13 @@ describe('sendFile()', () => {
 
   it('should call update(pass srcStream)', async () => {
     const list = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
     const create = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'create-test-id' } })
     const update = jest
-      .fn<any, any[]>()
+      .fn<(a: any) => Promise<any>>()
       .mockResolvedValue({ data: { id: 'update-test-id' } })
     const drive: any = {
       files: {

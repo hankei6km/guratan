@@ -18,7 +18,7 @@ jest.unstable_mockModule('../src/tdrive.js', async () => {
 })
 
 jest.unstable_mockModule('../src/tsend.js', async () => {
-  const mockSendFile = jest.fn<any, any[]>()
+  const mockSendFile = jest.fn<(a: any) => Promise<any>>()
   const reset = () => {
     mockSendFile.mockReset().mockResolvedValue('test-id')
   }
@@ -34,7 +34,7 @@ jest.unstable_mockModule('../src/tsend.js', async () => {
 })
 
 jest.unstable_mockModule('../src/trecv.js', async () => {
-  const mockRecvFile = jest.fn<any, any[]>()
+  const mockRecvFile = jest.fn<(a: any) => Promise<any>>()
   const reset = () => {
     mockRecvFile.mockReset().mockResolvedValue('test-id')
   }
@@ -50,7 +50,7 @@ jest.unstable_mockModule('../src/trecv.js', async () => {
 })
 
 jest.unstable_mockModule('../src/tshare.js', async () => {
-  const mockCreatePermisson = jest.fn<any, any[]>()
+  const mockCreatePermisson = jest.fn<(a: any) => Promise<any>>()
   const reset = () => {
     mockCreatePermisson.mockReset().mockResolvedValue('test-permission-id')
   }
