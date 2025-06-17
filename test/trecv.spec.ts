@@ -112,18 +112,18 @@ describe('downloadFile()', () => {
         destMimeType: 'dest-mime-type'
       })
     ).toBeUndefined()
-    expect(mockExport).toBeCalledWith(
+    expect(mockExport).toHaveBeenCalledWith(
       {
         fileId: 'test-id',
         mimeType: 'dest-mime-type'
       },
       { responseType: 'stream' }
     )
-    expect(mockCreateWriteStream).toBeCalledWith('dest-file-name')
-    expect(mockWrite).toBeCalledWith('export-data1')
-    expect(mockWrite).toBeCalledWith('export-data2')
-    expect(get).toBeCalledTimes(0)
-    expect(mockClose).toBeCalledTimes(1)
+    expect(mockCreateWriteStream).toHaveBeenCalledWith('dest-file-name')
+    expect(mockWrite).toHaveBeenCalledWith('export-data1')
+    expect(mockWrite).toHaveBeenCalledWith('export-data2')
+    expect(get).toHaveBeenCalledTimes(0)
+    expect(mockClose).toHaveBeenCalledTimes(1)
   })
 
   it('should call exrpot() with removbeBom', async () => {
@@ -148,18 +148,18 @@ describe('downloadFile()', () => {
         removeBom: true
       })
     ).toBeUndefined()
-    expect(mockExport).toBeCalledWith(
+    expect(mockExport).toHaveBeenCalledWith(
       {
         fileId: 'test-id',
         mimeType: 'dest-mime-type'
       },
       { responseType: 'stream' }
     )
-    expect(mockCreateWriteStream).toBeCalledWith('dest-file-name')
-    expect(mockWrite).toBeCalledWith('export-data1')
-    expect(mockWrite).toBeCalledWith('export-data2')
-    expect(get).toBeCalledTimes(0)
-    expect(mockClose).toBeCalledTimes(1)
+    expect(mockCreateWriteStream).toHaveBeenCalledWith('dest-file-name')
+    expect(mockWrite).toHaveBeenCalledWith('export-data1')
+    expect(mockWrite).toHaveBeenCalledWith('export-data2')
+    expect(get).toHaveBeenCalledTimes(0)
+    expect(mockClose).toHaveBeenCalledTimes(1)
   })
 
   it('should call exrpot() with suppots all drives(it not effect)', async () => {
@@ -184,18 +184,18 @@ describe('downloadFile()', () => {
         removeBom: true
       })
     ).toBeUndefined()
-    expect(mockExport).toBeCalledWith(
+    expect(mockExport).toHaveBeenCalledWith(
       {
         fileId: 'test-id',
         mimeType: 'dest-mime-type'
       },
       { responseType: 'stream' }
     )
-    expect(mockCreateWriteStream).toBeCalledWith('dest-file-name')
-    expect(mockWrite).toBeCalledWith('export-data1')
-    expect(mockWrite).toBeCalledWith('export-data2')
-    expect(get).toBeCalledTimes(0)
-    expect(mockClose).toBeCalledTimes(1)
+    expect(mockCreateWriteStream).toHaveBeenCalledWith('dest-file-name')
+    expect(mockWrite).toHaveBeenCalledWith('export-data1')
+    expect(mockWrite).toHaveBeenCalledWith('export-data2')
+    expect(get).toHaveBeenCalledTimes(0)
+    expect(mockClose).toHaveBeenCalledTimes(1)
   })
 
   it('should call exrpot() with bom pass through', async () => {
@@ -220,18 +220,18 @@ describe('downloadFile()', () => {
         removeBom: false
       })
     ).toBeUndefined()
-    expect(mockExport).toBeCalledWith(
+    expect(mockExport).toHaveBeenCalledWith(
       {
         fileId: 'test-id',
         mimeType: 'dest-mime-type'
       },
       { responseType: 'stream' }
     )
-    expect(mockCreateWriteStream).toBeCalledWith('dest-file-name')
-    expect(mockWrite).toBeCalledWith('\uFEFFexport-data1')
-    expect(mockWrite).toBeCalledWith('export-data2')
-    expect(get).toBeCalledTimes(0)
-    expect(mockClose).toBeCalledTimes(1)
+    expect(mockCreateWriteStream).toHaveBeenCalledWith('dest-file-name')
+    expect(mockWrite).toHaveBeenCalledWith('\uFEFFexport-data1')
+    expect(mockWrite).toHaveBeenCalledWith('export-data2')
+    expect(get).toHaveBeenCalledTimes(0)
+    expect(mockClose).toHaveBeenCalledTimes(1)
   })
 
   it('should call get()', async () => {
@@ -255,9 +255,9 @@ describe('downloadFile()', () => {
         supportsAllDrives: false
       })
     ).toBeUndefined()
-    expect(mockExport).toBeCalledTimes(0)
-    expect(mockCreateWriteStream).toBeCalledWith('dest-file-name')
-    expect(get).toBeCalledWith(
+    expect(mockExport).toHaveBeenCalledTimes(0)
+    expect(mockCreateWriteStream).toHaveBeenCalledWith('dest-file-name')
+    expect(get).toHaveBeenCalledWith(
       {
         fileId: 'test-id',
         alt: 'media',
@@ -265,9 +265,9 @@ describe('downloadFile()', () => {
       },
       { responseType: 'stream' }
     )
-    expect(mockWrite).toBeCalledWith('get-data1')
-    expect(mockWrite).toBeCalledWith('get-data2')
-    expect(mockClose).toBeCalledTimes(1)
+    expect(mockWrite).toHaveBeenCalledWith('get-data1')
+    expect(mockWrite).toHaveBeenCalledWith('get-data2')
+    expect(mockClose).toHaveBeenCalledTimes(1)
   })
 
   it('should call get() with supports all drives', async () => {
@@ -291,9 +291,9 @@ describe('downloadFile()', () => {
         supportsAllDrives: true
       })
     ).toBeUndefined()
-    expect(mockExport).toBeCalledTimes(0)
-    expect(mockCreateWriteStream).toBeCalledWith('dest-file-name')
-    expect(get).toBeCalledWith(
+    expect(mockExport).toHaveBeenCalledTimes(0)
+    expect(mockCreateWriteStream).toHaveBeenCalledWith('dest-file-name')
+    expect(get).toHaveBeenCalledWith(
       {
         fileId: 'test-id',
         alt: 'media',
@@ -301,9 +301,9 @@ describe('downloadFile()', () => {
       },
       { responseType: 'stream' }
     )
-    expect(mockWrite).toBeCalledWith('get-data1')
-    expect(mockWrite).toBeCalledWith('get-data2')
-    expect(mockClose).toBeCalledTimes(1)
+    expect(mockWrite).toHaveBeenCalledWith('get-data1')
+    expect(mockWrite).toHaveBeenCalledWith('get-data2')
+    expect(mockClose).toHaveBeenCalledTimes(1)
   })
 
   it('should use destStream', async () => {
@@ -331,9 +331,9 @@ describe('downloadFile()', () => {
         destStream: mockDestStream as any
       })
     ).toBeUndefined()
-    expect(mockExport).toBeCalledTimes(0)
-    expect(mockCreateWriteStream).toBeCalledTimes(0)
-    expect(get).toBeCalledWith(
+    expect(mockExport).toHaveBeenCalledTimes(0)
+    expect(mockCreateWriteStream).toHaveBeenCalledTimes(0)
+    expect(get).toHaveBeenCalledWith(
       {
         fileId: 'test-id',
         alt: 'media',
@@ -341,10 +341,10 @@ describe('downloadFile()', () => {
       },
       { responseType: 'stream' }
     )
-    expect(mockDestStream.write).toBeCalledWith('get-data1')
-    expect(mockDestStream.write).toBeCalledWith('get-data2')
-    expect(mockWrite).toReturnTimes(0)
-    expect(mockClose).toBeCalledTimes(0)
+    expect(mockDestStream.write).toHaveBeenCalledWith('get-data1')
+    expect(mockDestStream.write).toHaveBeenCalledWith('get-data2')
+    expect(mockWrite).toHaveReturnedTimes(0)
+    expect(mockClose).toHaveBeenCalledTimes(0)
   })
 
   it('should throw downloadFileError(export)', async () => {
@@ -363,9 +363,9 @@ describe('downloadFile()', () => {
       destMimeType: 'dest-mime-type',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrowError('err')
+    await expect(res).rejects.toThrow('err')
     await expect(res).rejects.toBeInstanceOf(DownloadFileError)
-    expect(mockClose).toBeCalledTimes(1)
+    expect(mockClose).toHaveBeenCalledTimes(1)
   })
 
   it('should throw downloadFileError(get)', async () => {
@@ -384,9 +384,9 @@ describe('downloadFile()', () => {
       destMimeType: '',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrowError('err')
+    await expect(res).rejects.toThrow('err')
     await expect(res).rejects.toBeInstanceOf(DownloadFileError)
-    expect(mockClose).toBeCalledTimes(1)
+    expect(mockClose).toHaveBeenCalledTimes(1)
   })
 })
 
@@ -417,25 +417,25 @@ describe('recvFile()', () => {
         destMimeType: 'dest-mime-type'
       })
     ).toEqual('test-id')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'src-file-name'",
       includeItemsFromAllDrives: false,
       supportsAllDrives: false
     })
-    expect(mockExport).toBeCalledWith(
+    expect(mockExport).toHaveBeenCalledWith(
       {
         fileId: 'test-id',
         mimeType: 'dest-mime-type'
       },
       { responseType: 'stream' }
     )
-    expect(mockCreateWriteStream).toBeCalledWith('dest-file-name')
-    expect(mockWrite).toBeCalledWith('export-data1')
-    expect(mockWrite).toBeCalledWith('export-data2')
-    expect(get).toBeCalledTimes(0)
-    expect(mockClose).toBeCalledTimes(1)
+    expect(mockCreateWriteStream).toHaveBeenCalledWith('dest-file-name')
+    expect(mockWrite).toHaveBeenCalledWith('export-data1')
+    expect(mockWrite).toHaveBeenCalledWith('export-data2')
+    expect(get).toHaveBeenCalledTimes(0)
+    expect(mockClose).toHaveBeenCalledTimes(1)
   })
 
   it('should call getFileId with support all drives', async () => {
@@ -465,25 +465,25 @@ describe('recvFile()', () => {
         supportsAllDrives: true
       })
     ).toEqual('test-id')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'src-file-name'",
       includeItemsFromAllDrives: true,
       supportsAllDrives: true
     })
-    expect(mockExport).toBeCalledWith(
+    expect(mockExport).toHaveBeenCalledWith(
       {
         fileId: 'test-id',
         mimeType: 'dest-mime-type'
       },
       { responseType: 'stream' }
     )
-    expect(mockCreateWriteStream).toBeCalledWith('dest-file-name')
-    expect(mockWrite).toBeCalledWith('export-data1')
-    expect(mockWrite).toBeCalledWith('export-data2')
-    expect(get).toBeCalledTimes(0)
-    expect(mockClose).toBeCalledTimes(1)
+    expect(mockCreateWriteStream).toHaveBeenCalledWith('dest-file-name')
+    expect(mockWrite).toHaveBeenCalledWith('export-data1')
+    expect(mockWrite).toHaveBeenCalledWith('export-data2')
+    expect(get).toHaveBeenCalledTimes(0)
+    expect(mockClose).toHaveBeenCalledTimes(1)
   })
 
   it('should not call getFileId', async () => {
@@ -513,19 +513,19 @@ describe('recvFile()', () => {
         supportsAllDrives: false
       })
     ).toEqual('file-id')
-    expect(list).toBeCalledTimes(0)
-    expect(mockExport).toBeCalledWith(
+    expect(list).toHaveBeenCalledTimes(0)
+    expect(mockExport).toHaveBeenCalledWith(
       {
         fileId: 'file-id',
         mimeType: 'dest-mime-type'
       },
       { responseType: 'stream' }
     )
-    expect(mockCreateWriteStream).toBeCalledWith('dest-file-name')
-    expect(mockWrite).toBeCalledWith('export-data1')
-    expect(mockWrite).toBeCalledWith('export-data2')
-    expect(get).toBeCalledTimes(0)
-    expect(mockClose).toBeCalledTimes(1)
+    expect(mockCreateWriteStream).toHaveBeenCalledWith('dest-file-name')
+    expect(mockWrite).toHaveBeenCalledWith('export-data1')
+    expect(mockWrite).toHaveBeenCalledWith('export-data2')
+    expect(get).toHaveBeenCalledTimes(0)
+    expect(mockClose).toHaveBeenCalledTimes(1)
   })
 
   it('should use destStream', async () => {
@@ -557,26 +557,26 @@ describe('recvFile()', () => {
         destStream: mockDestStream as any
       })
     ).toEqual('test-id')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'src-file-name'",
       includeItemsFromAllDrives: false,
       supportsAllDrives: false
     })
-    expect(mockExport).toBeCalledWith(
+    expect(mockExport).toHaveBeenCalledWith(
       {
         fileId: 'test-id',
         mimeType: 'dest-mime-type'
       },
       { responseType: 'stream' }
     )
-    expect(mockCreateWriteStream).toBeCalledTimes(0)
-    expect(mockDestStream.write).toBeCalledWith('export-data1')
-    expect(mockDestStream.write).toBeCalledWith('export-data2')
-    expect(mockWrite).toBeCalledTimes(0)
-    expect(get).toBeCalledTimes(0)
-    expect(mockClose).toBeCalledTimes(0)
+    expect(mockCreateWriteStream).toHaveBeenCalledTimes(0)
+    expect(mockDestStream.write).toHaveBeenCalledWith('export-data1')
+    expect(mockDestStream.write).toHaveBeenCalledWith('export-data2')
+    expect(mockWrite).toHaveBeenCalledTimes(0)
+    expect(get).toHaveBeenCalledTimes(0)
+    expect(mockClose).toHaveBeenCalledTimes(0)
   })
 
   it('should use get() with support all drives', async () => {
@@ -606,16 +606,16 @@ describe('recvFile()', () => {
         supportsAllDrives: true
       })
     ).toEqual('test-id')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'src-file-name'",
       includeItemsFromAllDrives: true,
       supportsAllDrives: true
     })
-    expect(mockExport).toBeCalledTimes(0)
-    expect(mockCreateWriteStream).toBeCalledWith('dest-file-name')
-    expect(get).toBeCalledWith(
+    expect(mockExport).toHaveBeenCalledTimes(0)
+    expect(mockCreateWriteStream).toHaveBeenCalledWith('dest-file-name')
+    expect(get).toHaveBeenCalledWith(
       {
         fileId: 'test-id',
         alt: 'media',
@@ -623,9 +623,9 @@ describe('recvFile()', () => {
       },
       { responseType: 'stream' }
     )
-    expect(mockWrite).toBeCalledWith('get-data1')
-    expect(mockWrite).toBeCalledWith('get-data2')
-    expect(mockClose).toBeCalledTimes(1)
+    expect(mockWrite).toHaveBeenCalledWith('get-data1')
+    expect(mockWrite).toHaveBeenCalledWith('get-data2')
+    expect(mockClose).toHaveBeenCalledTimes(1)
   })
 
   it('should throw when file not found', async () => {
@@ -645,7 +645,7 @@ describe('recvFile()', () => {
       destMimeType: 'dest-mime-type',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrowError('The srouce file not found')
+    await expect(res).rejects.toThrow('The srouce file not found')
     await expect(res).rejects.toBeInstanceOf(GetFileIdError)
   })
 
@@ -659,6 +659,6 @@ describe('recvFile()', () => {
       supportsAllDrives: false,
       destMimeType: 'dest-mime-type'
     })
-    await expect(res).rejects.toThrowError('The destination is not specified')
+    await expect(res).rejects.toThrow('The destination is not specified')
   })
 })

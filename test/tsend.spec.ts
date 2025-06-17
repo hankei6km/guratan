@@ -45,8 +45,8 @@ describe('uploadFile()', () => {
         srcMimeType: 'src-mime-type'
       })
     ).toEqual('test-id')
-    expect(mockCreateReadStream).toBeCalledWith('src-file-name')
-    expect(create).toBeCalledWith({
+    expect(mockCreateReadStream).toHaveBeenCalledWith('src-file-name')
+    expect(create).toHaveBeenCalledWith({
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
@@ -81,8 +81,8 @@ describe('uploadFile()', () => {
         supportsAllDrives: true
       })
     ).toEqual('test-id')
-    expect(mockCreateReadStream).toBeCalledWith('src-file-name')
-    expect(create).toBeCalledWith({
+    expect(mockCreateReadStream).toHaveBeenCalledWith('src-file-name')
+    expect(create).toHaveBeenCalledWith({
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
@@ -117,8 +117,8 @@ describe('uploadFile()', () => {
         supportsAllDrives: false
       })
     ).toEqual('test-id')
-    expect(mockCreateReadStream).toBeCalledWith('src-file-name')
-    expect(create).toBeCalledWith({
+    expect(mockCreateReadStream).toHaveBeenCalledWith('src-file-name')
+    expect(create).toHaveBeenCalledWith({
       fields: 'id',
       media: {
         body: 'mock-create-read-streadm'
@@ -152,8 +152,8 @@ describe('uploadFile()', () => {
         srcStream: 'src-stream' as any
       })
     ).toEqual('test-id')
-    expect(mockCreateReadStream).toBeCalledTimes(0)
-    expect(create).toBeCalledWith({
+    expect(mockCreateReadStream).toHaveBeenCalledTimes(0)
+    expect(create).toHaveBeenCalledWith({
       fields: 'id',
       media: {
         body: 'src-stream'
@@ -184,7 +184,7 @@ describe('uploadFile()', () => {
       srcMimeType: 'src-mime-type',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrowError('err')
+    await expect(res).rejects.toThrow('err')
     await expect(res).rejects.toBeInstanceOf(UploadFileError)
   })
 })
@@ -208,8 +208,8 @@ describe('updateFile()', () => {
         srcMimeType: 'src-mime-type'
       })
     ).toEqual('test-id')
-    expect(mockCreateReadStream).toBeCalledWith('src-file-name')
-    expect(update).toBeCalledWith({
+    expect(mockCreateReadStream).toHaveBeenCalledWith('src-file-name')
+    expect(update).toHaveBeenCalledWith({
       fileId: 'file-id',
       fields: 'id',
       media: {
@@ -242,8 +242,8 @@ describe('updateFile()', () => {
         supportsAllDrives: true
       })
     ).toEqual('test-id')
-    expect(mockCreateReadStream).toBeCalledWith('src-file-name')
-    expect(update).toBeCalledWith({
+    expect(mockCreateReadStream).toHaveBeenCalledWith('src-file-name')
+    expect(update).toHaveBeenCalledWith({
       fileId: 'file-id',
       fields: 'id',
       media: {
@@ -276,8 +276,8 @@ describe('updateFile()', () => {
         supportsAllDrives: false
       })
     ).toEqual('test-id')
-    expect(mockCreateReadStream).toBeCalledWith('src-file-name')
-    expect(update).toBeCalledWith({
+    expect(mockCreateReadStream).toHaveBeenCalledWith('src-file-name')
+    expect(update).toHaveBeenCalledWith({
       fileId: 'file-id',
       fields: 'id',
       media: {
@@ -308,8 +308,8 @@ describe('updateFile()', () => {
         srcStream: 'src-stream' as any
       })
     ).toEqual('test-id')
-    expect(mockCreateReadStream).toBeCalledTimes(0)
-    expect(update).toBeCalledWith({
+    expect(mockCreateReadStream).toHaveBeenCalledTimes(0)
+    expect(update).toHaveBeenCalledWith({
       fileId: 'file-id',
       fields: 'id',
       media: {
@@ -337,7 +337,7 @@ describe('updateFile()', () => {
       srcMimeType: 'src-mime-type',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrowError('err')
+    await expect(res).rejects.toThrow('err')
     await expect(res).rejects.toBeInstanceOf(UpdateFileError)
   })
 })
@@ -370,14 +370,14 @@ describe('sendFile()', () => {
         srcMimeType: 'src-mime-type'
       })
     ).toEqual('create-test-id')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: false,
       supportsAllDrives: false
     })
-    expect(create).toBeCalledWith({
+    expect(create).toHaveBeenCalledWith({
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
@@ -390,7 +390,7 @@ describe('sendFile()', () => {
         parents: ['parent-id']
       }
     })
-    expect(update).toBeCalledTimes(0)
+    expect(update).toHaveBeenCalledTimes(0)
   })
 
   it('should call create(supports all drives)', async () => {
@@ -421,14 +421,14 @@ describe('sendFile()', () => {
         supportsAllDrives: true
       })
     ).toEqual('create-test-id')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: true,
       supportsAllDrives: true
     })
-    expect(create).toBeCalledWith({
+    expect(create).toHaveBeenCalledWith({
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
@@ -441,7 +441,7 @@ describe('sendFile()', () => {
         parents: ['parent-id']
       }
     })
-    expect(update).toBeCalledTimes(0)
+    expect(update).toHaveBeenCalledTimes(0)
   })
 
   it('should call create(pass srcStream)', async () => {
@@ -473,14 +473,14 @@ describe('sendFile()', () => {
         srcStream: 'src-stream' as any
       })
     ).toEqual('create-test-id')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: false,
       supportsAllDrives: false
     })
-    expect(create).toBeCalledWith({
+    expect(create).toHaveBeenCalledWith({
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
@@ -493,7 +493,7 @@ describe('sendFile()', () => {
         parents: ['parent-id']
       }
     })
-    expect(update).toBeCalledTimes(0)
+    expect(update).toHaveBeenCalledTimes(0)
   })
 
   it('should call update(fileId is blank)', async () => {
@@ -524,15 +524,15 @@ describe('sendFile()', () => {
         supportsAllDrives: false
       })
     ).toEqual('update-test-id')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: false,
       supportsAllDrives: false
     })
-    expect(create).toBeCalledTimes(0)
-    expect(update).toBeCalledWith({
+    expect(create).toHaveBeenCalledTimes(0)
+    expect(update).toHaveBeenCalledWith({
       fileId: 'test-id',
       fields: 'id',
       media: {
@@ -574,15 +574,15 @@ describe('sendFile()', () => {
         supportsAllDrives: true
       })
     ).toEqual('update-test-id')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: true,
       supportsAllDrives: true
     })
-    expect(create).toBeCalledTimes(0)
-    expect(update).toBeCalledWith({
+    expect(create).toHaveBeenCalledTimes(0)
+    expect(update).toHaveBeenCalledWith({
       fileId: 'test-id',
       fields: 'id',
       media: {
@@ -624,9 +624,9 @@ describe('sendFile()', () => {
         supportsAllDrives: false
       })
     ).toEqual('update-test-id')
-    expect(list).toBeCalledTimes(0)
-    expect(create).toBeCalledTimes(0)
-    expect(update).toBeCalledWith({
+    expect(list).toHaveBeenCalledTimes(0)
+    expect(create).toHaveBeenCalledTimes(0)
+    expect(update).toHaveBeenCalledWith({
       fileId: 'file-id',
       fields: 'id',
       media: {
@@ -669,9 +669,9 @@ describe('sendFile()', () => {
         srcStream: 'src-stream' as any
       })
     ).toEqual('update-test-id')
-    expect(list).toBeCalledTimes(0)
-    expect(create).toBeCalledTimes(0)
-    expect(update).toBeCalledWith({
+    expect(list).toHaveBeenCalledTimes(0)
+    expect(create).toHaveBeenCalledTimes(0)
+    expect(update).toHaveBeenCalledWith({
       fileId: 'file-id',
       fields: 'id',
       media: {
@@ -696,7 +696,7 @@ describe('sendFile()', () => {
       srcMimeType: 'src-mime-type',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrowError(
+    await expect(res).rejects.toThrow(
       'The source content is not specified'
     )
   })

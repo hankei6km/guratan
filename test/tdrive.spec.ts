@@ -48,7 +48,7 @@ describe('getFileId()', () => {
     }
 
     expect(await getFileId(drive, 'parent-id', 'file-name')).toEqual('test-id')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'file-name'",
@@ -70,7 +70,7 @@ describe('getFileId()', () => {
     expect(await getFileId(drive, 'parent-id', 'file-name', true)).toEqual(
       'test-id'
     )
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'file-name'",
@@ -90,7 +90,7 @@ describe('getFileId()', () => {
     }
 
     expect(await getFileId(drive, 'parent-id', 'file-name', false)).toEqual('')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'file-name'",
@@ -110,7 +110,7 @@ describe('getFileId()', () => {
     }
 
     const res = getFileId(drive, 'parent-id', 'file-name', false)
-    await expect(res).rejects.toThrowError('err')
+    await expect(res).rejects.toThrow('err')
     await expect(res).rejects.toBeInstanceOf(GetFileIdError)
   })
 
@@ -125,7 +125,7 @@ describe('getFileId()', () => {
     }
 
     const res = getFileId(drive, "parent'id", 'file-name', false)
-    await expect(res).rejects.toThrowError("Invalid paretnt id : parent'id")
+    await expect(res).rejects.toThrow("Invalid paretnt id : parent'id")
     await expect(res).rejects.toBeInstanceOf(GetFileIdError)
   })
 
@@ -140,7 +140,7 @@ describe('getFileId()', () => {
     }
 
     const res = getFileId(drive, 'parent-id', "file'name", false)
-    await expect(res).rejects.toThrowError("Invalid file name : file'name")
+    await expect(res).rejects.toThrow("Invalid file name : file'name")
     await expect(res).rejects.toBeInstanceOf(GetFileIdError)
   })
 })
@@ -149,7 +149,7 @@ describe('driveClient()', () => {
   it('should return drive_v3.Drive', () => {
     const d = driveClient()
     expect(d).toBeInstanceOf(drive_v3.Drive)
-    expect(mockGoogleAuth).toBeCalledWith({
+    expect(mockGoogleAuth).toHaveBeenCalledWith({
       scopes: ['https://www.googleapis.com/auth/drive']
     })
   })
