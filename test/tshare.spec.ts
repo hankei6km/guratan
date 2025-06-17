@@ -41,8 +41,8 @@ describe('createPermisson()', () => {
         emailMessage: 'test-message'
       })
     ).toEqual('test-id')
-    expect(list).toBeCalledTimes(0)
-    expect(create).toBeCalledWith({
+    expect(list).toHaveBeenCalledTimes(0)
+    expect(create).toHaveBeenCalledWith({
       requestBody: {
         type: 'test-type',
         role: 'test-role',
@@ -58,7 +58,7 @@ describe('createPermisson()', () => {
       sendNotificationEmail: false,
       supportsAllDrives: false
     })
-    expect(update).toBeCalledTimes(0) // transferOwnership が指定されているので.
+    expect(update).toHaveBeenCalledTimes(0) // transferOwnership が指定されているので.
   })
 
   it('should return id of permission(supports all drives)', async () => {
@@ -99,8 +99,8 @@ describe('createPermisson()', () => {
         supportsAllDrives: true
       })
     ).toEqual('test-id')
-    expect(list).toBeCalledTimes(0)
-    expect(create).toBeCalledWith({
+    expect(list).toHaveBeenCalledTimes(0)
+    expect(create).toHaveBeenCalledWith({
       requestBody: {
         type: 'test-type',
         role: 'test-role',
@@ -116,7 +116,7 @@ describe('createPermisson()', () => {
       sendNotificationEmail: false,
       supportsAllDrives: true
     })
-    expect(update).toBeCalledTimes(0) // transferOwnership が指定されているので.
+    expect(update).toHaveBeenCalledTimes(0) // transferOwnership が指定されているので.
   })
 
   it('should return id of permission(default values)', async () => {
@@ -153,8 +153,8 @@ describe('createPermisson()', () => {
         supportsAllDrives: false
       })
     ).toEqual('test-id')
-    expect(list).toBeCalledTimes(0)
-    expect(create).toBeCalledWith({
+    expect(list).toHaveBeenCalledTimes(0)
+    expect(create).toHaveBeenCalledWith({
       requestBody: {
         type: 'test-type',
         role: 'test-role'
@@ -163,7 +163,7 @@ describe('createPermisson()', () => {
       fields: 'id',
       supportsAllDrives: false
     })
-    expect(update).toBeCalledWith({
+    expect(update).toHaveBeenCalledWith({
       permissionId: 'test-id',
       requestBody: {
         role: 'test-role'
@@ -208,8 +208,8 @@ describe('createPermisson()', () => {
         supportsAllDrives: true
       })
     ).toEqual('test-id')
-    expect(list).toBeCalledTimes(0)
-    expect(create).toBeCalledWith({
+    expect(list).toHaveBeenCalledTimes(0)
+    expect(create).toHaveBeenCalledWith({
       requestBody: {
         type: 'test-type',
         role: 'test-role'
@@ -218,7 +218,7 @@ describe('createPermisson()', () => {
       fields: 'id',
       supportsAllDrives: true
     })
-    expect(update).toBeCalledWith({
+    expect(update).toHaveBeenCalledWith({
       permissionId: 'test-id',
       requestBody: {
         role: 'test-role'
@@ -267,8 +267,8 @@ describe('createPermisson()', () => {
         supportsAllDrives: false
       })
     ).toEqual('test-id')
-    expect(list).toBeCalledTimes(0)
-    expect(create).toBeCalledWith({
+    expect(list).toHaveBeenCalledTimes(0)
+    expect(create).toHaveBeenCalledWith({
       requestBody: {
         type: 'test-type',
         role: 'test-role',
@@ -322,14 +322,14 @@ describe('createPermisson()', () => {
         supportsAllDrives: true
       })
     ).toEqual('test-id')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: true,
       supportsAllDrives: true
     })
-    expect(create).toBeCalledWith({
+    expect(create).toHaveBeenCalledWith({
       requestBody: {
         type: 'test-type',
         role: 'test-role',
@@ -383,14 +383,14 @@ describe('createPermisson()', () => {
         supportsAllDrives: false
       })
     ).toEqual('test-id')
-    expect(list).toBeCalledWith({
+    expect(list).toHaveBeenCalledWith({
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: false,
       supportsAllDrives: false
     })
-    expect(create).toBeCalledWith({
+    expect(create).toHaveBeenCalledWith({
       requestBody: {
         type: 'test-type',
         role: 'test-role',
@@ -432,7 +432,7 @@ describe('createPermisson()', () => {
       emailMessage: '',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrowError('err')
+    await expect(res).rejects.toThrow('err')
     await expect(res).rejects.toBeInstanceOf(CreatePermissonError)
   })
 
@@ -466,7 +466,7 @@ describe('createPermisson()', () => {
       emailMessage: '',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrowError('err')
+    await expect(res).rejects.toThrow('err')
     await expect(res).rejects.toBeInstanceOf(UpdatePermissonError)
   })
 
@@ -496,7 +496,7 @@ describe('createPermisson()', () => {
       emailMessage: '',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrowError('blank id')
+    await expect(res).rejects.toThrow('blank id')
     await expect(res).rejects.toBeInstanceOf(CreatePermissonError)
   })
 })

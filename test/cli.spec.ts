@@ -103,7 +103,7 @@ describe('cliSend()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockSendFile).toBeCalledWith('test-drive', {
+    expect(mockSendFile).toHaveBeenCalledWith('test-drive', {
       fileId: 'file-id',
       parentId: 'parent-id',
       destFileName: 'dest-file-name',
@@ -139,7 +139,7 @@ describe('cliSend()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockSendFile).toBeCalledWith('test-drive', {
+    expect(mockSendFile).toHaveBeenCalledWith('test-drive', {
       fileId: 'file-id',
       parentId: 'parent-id',
       destFileName: 'dest-file-name',
@@ -177,7 +177,7 @@ describe('cliSend()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockSendFile).toBeCalledWith('test-drive', {
+    expect(mockSendFile).toHaveBeenCalledWith('test-drive', {
       fileId: 'file-id',
       parentId: 'parent-id',
       destFileName: 'dest-file-name',
@@ -214,7 +214,7 @@ describe('cliSend()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockSendFile).toBeCalledWith('test-drive', {
+    expect(mockSendFile).toHaveBeenCalledWith('test-drive', {
       fileId: 'file-id',
       parentId: 'parent-id',
       destFileName: 'dest-file-name',
@@ -252,7 +252,7 @@ describe('cliRecv()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockRecvFile).toBeCalledWith('test-drive', {
+    expect(mockRecvFile).toHaveBeenCalledWith('test-drive', {
       fileId: 'file-id',
       parentId: 'parent-id',
       srcFileName: 'src-file-name',
@@ -286,7 +286,7 @@ describe('cliRecv()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockRecvFile).toBeCalledWith('test-drive', {
+    expect(mockRecvFile).toHaveBeenCalledWith('test-drive', {
       fileId: 'file-id',
       parentId: 'parent-id',
       srcFileName: 'src-file-name',
@@ -323,7 +323,7 @@ describe('cliRecv()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockRecvFile).toBeCalledWith('test-drive', {
+    expect(mockRecvFile).toHaveBeenCalledWith('test-drive', {
       fileId: 'file-id',
       parentId: 'parent-id',
       srcFileName: 'src-file-name',
@@ -360,7 +360,7 @@ describe('cliRecv()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockRecvFile).toBeCalledWith('test-drive', {
+    expect(mockRecvFile).toHaveBeenCalledWith('test-drive', {
       fileId: 'file-id',
       parentId: 'parent-id',
       srcFileName: 'src-file-name',
@@ -404,7 +404,7 @@ describe('cliShare()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockCreatePermisson).toBeCalledWith('test-drive', {
+    expect(mockCreatePermisson).toHaveBeenCalledWith('test-drive', {
       fileId: 'test-file-id',
       parentId: 'parent-id',
       destFileName: 'dest-file-name',
@@ -454,7 +454,7 @@ describe('cliShare()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockCreatePermisson).toBeCalledWith('test-drive', {
+    expect(mockCreatePermisson).toHaveBeenCalledWith('test-drive', {
       fileId: 'test-file-id',
       parentId: 'parent-id',
       destFileName: 'dest-file-name',
@@ -504,7 +504,7 @@ describe('cliShare()', () => {
         stderr
       })
     ).toEqual(0)
-    expect(mockCreatePermisson).toBeCalledWith('test-drive', {
+    expect(mockCreatePermisson).toHaveBeenCalledWith('test-drive', {
       fileId: 'test-file-id',
       parentId: 'parent-id',
       destFileName: 'dest-file-name',
