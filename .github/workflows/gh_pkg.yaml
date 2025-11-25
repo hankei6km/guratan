@@ -11,7 +11,7 @@ jobs:
     environment: gh_pkg
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       # .npmrc ファイルをセットアップして GitHub Packages に公開する
       - uses: actions/setup-node@v6
