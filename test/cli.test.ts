@@ -1,82 +1,106 @@
-import { PassThrough } from 'stream'
-import { jest } from '@jest/globals'
+import { describe, it, afterEach, mock } from 'node:test'
+import assert from 'node:assert/strict'
 
-jest.unstable_mockModule('../src/tdrive.js', async () => {
-  const mockDriveClient = jest.fn()
+import { PassThrough } from 'stream'
+
+const mockTdriveExports = (() => {
+  const mockDriveClient = mock.fn<() => string>()
   const reset = () => {
-    mockDriveClient.mockReset().mockReturnValue('test-drive')
+    //mockDriveClient.mockReset().mockReturnValue('test-drive')
+    mockDriveClient.mock.resetCalls()
+    mockDriveClient.mock.mockImplementation(function () {
+      return 'test-drive'
+    })
   }
 
   reset()
   return {
-    driveClient: mockDriveClient,
+    exports: {
+      driveClient: mockDriveClient
+    },
     _reset: reset,
     _getMocks: () => ({
       mockDriveClient
     })
   }
-})
+})()
+mock.module('../src/tdrive.ts', { exports: mockTdriveExports.exports })
 
-jest.unstable_mockModule('../src/tsend.js', async () => {
-  const mockSendFile = jest.fn<(a: any) => Promise<any>>()
+const mockTsendExports = (() => {
+  const mockSendFile = mock.fn<(a: any) => Promise<any>>()
   const reset = () => {
-    mockSendFile.mockReset().mockResolvedValue('test-id')
+    mockSendFile.mock.resetCalls()
+    mockSendFile.mock.mockImplementation(function () {
+      return Promise.resolve('test-id')
+    })
   }
 
   reset()
   return {
-    sendFile: mockSendFile,
+    exports: {
+      sendFile: mockSendFile
+    },
     _reset: reset,
     _getMocks: () => ({
       mockSendFile
     })
   }
-})
+})()
+mock.module('../src/tsend.ts', { exports: mockTsendExports.exports })
 
-jest.unstable_mockModule('../src/trecv.js', async () => {
-  const mockRecvFile = jest.fn<(a: any) => Promise<any>>()
+const mockTrecvExports = (() => {
+  const mockRecvFile = mock.fn<(a: any) => Promise<any>>()
   const reset = () => {
-    mockRecvFile.mockReset().mockResolvedValue('test-id')
+    mockRecvFile.mock.resetCalls()
+    mockRecvFile.mock.mockImplementation(function () {
+      return Promise.resolve('test-id')
+    })
   }
 
   reset()
   return {
-    recvFile: mockRecvFile,
+    exports: {
+      recvFile: mockRecvFile
+    },
     _reset: reset,
     _getMocks: () => ({
       mockRecvFile
     })
   }
-})
+})()
+mock.module('../src/trecv.ts', { exports: mockTrecvExports.exports })
 
-jest.unstable_mockModule('../src/tshare.js', async () => {
-  const mockCreatePermisson = jest.fn<(a: any) => Promise<any>>()
+const mockTshareExports = (() => {
+  const mockCreatePermisson = mock.fn<(a: any) => Promise<any>>()
   const reset = () => {
-    mockCreatePermisson.mockReset().mockResolvedValue('test-permission-id')
+    mockCreatePermisson.mock.resetCalls()
+    mockCreatePermisson.mock.mockImplementation(function () {
+      return Promise.resolve('test-permission-id')
+    })
   }
 
   reset()
   return {
-    createPermisson: mockCreatePermisson,
+    exports: {
+      createPermisson: mockCreatePermisson
+    },
     _reset: reset,
     _getMocks: () => ({
       mockCreatePermisson
     })
   }
-})
+})()
+mock.module('../src/tshare.ts', { exports: mockTshareExports.exports })
 
-const mockTsend = await import('../src/tsend.js')
-const mockTrecv = await import('../src/trecv.js')
-const mockTshare = await import('../src/tshare.js')
-const { mockSendFile } = (mockTsend as any)._getMocks()
-const { mockRecvFile } = (mockTrecv as any)._getMocks()
-const { mockCreatePermisson } = (mockTshare as any)._getMocks()
-const { cliSend, cliRecv, cliShare } = await import('../src/cli.js')
+const { mockSendFile } = mockTsendExports._getMocks()
+const { mockRecvFile } = mockTrecvExports._getMocks()
+const { mockCreatePermisson } = mockTshareExports._getMocks()
+const { cliSend, cliRecv, cliShare } = await import('../src/cli.ts')
 
 afterEach(() => {
-  ;(mockTsend as any)._reset()
-  ;(mockTrecv as any)._reset()
-  ;(mockTshare as any)._reset()
+  mockTsendExports._reset()
+  mockTrecvExports._reset()
+  mockTshareExports._reset()
 })
 
 describe('cliSend()', () => {
@@ -88,7 +112,7 @@ describe('cliSend()', () => {
     stdout.on('data', (d) => (outData = outData + d))
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
-    expect(
+    assert.strictEqual(
       await cliSend({
         fileId: 'file-id',
         parentId: 'parent-id',
@@ -101,19 +125,24 @@ describe('cliSend()', () => {
         stdin,
         stdout,
         stderr
-      })
-    ).toEqual(0)
-    expect(mockSendFile).toHaveBeenCalledWith('test-drive', {
-      fileId: 'file-id',
-      parentId: 'parent-id',
-      destFileName: 'dest-file-name',
-      srcFileName: 'src-file-name',
-      destMimeType: 'dest-mime-type',
-      srcMimeType: 'src-mime-type',
-      supportsAllDrives: false
-    })
-    expect(outData).toEqual('')
-    expect(errData).toEqual('')
+      }),
+      0
+    )
+    assert.deepStrictEqual(mockSendFile.mock.calls[0].arguments, [
+      'test-drive',
+      {
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        srcFileName: 'src-file-name',
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: false,
+        srcStream: undefined
+      }
+    ])
+    assert.strictEqual(outData, '')
+    assert.strictEqual(errData, '')
   })
 
   it('should use stdin', async () => {
@@ -123,7 +152,7 @@ describe('cliSend()', () => {
     stdout.on('data', (d) => (outData = outData + d))
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
-    expect(
+    assert.strictEqual(
       await cliSend({
         fileId: 'file-id',
         parentId: 'parent-id',
@@ -137,20 +166,24 @@ describe('cliSend()', () => {
         stdin: 'std-in' as any,
         stdout,
         stderr
-      })
-    ).toEqual(0)
-    expect(mockSendFile).toHaveBeenCalledWith('test-drive', {
-      fileId: 'file-id',
-      parentId: 'parent-id',
-      destFileName: 'dest-file-name',
-      srcFileName: 'src-file-name',
-      destMimeType: 'dest-mime-type',
-      srcMimeType: 'src-mime-type',
-      srcStream: 'std-in',
-      supportsAllDrives: false
-    })
-    expect(outData).toEqual('')
-    expect(errData).toEqual('')
+      }),
+      0
+    )
+    assert.deepStrictEqual(mockSendFile.mock.calls[0].arguments, [
+      'test-drive',
+      {
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        srcFileName: 'src-file-name',
+        destMimeType: 'dest-mime-type',
+        srcMimeType: 'src-mime-type',
+        srcStream: 'std-in',
+        supportsAllDrives: false
+      }
+    ])
+    assert.strictEqual(outData, '')
+    assert.strictEqual(errData, '')
   })
 
   it('should print id', async () => {
@@ -161,7 +194,7 @@ describe('cliSend()', () => {
     stdout.on('data', (d) => (outData = outData + d))
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
-    expect(
+    assert.strictEqual(
       await cliSend({
         fileId: 'file-id',
         parentId: 'parent-id',
@@ -175,19 +208,24 @@ describe('cliSend()', () => {
         stdin,
         stdout,
         stderr
-      })
-    ).toEqual(0)
-    expect(mockSendFile).toHaveBeenCalledWith('test-drive', {
-      fileId: 'file-id',
-      parentId: 'parent-id',
-      destFileName: 'dest-file-name',
-      srcFileName: 'src-file-name',
-      destMimeType: 'mime-type',
-      srcMimeType: 'src-mime-type',
-      supportsAllDrives: false
-    })
-    expect(outData).toEqual('test-id')
-    expect(errData).toEqual('')
+      }),
+      0
+    )
+    assert.deepStrictEqual(mockSendFile.mock.calls[0].arguments, [
+      'test-drive',
+      {
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        srcFileName: 'src-file-name',
+        destMimeType: 'mime-type',
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: false,
+        srcStream: undefined
+      }
+    ])
+    assert.strictEqual(outData, 'test-id')
+    assert.strictEqual(errData, '')
   })
 
   it('should supports all drives', async () => {
@@ -198,7 +236,7 @@ describe('cliSend()', () => {
     stdout.on('data', (d) => (outData = outData + d))
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
-    expect(
+    assert.strictEqual(
       await cliSend({
         fileId: 'file-id',
         parentId: 'parent-id',
@@ -212,19 +250,24 @@ describe('cliSend()', () => {
         stdin,
         stdout,
         stderr
-      })
-    ).toEqual(0)
-    expect(mockSendFile).toHaveBeenCalledWith('test-drive', {
-      fileId: 'file-id',
-      parentId: 'parent-id',
-      destFileName: 'dest-file-name',
-      srcFileName: 'src-file-name',
-      destMimeType: 'mime-type',
-      srcMimeType: 'src-mime-type',
-      supportsAllDrives: true
-    })
-    expect(outData).toEqual('test-id')
-    expect(errData).toEqual('')
+      }),
+      0
+    )
+    assert.deepStrictEqual(mockSendFile.mock.calls[0].arguments, [
+      'test-drive',
+      {
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        srcFileName: 'src-file-name',
+        destMimeType: 'mime-type',
+        srcMimeType: 'src-mime-type',
+        supportsAllDrives: true,
+        srcStream: undefined
+      }
+    ])
+    assert.strictEqual(outData, 'test-id')
+    assert.strictEqual(errData, '')
   })
 })
 
@@ -237,7 +280,7 @@ describe('cliRecv()', () => {
     stdout.on('data', (d) => (outData = outData + d))
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
-    expect(
+    assert.strictEqual(
       await cliRecv({
         fileId: 'file-id',
         parentId: 'parent-id',
@@ -250,19 +293,24 @@ describe('cliRecv()', () => {
         stdin,
         stdout,
         stderr
-      })
-    ).toEqual(0)
-    expect(mockRecvFile).toHaveBeenCalledWith('test-drive', {
-      fileId: 'file-id',
-      parentId: 'parent-id',
-      srcFileName: 'src-file-name',
-      destFileName: 'dest-file-name',
-      destMimeType: 'dest-mime-type',
-      supportsAllDrives: false,
-      removeBom: false
-    })
-    expect(outData).toEqual('')
-    expect(errData).toEqual('')
+      }),
+      0
+    )
+    assert.deepStrictEqual(mockRecvFile.mock.calls[0].arguments, [
+      'test-drive',
+      {
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        srcFileName: 'src-file-name',
+        destFileName: 'dest-file-name',
+        destMimeType: 'dest-mime-type',
+        supportsAllDrives: false,
+        removeBom: false,
+        destStream: undefined
+      }
+    ])
+    assert.strictEqual(outData, '')
+    assert.strictEqual(errData, '')
   })
 
   it('should use stdout', async () => {
@@ -270,7 +318,7 @@ describe('cliRecv()', () => {
     const stderr = new PassThrough()
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
-    expect(
+    assert.strictEqual(
       await cliRecv({
         fileId: 'file-id',
         parentId: 'parent-id',
@@ -284,19 +332,23 @@ describe('cliRecv()', () => {
         stdin,
         stdout: 'std-out' as any,
         stderr
-      })
-    ).toEqual(0)
-    expect(mockRecvFile).toHaveBeenCalledWith('test-drive', {
-      fileId: 'file-id',
-      parentId: 'parent-id',
-      srcFileName: 'src-file-name',
-      destFileName: 'dest-file-name',
-      destMimeType: 'dest-mime-type',
-      destStream: 'std-out',
-      supportsAllDrives: false,
-      removeBom: false
-    })
-    expect(errData).toEqual('')
+      }),
+      0
+    )
+    assert.deepStrictEqual(mockRecvFile.mock.calls[0].arguments, [
+      'test-drive',
+      {
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        srcFileName: 'src-file-name',
+        destFileName: 'dest-file-name',
+        destMimeType: 'dest-mime-type',
+        destStream: 'std-out',
+        supportsAllDrives: false,
+        removeBom: false
+      }
+    ])
+    assert.strictEqual(errData, '')
   })
 
   it('should print id', async () => {
@@ -307,7 +359,7 @@ describe('cliRecv()', () => {
     stdout.on('data', (d) => (outData = outData + d))
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
-    expect(
+    assert.strictEqual(
       await cliRecv({
         fileId: 'file-id',
         parentId: 'parent-id',
@@ -321,19 +373,24 @@ describe('cliRecv()', () => {
         stdin,
         stdout,
         stderr
-      })
-    ).toEqual(0)
-    expect(mockRecvFile).toHaveBeenCalledWith('test-drive', {
-      fileId: 'file-id',
-      parentId: 'parent-id',
-      srcFileName: 'src-file-name',
-      destFileName: 'dest-file-name',
-      destMimeType: 'mime-type',
-      supportsAllDrives: false,
-      removeBom: false
-    })
-    expect(outData).toEqual('test-id')
-    expect(errData).toEqual('')
+      }),
+      0
+    )
+    assert.deepStrictEqual(mockRecvFile.mock.calls[0].arguments, [
+      'test-drive',
+      {
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        srcFileName: 'src-file-name',
+        destFileName: 'dest-file-name',
+        destMimeType: 'mime-type',
+        supportsAllDrives: false,
+        removeBom: false,
+        destStream: undefined
+      }
+    ])
+    assert.strictEqual(outData, 'test-id')
+    assert.strictEqual(errData, '')
   })
 
   it('should supports all drives', async () => {
@@ -344,7 +401,7 @@ describe('cliRecv()', () => {
     stdout.on('data', (d) => (outData = outData + d))
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
-    expect(
+    assert.strictEqual(
       await cliRecv({
         fileId: 'file-id',
         parentId: 'parent-id',
@@ -358,19 +415,24 @@ describe('cliRecv()', () => {
         stdin,
         stdout,
         stderr
-      })
-    ).toEqual(0)
-    expect(mockRecvFile).toHaveBeenCalledWith('test-drive', {
-      fileId: 'file-id',
-      parentId: 'parent-id',
-      srcFileName: 'src-file-name',
-      destFileName: 'dest-file-name',
-      destMimeType: 'dest-mime-type',
-      supportsAllDrives: true,
-      removeBom: false
-    })
-    expect(outData).toEqual('')
-    expect(errData).toEqual('')
+      }),
+      0
+    )
+    assert.deepStrictEqual(mockRecvFile.mock.calls[0].arguments, [
+      'test-drive',
+      {
+        fileId: 'file-id',
+        parentId: 'parent-id',
+        srcFileName: 'src-file-name',
+        destFileName: 'dest-file-name',
+        destMimeType: 'dest-mime-type',
+        supportsAllDrives: true,
+        removeBom: false,
+        destStream: undefined
+      }
+    ])
+    assert.strictEqual(outData, '')
+    assert.strictEqual(errData, '')
   })
 })
 
@@ -383,7 +445,7 @@ describe('cliShare()', () => {
     stdout.on('data', (d) => (outData = outData + d))
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
-    expect(
+    assert.strictEqual(
       await cliShare({
         fileId: 'test-file-id',
         parentId: 'parent-id',
@@ -402,26 +464,30 @@ describe('cliShare()', () => {
         stdin,
         stdout,
         stderr
-      })
-    ).toEqual(0)
-    expect(mockCreatePermisson).toHaveBeenCalledWith('test-drive', {
-      fileId: 'test-file-id',
-      parentId: 'parent-id',
-      destFileName: 'dest-file-name',
-      type: 'test-type',
-      role: 'test-role',
-      emailAddress: 'test-email-address',
-      domain: 'test-domain',
-      view: 'test-view',
-      allowFileDiscovery: false,
-      moveToNewOwnersRoot: false,
-      transferOwnership: false,
-      sendNotificationEmail: true,
-      emailMessage: 'test-message',
-      supportsAllDrives: false
-    })
-    expect(outData).toEqual('')
-    expect(errData).toEqual('')
+      }),
+      0
+    )
+    assert.deepStrictEqual(mockCreatePermisson.mock.calls[0].arguments, [
+      'test-drive',
+      {
+        fileId: 'test-file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        type: 'test-type',
+        role: 'test-role',
+        emailAddress: 'test-email-address',
+        domain: 'test-domain',
+        view: 'test-view',
+        allowFileDiscovery: false,
+        moveToNewOwnersRoot: false,
+        transferOwnership: false,
+        sendNotificationEmail: true,
+        emailMessage: 'test-message',
+        supportsAllDrives: false
+      }
+    ])
+    assert.strictEqual(outData, '')
+    assert.strictEqual(errData, '')
   })
 
   it('should supports all drives', async () => {
@@ -432,7 +498,7 @@ describe('cliShare()', () => {
     stdout.on('data', (d) => (outData = outData + d))
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
-    expect(
+    assert.strictEqual(
       await cliShare({
         fileId: 'test-file-id',
         parentId: 'parent-id',
@@ -452,26 +518,30 @@ describe('cliShare()', () => {
         stdin,
         stdout,
         stderr
-      })
-    ).toEqual(0)
-    expect(mockCreatePermisson).toHaveBeenCalledWith('test-drive', {
-      fileId: 'test-file-id',
-      parentId: 'parent-id',
-      destFileName: 'dest-file-name',
-      type: 'test-type',
-      role: 'test-role',
-      emailAddress: 'test-email-address',
-      domain: 'test-domain',
-      view: 'test-view',
-      allowFileDiscovery: false,
-      moveToNewOwnersRoot: false,
-      transferOwnership: false,
-      sendNotificationEmail: true,
-      emailMessage: 'test-message',
-      supportsAllDrives: true
-    })
-    expect(outData).toEqual('')
-    expect(errData).toEqual('')
+      }),
+      0
+    )
+    assert.deepStrictEqual(mockCreatePermisson.mock.calls[0].arguments, [
+      'test-drive',
+      {
+        fileId: 'test-file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        type: 'test-type',
+        role: 'test-role',
+        emailAddress: 'test-email-address',
+        domain: 'test-domain',
+        view: 'test-view',
+        allowFileDiscovery: false,
+        moveToNewOwnersRoot: false,
+        transferOwnership: false,
+        sendNotificationEmail: true,
+        emailMessage: 'test-message',
+        supportsAllDrives: true
+      }
+    ])
+    assert.strictEqual(outData, '')
+    assert.strictEqual(errData, '')
   })
 
   it('should print id', async () => {
@@ -482,7 +552,7 @@ describe('cliShare()', () => {
     stdout.on('data', (d) => (outData = outData + d))
     let errData = ''
     stderr.on('data', (d) => (errData = errData + d))
-    expect(
+    assert.strictEqual(
       await cliShare({
         fileId: 'test-file-id',
         parentId: 'parent-id',
@@ -502,25 +572,29 @@ describe('cliShare()', () => {
         stdin,
         stdout,
         stderr
-      })
-    ).toEqual(0)
-    expect(mockCreatePermisson).toHaveBeenCalledWith('test-drive', {
-      fileId: 'test-file-id',
-      parentId: 'parent-id',
-      destFileName: 'dest-file-name',
-      type: 'test-type',
-      role: 'test-role',
-      emailAddress: 'test-email-address',
-      domain: 'test-domain',
-      view: 'test-view',
-      allowFileDiscovery: false,
-      moveToNewOwnersRoot: false,
-      transferOwnership: false,
-      sendNotificationEmail: true,
-      emailMessage: 'test-message',
-      supportsAllDrives: false
-    })
-    expect(outData).toEqual('test-permission-id')
-    expect(errData).toEqual('')
+      }),
+      0
+    )
+    assert.deepStrictEqual(mockCreatePermisson.mock.calls[0].arguments, [
+      'test-drive',
+      {
+        fileId: 'test-file-id',
+        parentId: 'parent-id',
+        destFileName: 'dest-file-name',
+        type: 'test-type',
+        role: 'test-role',
+        emailAddress: 'test-email-address',
+        domain: 'test-domain',
+        view: 'test-view',
+        allowFileDiscovery: false,
+        moveToNewOwnersRoot: false,
+        transferOwnership: false,
+        sendNotificationEmail: true,
+        emailMessage: 'test-message',
+        supportsAllDrives: false
+      }
+    ])
+    assert.strictEqual(outData, 'test-permission-id')
+    assert.strictEqual(errData, '')
   })
 })

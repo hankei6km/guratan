@@ -1,5 +1,6 @@
 import { GoogleAuth } from 'google-auth-library'
-import { drive as gdrive, drive_v3 } from '@googleapis/drive'
+import type { drive_v3 } from '@googleapis/drive'
+import { drive as gdrive } from '@googleapis/drive'
 
 export class GetFileIdError extends Error {
   constructor(message: string) {
