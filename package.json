@@ -35,7 +35,7 @@
     "clean": "rm -rf dist/*"
   },
   "dependencies": {
-    "@googleapis/drive": "^19.2.0",
+    "@googleapis/drive": "^21.0.0",
     "strip-bom-stream": "^5.0.0",
     "yargs": "^18.0.0"
   },
