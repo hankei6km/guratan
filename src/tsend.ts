@@ -2,7 +2,7 @@ import * as path from 'path'
 import * as fs from 'fs'
 import { Readable } from 'stream'
 import { drive_v3 } from '@googleapis/drive'
-import { getFileId } from './tdrive.js'
+import { getFileId } from './tdrive.ts'
 
 export class UploadFileError extends Error {
   constructor(message: string) {

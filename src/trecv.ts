@@ -1,9 +1,9 @@
 import * as fs from 'fs'
 import { Writable, pipeline } from 'stream'
 import { promisify } from 'util'
-import { drive_v3 } from '@googleapis/drive'
+import type { drive_v3 } from '@googleapis/drive'
 import stripBomStream from 'strip-bom-stream'
-import { getFileId, GetFileIdError } from './tdrive.js'
+import { getFileId, GetFileIdError } from './tdrive.ts'
 
 const promisePipeline = promisify(pipeline)
 

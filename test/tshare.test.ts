@@ -1,19 +1,20 @@
-import { jest } from '@jest/globals'
+import { describe, it, afterEach, mock } from 'node:test'
+import assert from 'node:assert/strict'
 
 const { CreatePermissonError, UpdatePermissonError, createPermisson } =
-  await import('../src/tshare.js')
+  await import('../src/tshare.ts')
 
 describe('createPermisson()', () => {
   it('should return id of permission', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{ id: 'test-id' }] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         list
@@ -24,7 +25,7 @@ describe('createPermisson()', () => {
       }
     }
 
-    expect(
+    assert.strictEqual(
       await createPermisson(drive, {
         fileId: 'test-file-id',
         parentId: 'parent-id',
@@ -39,10 +40,11 @@ describe('createPermisson()', () => {
         allowFileDiscovery: true,
         sendNotificationEmail: false,
         emailMessage: 'test-message'
-      })
-    ).toEqual('test-id')
-    expect(list).toHaveBeenCalledTimes(0)
-    expect(create).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.strictEqual(list.mock.callCount(), 0)
+    assert.deepStrictEqual(create.mock.calls[0].arguments[0], {
       requestBody: {
         type: 'test-type',
         role: 'test-role',
@@ -58,19 +60,19 @@ describe('createPermisson()', () => {
       sendNotificationEmail: false,
       supportsAllDrives: false
     })
-    expect(update).toHaveBeenCalledTimes(0) // transferOwnership が指定されているので.
+    assert.strictEqual(update.mock.callCount(), 0) // transferOwnership が指定されているので.
   })
 
   it('should return id of permission(supports all drives)', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{ id: 'test-id' }] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         list
@@ -81,7 +83,7 @@ describe('createPermisson()', () => {
       }
     }
 
-    expect(
+    assert.strictEqual(
       await createPermisson(drive, {
         fileId: 'test-file-id',
         parentId: 'parent-id',
@@ -97,10 +99,11 @@ describe('createPermisson()', () => {
         sendNotificationEmail: false,
         emailMessage: 'test-message',
         supportsAllDrives: true
-      })
-    ).toEqual('test-id')
-    expect(list).toHaveBeenCalledTimes(0)
-    expect(create).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.strictEqual(list.mock.callCount(), 0)
+    assert.deepStrictEqual(create.mock.calls[0].arguments[0], {
       requestBody: {
         type: 'test-type',
         role: 'test-role',
@@ -116,19 +119,19 @@ describe('createPermisson()', () => {
       sendNotificationEmail: false,
       supportsAllDrives: true
     })
-    expect(update).toHaveBeenCalledTimes(0) // transferOwnership が指定されているので.
+    assert.strictEqual(update.mock.callCount(), 0) // transferOwnership が指定されているので.
   })
 
   it('should return id of permission(default values)', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{ id: 'test-id' }] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         list
@@ -139,7 +142,7 @@ describe('createPermisson()', () => {
       }
     }
 
-    expect(
+    assert.strictEqual(
       await createPermisson(drive, {
         fileId: 'test-file-id',
         parentId: 'parent-id',
@@ -151,10 +154,11 @@ describe('createPermisson()', () => {
         view: '',
         emailMessage: '',
         supportsAllDrives: false
-      })
-    ).toEqual('test-id')
-    expect(list).toHaveBeenCalledTimes(0)
-    expect(create).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.strictEqual(list.mock.callCount(), 0)
+    assert.deepStrictEqual(create.mock.calls[0].arguments[0], {
       requestBody: {
         type: 'test-type',
         role: 'test-role'
@@ -163,7 +167,7 @@ describe('createPermisson()', () => {
       fields: 'id',
       supportsAllDrives: false
     })
-    expect(update).toHaveBeenCalledWith({
+    assert.deepStrictEqual(update.mock.calls[0].arguments[0], {
       permissionId: 'test-id',
       requestBody: {
         role: 'test-role'
@@ -175,15 +179,15 @@ describe('createPermisson()', () => {
   })
 
   it('should return id of permission(default values and support all drives)', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{ id: 'test-id' }] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         list
@@ -194,7 +198,7 @@ describe('createPermisson()', () => {
       }
     }
 
-    expect(
+    assert.strictEqual(
       await createPermisson(drive, {
         fileId: 'test-file-id',
         parentId: 'parent-id',
@@ -206,10 +210,11 @@ describe('createPermisson()', () => {
         view: '',
         emailMessage: '',
         supportsAllDrives: true
-      })
-    ).toEqual('test-id')
-    expect(list).toHaveBeenCalledTimes(0)
-    expect(create).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.strictEqual(list.mock.callCount(), 0)
+    assert.deepStrictEqual(create.mock.calls[0].arguments[0], {
       requestBody: {
         type: 'test-type',
         role: 'test-role'
@@ -218,7 +223,7 @@ describe('createPermisson()', () => {
       fields: 'id',
       supportsAllDrives: true
     })
-    expect(update).toHaveBeenCalledWith({
+    assert.deepStrictEqual(update.mock.calls[0].arguments[0], {
       permissionId: 'test-id',
       requestBody: {
         role: 'test-role'
@@ -230,15 +235,15 @@ describe('createPermisson()', () => {
   })
 
   it('should return id of permission(email message)', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{ id: 'test-id' }] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         list
@@ -249,7 +254,7 @@ describe('createPermisson()', () => {
       }
     }
 
-    expect(
+    assert.strictEqual(
       await createPermisson(drive, {
         fileId: 'test-file-id',
         parentId: 'parent-id',
@@ -265,10 +270,11 @@ describe('createPermisson()', () => {
         sendNotificationEmail: true,
         emailMessage: 'test-message',
         supportsAllDrives: false
-      })
-    ).toEqual('test-id')
-    expect(list).toHaveBeenCalledTimes(0)
-    expect(create).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.strictEqual(list.mock.callCount(), 0)
+    assert.deepStrictEqual(create.mock.calls[0].arguments[0], {
       requestBody: {
         type: 'test-type',
         role: 'test-role',
@@ -285,15 +291,15 @@ describe('createPermisson()', () => {
   })
 
   it('should get fileId by using getFileId()(support all drives)', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{ id: 'file-id-from-list' }] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{ id: 'file-id-from-list' }] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         list
@@ -304,7 +310,7 @@ describe('createPermisson()', () => {
       }
     }
 
-    expect(
+    assert.strictEqual(
       await createPermisson(drive, {
         fileId: '',
         parentId: 'parent-id',
@@ -320,16 +326,17 @@ describe('createPermisson()', () => {
         sendNotificationEmail: true,
         emailMessage: 'test-message',
         supportsAllDrives: true
-      })
-    ).toEqual('test-id')
-    expect(list).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.deepStrictEqual(list.mock.calls[0].arguments[0], {
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: true,
       supportsAllDrives: true
     })
-    expect(create).toHaveBeenCalledWith({
+    assert.deepStrictEqual(create.mock.calls[0].arguments[0], {
       requestBody: {
         type: 'test-type',
         role: 'test-role',
@@ -346,15 +353,15 @@ describe('createPermisson()', () => {
   })
 
   it('should get fileId by using getFileId()', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{ id: 'file-id-from-list' }] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{ id: 'file-id-from-list' }] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         list
@@ -365,7 +372,7 @@ describe('createPermisson()', () => {
       }
     }
 
-    expect(
+    assert.strictEqual(
       await createPermisson(drive, {
         fileId: '',
         parentId: 'parent-id',
@@ -381,16 +388,17 @@ describe('createPermisson()', () => {
         sendNotificationEmail: true,
         emailMessage: 'test-message',
         supportsAllDrives: false
-      })
-    ).toEqual('test-id')
-    expect(list).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.deepStrictEqual(list.mock.calls[0].arguments[0], {
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: false,
       supportsAllDrives: false
     })
-    expect(create).toHaveBeenCalledWith({
+    assert.deepEqual(create.mock.calls[0].arguments[0], {
       requestBody: {
         type: 'test-type',
         role: 'test-role',
@@ -407,9 +415,9 @@ describe('createPermisson()', () => {
   })
 
   it('should throw CreatePermissonError', async () => {
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockRejectedValue({ errors: 'err' })
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.reject({ errors: 'err' })
+    )
     const drive: any = {
       permissions: {
         create
@@ -432,17 +440,20 @@ describe('createPermisson()', () => {
       emailMessage: '',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrow('err')
-    await expect(res).rejects.toBeInstanceOf(CreatePermissonError)
+    await assert.rejects(res, (err: Error) => {
+      assert.strictEqual(err.message, '"err"')
+      assert.ok(err instanceof CreatePermissonError)
+      return true
+    })
   })
 
   it('should throw UpdatePermissonError', async () => {
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockRejectedValue({ errors: 'err' })
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.reject({ errors: 'err' })
+    )
     const drive: any = {
       permissions: {
         create,
@@ -466,14 +477,17 @@ describe('createPermisson()', () => {
       emailMessage: '',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrow('err')
-    await expect(res).rejects.toBeInstanceOf(UpdatePermissonError)
+    await assert.rejects(res, (err: Error) => {
+      assert.strictEqual(err.message, '"err"')
+      assert.ok(err instanceof UpdatePermissonError)
+      return true
+    })
   })
 
   it('should throw error when create() return blank id', async () => {
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: '' } })
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: '' } })
+    )
     const drive: any = {
       permissions: {
         create
@@ -496,7 +510,15 @@ describe('createPermisson()', () => {
       emailMessage: '',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrow('blank id')
-    await expect(res).rejects.toBeInstanceOf(CreatePermissonError)
+    //await expect(res).rejects.toThrow('blank id')
+    //await expect(res).rejects.toBeInstanceOf(CreatePermissonError)
+    await assert.rejects(res, (err: any) => {
+      assert.strictEqual(
+        err.message,
+        'drive.permissions.create() return blank id '
+      )
+      assert.ok(err instanceof CreatePermissonError)
+      return true
+    })
   })
 })

@@ -1,77 +1,112 @@
-import { jest } from '@jest/globals'
+import { describe, it, afterEach, mock } from 'node:test'
+import assert from 'node:assert/strict'
 
-jest.unstable_mockModule('fs', async () => {
-  const mockCreateReadStream = jest.fn()
+const mockGoogleAuthExports = (() => {
+  const mockGoogleAuth = mock.fn()
   const reset = () => {
-    mockCreateReadStream.mockReset().mockReturnValue('mock-create-read-streadm')
+    mockGoogleAuth.mock.resetCalls()
+    mockGoogleAuth.mock.mockImplementation(function () {})
   }
 
   reset()
   return {
-    createReadStream: mockCreateReadStream,
+    exports: {
+      GoogleAuth: mockGoogleAuth
+    },
+    _reset: reset,
+    _getMocks: () => ({
+      mockGoogleAuth
+    })
+  }
+})()
+mock.module('google-auth-library', { exports: mockGoogleAuthExports.exports })
+
+const mockFsExports = await (async () => {
+  const { default: fs, ..._fs } = await import('fs')
+  const mockCreateReadStream = mock.fn<(a: any) => string>()
+  const reset = () => {
+    mockCreateReadStream.mock.resetCalls()
+    mockCreateReadStream.mock.mockImplementation(
+      () => 'mock-create-read-streadm'
+    )
+  }
+
+  reset()
+  return {
+    exports: {
+      ..._fs,
+      createReadStream: mockCreateReadStream
+    },
     _reset: reset,
     _getMocks: () => ({
       mockCreateReadStream
     })
   }
-})
+})()
+mock.module('fs', { exports: mockFsExports.exports })
 
 const mockFs = await import('fs')
-const { mockCreateReadStream } = (mockFs as any)._getMocks()
+const { mockCreateReadStream } = mockFsExports._getMocks()
 const { UploadFileError, UpdateFileError, uploadFile, updateFile, sendFile } =
-  await import('../src/tsend.js')
+  await import('../src/tsend.ts')
 
 afterEach(() => {
-  ;(mockFs as any)._reset()
+  mockFsExports._reset()
 })
 
 describe('uploadFile()', () => {
   it('should return id of file', async () => {
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         create
       }
     }
 
-    expect(
+    assert.strictEqual(
       await uploadFile(drive, {
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
         srcMimeType: 'src-mime-type'
-      })
-    ).toEqual('test-id')
-    expect(mockCreateReadStream).toHaveBeenCalledWith('src-file-name')
-    expect(create).toHaveBeenCalledWith({
-      fields: 'id',
-      media: {
-        mimeType: 'src-mime-type',
-        body: 'mock-create-read-streadm'
-      },
-      supportsAllDrives: false,
-      requestBody: {
-        name: 'dest-file-name',
-        mimeType: 'dest-mime-type',
-        parents: ['parent-id']
+      }),
+      'test-id'
+    )
+    assert.strictEqual(
+      mockCreateReadStream.mock.calls[0].arguments[0],
+      'src-file-name'
+    )
+    assert.deepStrictEqual(create.mock.calls[0].arguments, [
+      {
+        fields: 'id',
+        media: {
+          mimeType: 'src-mime-type',
+          body: 'mock-create-read-streadm'
+        },
+        supportsAllDrives: false,
+        requestBody: {
+          name: 'dest-file-name',
+          mimeType: 'dest-mime-type',
+          parents: ['parent-id']
+        }
       }
-    })
+    ])
   })
 
   it('should return id of file(supports all drives)', async () => {
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         create
       }
     }
 
-    expect(
+    assert.strictEqual(
       await uploadFile(drive, {
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
@@ -79,10 +114,14 @@ describe('uploadFile()', () => {
         destMimeType: 'dest-mime-type',
         srcMimeType: 'src-mime-type',
         supportsAllDrives: true
-      })
-    ).toEqual('test-id')
-    expect(mockCreateReadStream).toHaveBeenCalledWith('src-file-name')
-    expect(create).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.strictEqual(
+      mockCreateReadStream.mock.calls[0].arguments[0],
+      'src-file-name'
+    )
+    assert.deepStrictEqual(create.mock.calls[0].arguments[0], {
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
@@ -98,16 +137,16 @@ describe('uploadFile()', () => {
   })
 
   it('should return id of file(mimeType is blank)', async () => {
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         create
       }
     }
 
-    expect(
+    assert.strictEqual(
       await uploadFile(drive, {
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
@@ -115,10 +154,14 @@ describe('uploadFile()', () => {
         destMimeType: '',
         srcMimeType: '',
         supportsAllDrives: false
-      })
-    ).toEqual('test-id')
-    expect(mockCreateReadStream).toHaveBeenCalledWith('src-file-name')
-    expect(create).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.strictEqual(
+      mockCreateReadStream.mock.calls[0].arguments[0],
+      'src-file-name'
+    )
+    assert.deepStrictEqual(create.mock.calls[0].arguments[0], {
       fields: 'id',
       media: {
         body: 'mock-create-read-streadm'
@@ -132,16 +175,16 @@ describe('uploadFile()', () => {
   })
 
   it('should use srcStream', async () => {
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         create
       }
     }
 
-    expect(
+    assert.strictEqual(
       await uploadFile(drive, {
         parentId: 'parent-id',
         destFileName: 'dest-file-name',
@@ -150,10 +193,11 @@ describe('uploadFile()', () => {
         srcMimeType: '',
         supportsAllDrives: false,
         srcStream: 'src-stream' as any
-      })
-    ).toEqual('test-id')
-    expect(mockCreateReadStream).toHaveBeenCalledTimes(0)
-    expect(create).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.strictEqual(mockCreateReadStream.mock.callCount(), 0)
+    assert.deepStrictEqual(create.mock.calls[0].arguments[0], {
       fields: 'id',
       media: {
         body: 'src-stream'
@@ -167,9 +211,9 @@ describe('uploadFile()', () => {
   })
 
   it('should throw UploadFileError', async () => {
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockRejectedValue({ errors: 'err' })
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.reject({ errors: 'err' })
+    )
     const drive: any = {
       files: {
         create
@@ -184,32 +228,39 @@ describe('uploadFile()', () => {
       srcMimeType: 'src-mime-type',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrow('err')
-    await expect(res).rejects.toBeInstanceOf(UploadFileError)
+    await assert.rejects(res, (err: Error) => {
+      assert.strictEqual(err.message, '"err"')
+      assert.ok(err instanceof UploadFileError)
+      return true
+    })
   })
 })
 
 describe('updateFile()', () => {
   it('should return id of file', async () => {
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         update
       }
     }
 
-    expect(
+    assert.strictEqual(
       await updateFile(drive, {
         fileId: 'file-id',
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
         srcMimeType: 'src-mime-type'
-      })
-    ).toEqual('test-id')
-    expect(mockCreateReadStream).toHaveBeenCalledWith('src-file-name')
-    expect(update).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.strictEqual(
+      mockCreateReadStream.mock.calls[0].arguments[0],
+      'src-file-name'
+    )
+    assert.deepStrictEqual(update.mock.calls[0].arguments[0], {
       fileId: 'file-id',
       fields: 'id',
       media: {
@@ -224,26 +275,30 @@ describe('updateFile()', () => {
   })
 
   it('should return id of file(supports all drives)', async () => {
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         update
       }
     }
 
-    expect(
+    assert.strictEqual(
       await updateFile(drive, {
         fileId: 'file-id',
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
         srcMimeType: 'src-mime-type',
         supportsAllDrives: true
-      })
-    ).toEqual('test-id')
-    expect(mockCreateReadStream).toHaveBeenCalledWith('src-file-name')
-    expect(update).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.strictEqual(
+      mockCreateReadStream.mock.calls[0].arguments[0],
+      'src-file-name'
+    )
+    assert.deepStrictEqual(update.mock.calls[0].arguments[0], {
       fileId: 'file-id',
       fields: 'id',
       media: {
@@ -258,26 +313,30 @@ describe('updateFile()', () => {
   })
 
   it('should return id of file(mimeType is blank)', async () => {
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         update
       }
     }
 
-    expect(
+    assert.strictEqual(
       await updateFile(drive, {
         fileId: 'file-id',
         srcFileName: 'src-file-name',
         destMimeType: '',
         srcMimeType: '',
         supportsAllDrives: false
-      })
-    ).toEqual('test-id')
-    expect(mockCreateReadStream).toHaveBeenCalledWith('src-file-name')
-    expect(update).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.strictEqual(
+      mockCreateReadStream.mock.calls[0].arguments[0],
+      'src-file-name'
+    )
+    assert.deepStrictEqual(update.mock.calls[0].arguments[0], {
       fileId: 'file-id',
       fields: 'id',
       media: {
@@ -289,16 +348,16 @@ describe('updateFile()', () => {
   })
 
   it('should use srcStream', async () => {
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'test-id' } })
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'test-id' } })
+    )
     const drive: any = {
       files: {
         update
       }
     }
 
-    expect(
+    assert.strictEqual(
       await updateFile(drive, {
         fileId: 'file-id',
         srcFileName: 'src-file-name',
@@ -306,10 +365,11 @@ describe('updateFile()', () => {
         srcMimeType: '',
         supportsAllDrives: false,
         srcStream: 'src-stream' as any
-      })
-    ).toEqual('test-id')
-    expect(mockCreateReadStream).toHaveBeenCalledTimes(0)
-    expect(update).toHaveBeenCalledWith({
+      }),
+      'test-id'
+    )
+    assert.strictEqual(mockCreateReadStream.mock.callCount(), 0)
+    assert.deepStrictEqual(update.mock.calls[0].arguments[0], {
       fileId: 'file-id',
       fields: 'id',
       media: {
@@ -321,9 +381,9 @@ describe('updateFile()', () => {
   })
 
   it('should throw UploadFileError', async () => {
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockRejectedValue({ errors: 'err' })
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.reject({ errors: 'err' })
+    )
     const drive: any = {
       files: {
         update
@@ -337,22 +397,25 @@ describe('updateFile()', () => {
       srcMimeType: 'src-mime-type',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrow('err')
-    await expect(res).rejects.toBeInstanceOf(UpdateFileError)
+    await assert.rejects(res, (err: Error) => {
+      assert.strictEqual(err.message, '"err"')
+      assert.ok(err instanceof UpdateFileError)
+      return true
+    })
   })
 })
 
 describe('sendFile()', () => {
   it('should call create', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{}] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'create-test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'update-test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{}] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'create-test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'update-test-id' } })
+    )
     const drive: any = {
       files: {
         list,
@@ -360,7 +423,7 @@ describe('sendFile()', () => {
         update
       }
     }
-    expect(
+    assert.strictEqual(
       await sendFile(drive, {
         fileId: '',
         parentId: 'parent-id',
@@ -368,16 +431,17 @@ describe('sendFile()', () => {
         srcFileName: 'src-file-name',
         destMimeType: 'dest-mime-type',
         srcMimeType: 'src-mime-type'
-      })
-    ).toEqual('create-test-id')
-    expect(list).toHaveBeenCalledWith({
+      }),
+      'create-test-id'
+    )
+    assert.deepStrictEqual(list.mock.calls[0].arguments[0], {
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: false,
       supportsAllDrives: false
     })
-    expect(create).toHaveBeenCalledWith({
+    assert.deepStrictEqual(create.mock.calls[0].arguments[0], {
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
@@ -390,19 +454,19 @@ describe('sendFile()', () => {
         parents: ['parent-id']
       }
     })
-    expect(update).toHaveBeenCalledTimes(0)
+    assert.strictEqual(update.mock.callCount(), 0)
   })
 
   it('should call create(supports all drives)', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{}] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'create-test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'update-test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{}] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'create-test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'update-test-id' } })
+    )
     const drive: any = {
       files: {
         list,
@@ -410,7 +474,7 @@ describe('sendFile()', () => {
         update
       }
     }
-    expect(
+    assert.strictEqual(
       await sendFile(drive, {
         fileId: '',
         parentId: 'parent-id',
@@ -419,16 +483,17 @@ describe('sendFile()', () => {
         destMimeType: 'dest-mime-type',
         srcMimeType: 'src-mime-type',
         supportsAllDrives: true
-      })
-    ).toEqual('create-test-id')
-    expect(list).toHaveBeenCalledWith({
+      }),
+      'create-test-id'
+    )
+    assert.deepStrictEqual(list.mock.calls[0].arguments[0], {
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: true,
       supportsAllDrives: true
     })
-    expect(create).toHaveBeenCalledWith({
+    assert.deepStrictEqual(create.mock.calls[0].arguments[0], {
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
@@ -441,19 +506,19 @@ describe('sendFile()', () => {
         parents: ['parent-id']
       }
     })
-    expect(update).toHaveBeenCalledTimes(0)
+    assert.strictEqual(update.mock.callCount(), 0)
   })
 
   it('should call create(pass srcStream)', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{}] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'create-test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'update-test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{}] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'create-test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'update-test-id' } })
+    )
     const drive: any = {
       files: {
         list,
@@ -461,7 +526,7 @@ describe('sendFile()', () => {
         update
       }
     }
-    expect(
+    assert.strictEqual(
       await sendFile(drive, {
         fileId: '',
         parentId: 'parent-id',
@@ -471,16 +536,17 @@ describe('sendFile()', () => {
         srcMimeType: 'src-mime-type',
         supportsAllDrives: false,
         srcStream: 'src-stream' as any
-      })
-    ).toEqual('create-test-id')
-    expect(list).toHaveBeenCalledWith({
+      }),
+      'create-test-id'
+    )
+    assert.deepStrictEqual(list.mock.calls[0].arguments[0], {
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: false,
       supportsAllDrives: false
     })
-    expect(create).toHaveBeenCalledWith({
+    assert.deepStrictEqual(create.mock.calls[0].arguments[0], {
       fields: 'id',
       media: {
         mimeType: 'src-mime-type',
@@ -493,19 +559,19 @@ describe('sendFile()', () => {
         parents: ['parent-id']
       }
     })
-    expect(update).toHaveBeenCalledTimes(0)
+    assert.strictEqual(update.mock.callCount(), 0)
   })
 
   it('should call update(fileId is blank)', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'create-test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'update-test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{ id: 'test-id' }] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'create-test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'update-test-id' } })
+    )
     const drive: any = {
       files: {
         list,
@@ -513,7 +579,7 @@ describe('sendFile()', () => {
         update
       }
     }
-    expect(
+    assert.strictEqual(
       await sendFile(drive, {
         fileId: '',
         parentId: 'parent-id',
@@ -522,17 +588,18 @@ describe('sendFile()', () => {
         destMimeType: 'dest-mime-type',
         srcMimeType: 'src-mime-type',
         supportsAllDrives: false
-      })
-    ).toEqual('update-test-id')
-    expect(list).toHaveBeenCalledWith({
+      }),
+      'update-test-id'
+    )
+    assert.deepStrictEqual(list.mock.calls[0].arguments[0], {
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: false,
       supportsAllDrives: false
     })
-    expect(create).toHaveBeenCalledTimes(0)
-    expect(update).toHaveBeenCalledWith({
+    assert.strictEqual(create.mock.callCount(), 0)
+    assert.deepStrictEqual(update.mock.calls[0].arguments[0], {
       fileId: 'test-id',
       fields: 'id',
       media: {
@@ -547,15 +614,15 @@ describe('sendFile()', () => {
   })
 
   it('should call update(supports all drives)', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'create-test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'update-test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{ id: 'test-id' }] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'create-test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'update-test-id' } })
+    )
     const drive: any = {
       files: {
         list,
@@ -563,7 +630,7 @@ describe('sendFile()', () => {
         update
       }
     }
-    expect(
+    assert.strictEqual(
       await sendFile(drive, {
         fileId: '',
         parentId: 'parent-id',
@@ -572,17 +639,18 @@ describe('sendFile()', () => {
         destMimeType: 'dest-mime-type',
         srcMimeType: 'src-mime-type',
         supportsAllDrives: true
-      })
-    ).toEqual('update-test-id')
-    expect(list).toHaveBeenCalledWith({
+      }),
+      'update-test-id'
+    )
+    assert.deepStrictEqual(list.mock.calls[0].arguments[0], {
       fields: 'files(id, name)',
       pageSize: 10,
       q: "'parent-id' in parents and name = 'dest-file-name'",
       includeItemsFromAllDrives: true,
       supportsAllDrives: true
     })
-    expect(create).toHaveBeenCalledTimes(0)
-    expect(update).toHaveBeenCalledWith({
+    assert.strictEqual(create.mock.callCount(), 0)
+    assert.deepStrictEqual(update.mock.calls[0].arguments[0], {
       fileId: 'test-id',
       fields: 'id',
       media: {
@@ -597,15 +665,15 @@ describe('sendFile()', () => {
   })
 
   it('should call update(fileId is specified)', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'create-test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'update-test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{ id: 'test-id' }] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'create-test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'update-test-id' } })
+    )
     const drive: any = {
       files: {
         list,
@@ -613,7 +681,7 @@ describe('sendFile()', () => {
         update
       }
     }
-    expect(
+    assert.strictEqual(
       await sendFile(drive, {
         fileId: 'file-id',
         parentId: 'parent-id',
@@ -622,11 +690,12 @@ describe('sendFile()', () => {
         destMimeType: 'dest-mime-type',
         srcMimeType: 'src-mime-type',
         supportsAllDrives: false
-      })
-    ).toEqual('update-test-id')
-    expect(list).toHaveBeenCalledTimes(0)
-    expect(create).toHaveBeenCalledTimes(0)
-    expect(update).toHaveBeenCalledWith({
+      }),
+      'update-test-id'
+    )
+    assert.strictEqual(list.mock.callCount(), 0)
+    assert.strictEqual(create.mock.callCount(), 0)
+    assert.deepStrictEqual(update.mock.calls[0].arguments[0], {
       fileId: 'file-id',
       fields: 'id',
       media: {
@@ -641,15 +710,15 @@ describe('sendFile()', () => {
   })
 
   it('should call update(pass srcStream)', async () => {
-    const list = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { files: [{ id: 'test-id' }] } })
-    const create = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'create-test-id' } })
-    const update = jest
-      .fn<(a: any) => Promise<any>>()
-      .mockResolvedValue({ data: { id: 'update-test-id' } })
+    const list = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { files: [{ id: 'test-id' }] } })
+    )
+    const create = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'create-test-id' } })
+    )
+    const update = mock.fn<(a: any) => Promise<any>>(() =>
+      Promise.resolve({ data: { id: 'update-test-id' } })
+    )
     const drive: any = {
       files: {
         list,
@@ -657,7 +726,7 @@ describe('sendFile()', () => {
         update
       }
     }
-    expect(
+    assert.strictEqual(
       await sendFile(drive, {
         fileId: 'file-id',
         parentId: 'parent-id',
@@ -667,11 +736,12 @@ describe('sendFile()', () => {
         srcMimeType: 'src-mime-type',
         supportsAllDrives: false,
         srcStream: 'src-stream' as any
-      })
-    ).toEqual('update-test-id')
-    expect(list).toHaveBeenCalledTimes(0)
-    expect(create).toHaveBeenCalledTimes(0)
-    expect(update).toHaveBeenCalledWith({
+      }),
+      'update-test-id'
+    )
+    assert.strictEqual(list.mock.callCount(), 0)
+    assert.strictEqual(create.mock.callCount(), 0)
+    assert.deepStrictEqual(update.mock.calls[0].arguments[0], {
       fileId: 'file-id',
       fields: 'id',
       media: {
@@ -696,8 +766,9 @@ describe('sendFile()', () => {
       srcMimeType: 'src-mime-type',
       supportsAllDrives: false
     })
-    await expect(res).rejects.toThrow(
-      'The source content is not specified'
-    )
+    await assert.rejects(res, (err: Error) => {
+      assert.strictEqual(err.message, 'The source content is not specified')
+      return true
+    })
   })
 })

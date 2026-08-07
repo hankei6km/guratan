@@ -1,5 +1,5 @@
 import { Readable, Writable } from 'stream'
-import { driveClient } from './tdrive.js'
+import { driveClient } from './tdrive.ts'
 
 type Opts = {
   stdin: Readable
@@ -61,7 +61,7 @@ export const cliSend = async ({
   stderr
 }: OptsSend): Promise<number> => {
   try {
-    const { sendFile } = await import('./tsend.js')
+    const { sendFile } = await import('./tsend.ts')
     const id = await sendFile(driveClient(), {
       fileId,
       parentId,
@@ -97,7 +97,7 @@ export const cliRecv = async ({
   stderr
 }: OptsRecv): Promise<number> => {
   try {
-    const { recvFile } = await import('./trecv.js')
+    const { recvFile } = await import('./trecv.ts')
     const id = await recvFile(driveClient(), {
       fileId,
       parentId,
@@ -139,7 +139,7 @@ export const cliShare = async ({
   stderr
 }: OptsShare): Promise<number> => {
   try {
-    const { createPermisson } = await import('./tshare.js')
+    const { createPermisson } = await import('./tshare.ts')
     const id = await createPermisson(driveClient(), {
       fileId,
       parentId,
